@@ -1,0 +1,85 @@
+version: '3'
+services:
+  pg:
+    image: postgres:9.4
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  conjur:
+    image: cyberark/conjur:edge
+    command: server -a dev -f /policy/policy.yaml
+    environment:
+      CONJUR_DATA_KEY: 'OyXV68Mip14xj33huGaQKewmmS+gKtDlp6ECZ2iATpU='
+      DATABASE_URL: postgres://postgres@pg/postgres
+      RAILS_ENV: development
+      CONJUR_AUTHENTICATORS: authn-ldap/test,authn-oidc/test,authn
+      LDAP_URI: ldap://ldap-server:389
+      LDAP_BASE: dc=conjur,dc=net
+      LDAP_BINDDN: cn=admin,dc=conjur,dc=net
+      LDAP_BINDPW: ldapsecret
+      LDAP_FILTER: (uid=%s)
+    ports:
+      - "80:80"
+    volumes:
+      - ./test/config:/policy:ro
+    depends_on:
+      - pg
+      - ldap-server
+      - oidc-keycloak
+    links:
+      - oidc-keycloak:keycloak
+
+  conjur-https:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./config/https/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/https/conjur.conf:/etc/nginx/sites-enabled/conjur.conf:ro
+      - ./config/https/dhparams.pem:/etc/nginx/dhparams.pem:ro
+      - ./config/https/conjur.crt:/cert/tls.crt:ro
+      - ./config/https/conjur.key:/cert/tls.key:ro
+      - ./config/https/ca.crt:/ca/tls.crt:ro
+    depends_on:
+      - conjur
+
+  ldap-server:
+    image: osixia/openldap
+    command: --copy-service --loglevel debug
+    hostname: ldap-server
+    environment:
+      LDAP_ORGANIZATION: CyberArk
+      LDAP_DOMAIN: conjur.net
+      LDAP_ADMIN_PASSWORD: ldapsecret
+      LDAP_TLS_CA_CRT_FILENAME: "ca-chain.cert.pem"
+      LDAP_TLS_CRT_FILENAME: "ldap-server.cert.pem"
+      LDAP_TLS_KEY_FILENAME: "ldap-server.key.pem"
+      LDAP_TLS_DH_PARAM_FILENAME: 'dhparam.pem'
+      LDAP_TLS_VERIFY_CLIENT: try
+    ports:
+      - "389:389"
+    volumes:
+      - ./test/config/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+      - ./test/config/ldap/certs:/container/service/slapd/assets/certs:ro
+
+  oidc-keycloak:
+    image: jboss/keycloak:4.3.0.Final
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - DB_VENDOR=H2
+      - KEYCLOAK_CLIENT_ID=conjurClient
+      - KEYCLOAK_REDIRECT_URI=http://locallhost.com/
+      - KEYCLOAK_CLIENT_SECRET=1234
+      - KEYCLOAK_SCOPE=openid
+      - KEYCLOAK_LOGLEVEL=ALL
+    ports:
+      - "7777:8080"
+    volumes:
+      - ./test/config/oidc:/scripts
+      - ./test/config/oidc/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+
+networks:
+  default:
+    external:
+      name: conjur-sdk-java

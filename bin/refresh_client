@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+source bin/util
+mkdir -p client
+
+generator_version="v4.3.1"
+GENERATOR_IMAGE="openapitools/openapi-generator-cli:$generator_version"
+
+git clone https://github.com/cyberark/conjur-openapi-spec.git
+pushd conjur-openapi-spec
+
+./bin/transform --oss
+
+popd
+
+announce "Generating Java client..."
+docker run --rm -v ${PWD}:/local -v ${PWD}/client:/out "$GENERATOR_IMAGE" generate \
+    -i "/local/conjur-openapi-spec/out/oss/spec/openapi.yml" \
+    -g "java" \
+    -o "/out" \
+    -c "/local/config/java.yml" \
+    -t "/local/templates"
+
+rm -rf conjur-openapi-spec
+
+# The .openapi-generator-ignore file refuses to not generate this directory
+rm -rf client/gradle

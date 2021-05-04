@@ -1,8 +1,5 @@
 # Contributing
 
-[Are you accepting contributions at this time? If not, please state that here.
-No need to include content from the rest of this document.]
-
 For general contribution and community guidelines, please see the [community repo](https://github.com/cyberark/community).
 
 ## Table of Contents

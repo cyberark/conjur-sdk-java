@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+function get_banner(){
+  for word in $@
+  do
+    echo -n "+"
+    for (( i=0; i<${#word}; i++ )) do
+      echo -n "+"
+    done
+  done
+
+  echo
+}
+
+function announce() {
+  banner=$(get_banner $@)
+  echo -e "\e[0;32m$banner"
+  echo -e "$@"
+  echo -e "$banner\e[m"
+}
+
+function get_conjur_admin_api_key(){
+  admin_api_key=$(docker-compose exec -T conjur conjurctl role retrieve-key dev:user:admin | tr -d '\r')
+  echo $admin_api_key
+}
