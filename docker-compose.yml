@@ -18,8 +18,6 @@ services:
       LDAP_BINDDN: cn=admin,dc=conjur,dc=net
       LDAP_BINDPW: ldapsecret
       LDAP_FILTER: (uid=%s)
-    ports:
-      - "80:80"
     volumes:
       - ./test/config:/policy:ro
     depends_on:
@@ -31,8 +29,6 @@ services:
 
   conjur-https:
     image: nginx:alpine
-    ports:
-      - "443:443"
     volumes:
       - ./config/https/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./config/https/conjur.conf:/etc/nginx/sites-enabled/conjur.conf:ro

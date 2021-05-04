@@ -13,8 +13,15 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 
 This project requires Docker and access to DockerHub.
 
-The OpenAPI Specification is compatible with Conjur OSS v1.9+.
-Clients are generated using OpenAPI Generator v4.3.1.
+The OpenAPI Specification is compatible with [Conjur OSS v1.9+](https://github.com/cyberark/conjur).
+Clients are generated using [OpenAPI Generator v4.3.1](https://github.com/OpenAPITools/openapi-generator/tree/v4.3.1).
+
+Each Java Client version corresponds to a specific API version release, the API client having
+its own version allows changes to be made to the client outside of updates to the API.
+
+| Java Client Version | [Conjur API Version](https://github.com/cyberark/conjur-openapi-spec/releases) |
+| :-----------------: | :----------------: |
+| 1.x.x               | 5.1.1              |
 
 ## Usage instructions
 

@@ -6,7 +6,7 @@ mkdir -p client
 generator_version="v4.3.1"
 GENERATOR_IMAGE="openapitools/openapi-generator-cli:$generator_version"
 
-git clone https://github.com/cyberark/conjur-openapi-spec.git
+git clone -b java-secrets-test https://github.com/cyberark/conjur-openapi-spec.git
 pushd conjur-openapi-spec
 
 ./bin/transform --oss
