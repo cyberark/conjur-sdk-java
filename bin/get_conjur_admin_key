@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 source ./bin/util
 
-admin_api_key=$(get_conjur_admin_api_key)
-export CONJUR_AUTHN_API_KEY=$admin_api_key
+admin_api_key="$(get_conjur_admin_api_key)"
+export CONJUR_AUTHN_API_KEY="$admin_api_key"
 
 echo "Conjur admin api key $admin_api_key"
 

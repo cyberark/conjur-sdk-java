@@ -34,6 +34,10 @@ section when releasing the client after a refresh.
 * Stands up a new instance of Conjur in a Docker environment, compiles the
   client, and runs the tests with Maven.
 
+`bin/build`
+* Used to compile & build a jar archive for the client.
+* Outputs the compiled version to `client/target`
+
 `bin/refresh_client`
 * Used to update the client with new changes to the OpenAPI Specification.
 * Pulls down the latest version of the spec and regenerates the client.

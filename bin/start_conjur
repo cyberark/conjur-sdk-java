@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
+
 cleanup() {
   echo "Cleaning up..."
   docker-compose rm --stop --force -v
