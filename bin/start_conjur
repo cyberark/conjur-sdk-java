@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
+
+cleanup() {
+  echo "Cleaning up..."
+  docker-compose rm --stop --force -v
+}
+
+make_network(){
+  if [ ! -z $(docker network inspect conjur-sdk-java > /dev/null || echo $?) ]; then
+    docker network create conjur-sdk-java
+  fi
+}
+
+if [ "$1" == "-d" ]; then
+  DEBUG="true"
+  shift
+fi
+
+trap 'echo "ERROR: Test script encountered an error!"; docker-compose logs; cleanup' ERR
+cleanup
+
+make_network
+echo "Building services..."
+docker-compose build pg conjur conjur-https
+
+# Start Conjur server
+echo "Starting Conjur..."
+docker-compose up -d conjur conjur-https
+docker-compose exec -T conjur conjurctl wait

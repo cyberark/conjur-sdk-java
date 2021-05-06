@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
+source bin/util
+
+./bin/test_integration $@ --jar
+
+announce "Output available in ./client/target"

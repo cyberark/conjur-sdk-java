@@ -1,0 +1,7 @@
+apiPackage: org.conjur.sdk.api
+modelPackage: org.conjur.sdk.model
+scmUrl: https://github.com/cyberark/conjur-sdk-java
+invokerPackage: org.conjur.sdk
+artifactId: conjur-sdk-java
+artifactDescription: Java Conjur SDK
+hideGenerationTimestamp: true

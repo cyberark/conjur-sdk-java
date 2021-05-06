@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+set -e
+
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
+
+source bin/util
+
+regen_client=true
+rebuild_conjur=true
+major_java_version=8
+install=""
+
+if [ "$(tty)" == "not a tty" ]; then
+  copy_prefix="sudo"
+else
+  copy_prefix=""
+fi
+
+cleanup() {
+  echo "Cleaning up..."
+  docker-compose rm --stop --force -v
+}
+
+setup_keycloak(){
+  announce "Setting up Keycloak"
+
+  docker-compose exec -T oidc-keycloak bash -c "/scripts/create_client"
+  docker-compose exec -T oidc-keycloak bash -c "/scripts/create_user bob bob bob@conjur.net"
+  docker-compose exec -T conjur bash -c "/policy/oidc/fetchCertificate"
+}
+
+conjur_container_down(){
+  if [ -z `docker-compose ps -q conjur` ]; then
+    true
+  elif [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q conjur)` ]; then
+    true
+  else
+    false
+  fi
+}
+
+print_help(){
+  echo -e "Usage: ./bin/test_integration [--no-rebuild-conjur] [--no-regen-client]"
+  echo
+  echo -e "\tRunning this script without parameters will run ALL integration tests"
+  echo -e "\tIn order to specify a subset of tests you can use a client flag (e.g. --python)"
+  echo -e "\tYou can also specify a subset of client tests by including a parameter after the client flag"
+  echo
+  echo -e "\tThe --no-rebuild-conjur flag will prevent the conjur image from rebuilding"
+  echo -e "\t\tWarning: this may cause some tests to fail"
+  echo
+  echo -e "\tThe --no-regen-client flag will prevent the client from re-generating before tests run"
+  echo
+  echo -e "\tThe -d flag will turn on debug mode for the integration test runs"
+  echo
+  echo -e "\tThe --jar flag will test then build the project outputing to client/target"
+  echo
+  echo -e "\tThe -j or --java-version flag allows you yo specify a specific java version used to compile/test the project"
+}
+
+run_java_tests(){
+  if [ "$regen_client" = true ]; then
+    announce "Generating Java Client"
+    bin/refresh_client -l java
+  fi
+
+  docker run --rm --network conjur-sdk-java \
+    -v ${PWD}/client:/client \
+    -v ${PWD}/test/config:/config \
+    -v ${PWD}/config/https:/https \
+    -e CONJUR_HTTP_APPLIANCE_URL=http://conjur \
+    -e CONJUR_APPLIANCE_URL=https://conjur-https \
+    -e CONJUR_ACCOUNT=dev \
+    -e CONJUR_AUTHN_LOGIN=admin \
+    -e CONJUR_CERT_FILE=/https/ca.crt \
+    --env-file .env \
+    -w /client \
+    maven:3-openjdk-$major_java_version bash -c "mvn test $install"
+}
+
+while test $# -gt 0
+do
+  param=$1
+  shift
+  case "$param" in
+    -d)
+      DEBUG="true"
+      ;;
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    --no-rebuild-conjur)
+      rebuild_conjur=false
+      ;;
+    --no-regen-client)
+      regen_client=false
+      ;;
+    -j|--java-version)
+      major_java_version=$1
+      shift
+      ;;
+    --jar)
+      install="install"
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ "$rebuild_conjur" = true ] || conjur_container_down; then
+  announce "Starting Conjur Container"
+  bin/start_conjur
+fi
+
+announce "Configuring Test Environment"
+bin/get_conjur_admin_key
+setup_keycloak
+
+run_java_tests
