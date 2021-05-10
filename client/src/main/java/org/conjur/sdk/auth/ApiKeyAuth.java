@@ -14,6 +14,7 @@
 package org.conjur.sdk.auth;
 
 import org.conjur.sdk.Pair;
+import org.conjur.sdk.AccessToken;
 
 import java.util.Map;
 import java.util.List;
@@ -25,10 +26,12 @@ public class ApiKeyAuth implements Authentication {
 
   private String apiKey;
   private String apiKeyPrefix;
+  private AccessToken token;
 
-  public ApiKeyAuth(String location, String paramName) {
+  public ApiKeyAuth(String location, String paramName, AccessToken token) {
     this.location = location;
     this.paramName = paramName;
+    this.token = token;
   }
 
   public String getLocation() {
@@ -40,7 +43,13 @@ public class ApiKeyAuth implements Authentication {
   }
 
   public String getApiKey() {
+    if (apiKey == null)
+      return token.getHeaderValue();
     return apiKey;
+  }
+
+  public AccessToken getAccessToken() {
+    return token;
   }
 
   public void setApiKey(String apiKey) {
@@ -55,16 +64,20 @@ public class ApiKeyAuth implements Authentication {
     this.apiKeyPrefix = apiKeyPrefix;
   }
 
+  public void setAccessToken(AccessToken token) {
+    this.token = token;
+  }
+
   @Override
   public void applyToParams(List<Pair> queryParams, Map<String, String> headerParams, Map<String, String> cookieParams) {
-    if (apiKey == null) {
+    if (apiKey == null && token == null) {
       return;
     }
     String value;
     if (apiKeyPrefix != null) {
-      value = apiKeyPrefix + " " + apiKey;
+      value = apiKeyPrefix + " " + getApiKey();
     } else {
-      value = apiKey;
+      value = getApiKey();
     }
     if ("query".equals(location)) {
       queryParams.add(new Pair(paramName, value));

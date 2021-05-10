@@ -24,6 +24,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import com.google.gson.reflect.TypeToken;
 import javax.net.ssl.*;
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
 
+import org.conjur.sdk.AccessToken;
 import org.conjur.sdk.auth.Authentication;
 import org.conjur.sdk.auth.HttpBasicAuth;
 import org.conjur.sdk.auth.HttpBearerAuth;
@@ -84,6 +86,8 @@ public class ApiClient {
     private String conjurVersion = System.getenv().getOrDefault("CONJUR_VERSION", "5");
     private String certFile = System.getenv().getOrDefault("CONJUR_CERT_FILE", null);
     private String sslCert = System.getenv().getOrDefault("CONJUR_SSL_CERTIFICATE", null);
+    private String apiKey = System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
+    private boolean autoUpdateAccessToken = System.getenv().getOrDefault("CONJUR_AUTO_UPDATE_TOKEN", "false").toLowerCase().equals("true");
 
     public String getAccount() {
         return account;
@@ -137,7 +141,7 @@ public class ApiClient {
 
         // Setup authentications (key: authentication name, value: authentication).
         authentications.put("basicAuth", new HttpBasicAuth());
-        authentications.put("conjurAuth", new ApiKeyAuth("header", "Authorization"));
+        authentications.put("conjurAuth", new ApiKeyAuth("header", "Authorization", new AccessToken()));
         authentications.put("conjurKubernetesMutualTls", new HttpBearerAuth("mutual"));
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
@@ -1242,10 +1246,44 @@ public class ApiClient {
             Authentication auth = authentications.get(authName);
             if (auth == null) {
                 throw new RuntimeException("Authentication undefined: " + authName);
+            } else if (authName == "conjurAuth" && ((ApiKeyAuth)auth).getAccessToken().needsRefresh() && canRefreshAccessToken()) {
+                AccessToken newToken = this.getNewAccessToken();
+                ((ApiKeyAuth)auth).setAccessToken(newToken);
             }
             auth.applyToParams(queryParams, headerParams, cookieParams);
         }
     }
+
+    public boolean canRefreshAccessToken() {
+        return apiKey != null && account != null && username != null && autoUpdateAccessToken;
+    }
+
+    public String getAuthenticationUrl() {
+        String auth = System.getenv().getOrDefault("CONJUR_AUTHN_URL", "/authn");
+        return auth;
+    }
+
+    public AccessToken getNewAccessToken() {
+        //NOTE: We cannot use the AuthenticationApi class here because it would create a circular dependancy
+        String path = String.format("%s/%s/%s/authenticate", getAuthenticationUrl(), account, username);
+        String method = "POST";
+        String body = apiKey;
+        Map<String, String> headerParams = new HashMap<String, String>();
+        headerParams.put("Accept-Encoding", "base64");
+        headerParams.put("Content-Type", "text/plain");
+        headerParams.put("X-Request-Id", "testingid");
+        String accessToken = null;
+        try {
+            Call c = this.buildCall(path, method, new ArrayList<Pair>(), new ArrayList<Pair>(), body, headerParams, new HashMap<String, String>(), new HashMap<String, Object>(), new String[]{}, null);
+            ApiResponse<String> response = execute(c, new TypeToken<String>(){}.getType());
+            accessToken = response.getData();
+        } catch (ApiException e) {
+            System.out.println("Failed to automatically update AccessToken");
+            return null;
+        }
+        return AccessToken.fromEncodedToken(accessToken);
+    }
+
 
     /**
      * Build a form-encoding request body with the given form parameters.
