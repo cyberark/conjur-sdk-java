@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
+if [ "$(tty)" == "not a tty" ]; then
+  copy_prefix="sudo"
+else
+  copy_prefix=""
+fi
+
 # Run from top-level dir
 cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 
@@ -25,7 +31,7 @@ docker run --rm -v ${PWD}:/local -v ${PWD}/client:/out "$GENERATOR_IMAGE" genera
     -c "/local/config/java.yml" \
     -t "/local/templates"
 
-rm -rf conjur-openapi-spec
+$copy_prefix rm -rf conjur-openapi-spec
 
 # The .openapi-generator-ignore file refuses to not generate this directory
-rm -rf client/gradle
+$copy_prefix rm -rf client/gradle
