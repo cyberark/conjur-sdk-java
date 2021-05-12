@@ -127,6 +127,23 @@ public class StatusApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Details about which authenticators are on the Conjur Server
+     * Response contains three members: installed, configured, and enabled.  installed: The authenticator is implemented in Conjur and is available for configuration configured: The authenticator has a webservice in the DB that was loaded by policy enabled: The authenticator is enabled (in the DB or in the ENV) and is ready for authentication 
+     * @return AuthenticatorsResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Details about authenticators for this Conjur server </td><td>  -  </td></tr>
+     </table>
+    */
+    public AuthenticatorsResponse getAuthenticators() throws ApiException {
+        ApiResponse<AuthenticatorsResponse> localVarResp = getAuthenticatorsWithHttpInfo(null);
+        return localVarResp.getData();
+    }
+
     /**
      * Details about which authenticators are on the Conjur Server
      * Response contains three members: installed, configured, and enabled.  installed: The authenticator is implemented in Conjur and is available for configuration configured: The authenticator has a webservice in the DB that was loaded by policy enabled: The authenticator is enabled (in the DB or in the ENV) and is ready for authentication 
@@ -141,6 +158,23 @@ public class StatusApi {
      */
     public ApiResponse<AuthenticatorsResponse> getAuthenticatorsWithHttpInfo(String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAuthenticatorsValidateBeforeCall(xRequestId, null);
+        Type localVarReturnType = new TypeToken<AuthenticatorsResponse>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Details about which authenticators are on the Conjur Server
+     * Response contains three members: installed, configured, and enabled.  installed: The authenticator is implemented in Conjur and is available for configuration configured: The authenticator has a webservice in the DB that was loaded by policy enabled: The authenticator is enabled (in the DB or in the ENV) and is ready for authentication 
+     * @return ApiResponse&lt;AuthenticatorsResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Details about authenticators for this Conjur server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<AuthenticatorsResponse> getAuthenticatorsWithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = getAuthenticatorsValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<AuthenticatorsResponse>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -254,6 +288,29 @@ public class StatusApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Details whether an authentication service has been configured properly
+     * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  This operation only supports the GCP authenticator  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
+     * @param account The organization account name
+     * @return AuthenticatorStatus
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The service was not found </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 501 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+     </table>
+    */
+    public AuthenticatorStatus getGCPAuthenticatorStatus(String account) throws ApiException {
+        ApiResponse<AuthenticatorStatus> localVarResp = getGCPAuthenticatorStatusWithHttpInfo(account, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Details whether an authentication service has been configured properly
      * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  This operation only supports the GCP authenticator  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
@@ -274,6 +331,29 @@ public class StatusApi {
      */
     public ApiResponse<AuthenticatorStatus> getGCPAuthenticatorStatusWithHttpInfo(String account, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getGCPAuthenticatorStatusValidateBeforeCall(account, xRequestId, null);
+        Type localVarReturnType = new TypeToken<AuthenticatorStatus>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Details whether an authentication service has been configured properly
+     * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  This operation only supports the GCP authenticator  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
+     * @param account The organization account name 
+     * @return ApiResponse&lt;AuthenticatorStatus&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The service was not found </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 501 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<AuthenticatorStatus> getGCPAuthenticatorStatusWithHttpInfo(String account) throws ApiException {
+        okhttp3.Call localVarCall = getGCPAuthenticatorStatusValidateBeforeCall(account, null, null);
         Type localVarReturnType = new TypeToken<AuthenticatorStatus>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -411,6 +491,32 @@ public class StatusApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Details whether an authentication service has been configured properly
+     * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  Supported Authenticators:   - Azure   - OIDC  Not Supported:   - AWS IAM   - Kubernetes   - LDAP  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
+     * @param authenticator The type of authenticator
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account The organization account name
+     * @return AuthenticatorStatus
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The service was not found </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 501 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+     </table>
+    */
+    public AuthenticatorStatus getServiceAuthenticatorStatus(String authenticator, String serviceId, String account) throws ApiException {
+        ApiResponse<AuthenticatorStatus> localVarResp = getServiceAuthenticatorStatusWithHttpInfo(authenticator, serviceId, account, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Details whether an authentication service has been configured properly
      * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  Supported Authenticators:   - Azure   - OIDC  Not Supported:   - AWS IAM   - Kubernetes   - LDAP  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
@@ -434,6 +540,32 @@ public class StatusApi {
      */
     public ApiResponse<AuthenticatorStatus> getServiceAuthenticatorStatusWithHttpInfo(String authenticator, String serviceId, String account, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getServiceAuthenticatorStatusValidateBeforeCall(authenticator, serviceId, account, xRequestId, null);
+        Type localVarReturnType = new TypeToken<AuthenticatorStatus>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Details whether an authentication service has been configured properly
+     * Once the status webservice has been properly configured and the relevant user groups have been given permissions to access the status webservice, the users in those groups can check the status of the authenticator.  Supported Authenticators:   - Azure   - OIDC  Not Supported:   - AWS IAM   - Kubernetes   - LDAP  See [Conjur Documentation](https://docs.conjur.org/Latest/en/Content/Integrations/Authn-status.htm) for details on setting up the authenticator status webservice. 
+     * @param authenticator The type of authenticator 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account The organization account name 
+     * @return ApiResponse&lt;AuthenticatorStatus&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The service was not found </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+        <tr><td> 501 </td><td> The response contains info about the result </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<AuthenticatorStatus> getServiceAuthenticatorStatusWithHttpInfo(String authenticator, String serviceId, String account) throws ApiException {
+        okhttp3.Call localVarCall = getServiceAuthenticatorStatusValidateBeforeCall(authenticator, serviceId, account, null, null);
         Type localVarReturnType = new TypeToken<AuthenticatorStatus>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -540,6 +672,24 @@ public class StatusApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Provides information about the client making an API request.
+     * WhoAmI provides information about the client making an API request. It can be used to help troubleshoot configuration by verifying authentication and the client IP address for audit and network access restrictions. For more information, see Host Attributes. 
+     * @return WhoAmI
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Details about the client making the request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+     </table>
+    */
+    public WhoAmI whoAmI() throws ApiException {
+        ApiResponse<WhoAmI> localVarResp = whoAmIWithHttpInfo(null);
+        return localVarResp.getData();
+    }
+
     /**
      * Provides information about the client making an API request.
      * WhoAmI provides information about the client making an API request. It can be used to help troubleshoot configuration by verifying authentication and the client IP address for audit and network access restrictions. For more information, see Host Attributes. 
@@ -555,6 +705,24 @@ public class StatusApi {
      */
     public ApiResponse<WhoAmI> whoAmIWithHttpInfo(String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = whoAmIValidateBeforeCall(xRequestId, null);
+        Type localVarReturnType = new TypeToken<WhoAmI>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Provides information about the client making an API request.
+     * WhoAmI provides information about the client making an API request. It can be used to help troubleshoot configuration by verifying authentication and the client IP address for audit and network access restrictions. For more information, see Host Attributes. 
+     * @return ApiResponse&lt;WhoAmI&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Details about the client making the request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<WhoAmI> whoAmIWithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = whoAmIValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<WhoAmI>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }

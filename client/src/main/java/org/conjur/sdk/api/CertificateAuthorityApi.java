@@ -177,6 +177,31 @@ public class CertificateAuthorityApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a signed certificate from the configured Certificate Authority service.
+     * Gets a signed certificate from the configured Certificate Authority service.  The request must include a valid Certificate Signing Request, and a desired TTL in ISO 8601 format.  *** IMPORTANT *** This endpoint is part of an early implementation of support for using Conjur as a certificate authority, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future. 
+     * @param account Organization account name
+     * @param serviceId Name of the Certificate Authority service
+     * @param csr 
+     * @param ttl 
+     * @return CertificateJson
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The response body is the newly signed certificate </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> Either           - The authenticated role is not a Host role, - The authenticated Host does not have &#x60;sign&#x60; privilege for the CA service, or - The authenticated Host ID does not match the of the CSR Common Name (CN).  </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> CA Service with the given ID does not exist </td><td>  -  </td></tr>
+     </table>
+    */
+    public CertificateJson sign(String account, String serviceId, String csr, String ttl) throws ApiException {
+        ApiResponse<CertificateJson> localVarResp = signWithHttpInfo(account, serviceId, csr, ttl, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a signed certificate from the configured Certificate Authority service.
      * Gets a signed certificate from the configured Certificate Authority service.  The request must include a valid Certificate Signing Request, and a desired TTL in ISO 8601 format.  *** IMPORTANT *** This endpoint is part of an early implementation of support for using Conjur as a certificate authority, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future. 
@@ -200,6 +225,31 @@ public class CertificateAuthorityApi {
      */
     public ApiResponse<CertificateJson> signWithHttpInfo(String account, String serviceId, String csr, String ttl, String accept, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = signValidateBeforeCall(account, serviceId, csr, ttl, accept, xRequestId, null);
+        Type localVarReturnType = new TypeToken<CertificateJson>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a signed certificate from the configured Certificate Authority service.
+     * Gets a signed certificate from the configured Certificate Authority service.  The request must include a valid Certificate Signing Request, and a desired TTL in ISO 8601 format.  *** IMPORTANT *** This endpoint is part of an early implementation of support for using Conjur as a certificate authority, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future. 
+     * @param account Organization account name 
+     * @param serviceId Name of the Certificate Authority service 
+     * @param csr  
+     * @param ttl  
+     * @return ApiResponse&lt;CertificateJson&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The response body is the newly signed certificate </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> Either           - The authenticated role is not a Host role, - The authenticated Host does not have &#x60;sign&#x60; privilege for the CA service, or - The authenticated Host ID does not match the of the CSR Common Name (CN).  </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> CA Service with the given ID does not exist </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<CertificateJson> signWithHttpInfo(String account, String serviceId, String csr, String ttl) throws ApiException {
+        okhttp3.Call localVarCall = signValidateBeforeCall(account, serviceId, csr, ttl, null, null, null);
         Type localVarReturnType = new TypeToken<CertificateJson>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }

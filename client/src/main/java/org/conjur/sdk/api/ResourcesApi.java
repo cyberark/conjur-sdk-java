@@ -185,6 +185,32 @@ public class ResourcesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Shows a description of a single resource.
+     * Details about a single resource.  If &#x60;permitted_roles&#x60; and &#x60;privilege&#x60; are given, Conjur lists the roles with the specified privilege on the resource.  If &#x60;check&#x60;, &#x60;privilege&#x60; and &#x60;role&#x60; are given, Conjur checks if the specified role has the privilege on the resource.  If &#x60;permitted_roles&#x60; and &#x60;check&#x60; are both given, Conjur responds to the &#x60;check&#x60; call ONLY.  ##### Permissions Required 
+     * @param account Organization account name
+     * @param kind Type of resource
+     * @param identifier ID of the resource for which to get the information about
+     * @return Resource
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains the list of role memberships or permitted roles </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Permissions check was successful </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public Resource showResource(String account, String kind, String identifier) throws ApiException {
+        ApiResponse<Resource> localVarResp = showResourceWithHttpInfo(account, kind, identifier, null, null, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Shows a description of a single resource.
      * Details about a single resource.  If &#x60;permitted_roles&#x60; and &#x60;privilege&#x60; are given, Conjur lists the roles with the specified privilege on the resource.  If &#x60;check&#x60;, &#x60;privilege&#x60; and &#x60;role&#x60; are given, Conjur checks if the specified role has the privilege on the resource.  If &#x60;permitted_roles&#x60; and &#x60;check&#x60; are both given, Conjur responds to the &#x60;check&#x60; call ONLY.  ##### Permissions Required 
@@ -212,6 +238,32 @@ public class ResourcesApi {
      */
     public ApiResponse<Resource> showResourceWithHttpInfo(String account, String kind, String identifier, Boolean permittedRoles, String privilege, Boolean check, String role, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = showResourceValidateBeforeCall(account, kind, identifier, permittedRoles, privilege, check, role, xRequestId, null);
+        Type localVarReturnType = new TypeToken<Resource>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Shows a description of a single resource.
+     * Details about a single resource.  If &#x60;permitted_roles&#x60; and &#x60;privilege&#x60; are given, Conjur lists the roles with the specified privilege on the resource.  If &#x60;check&#x60;, &#x60;privilege&#x60; and &#x60;role&#x60; are given, Conjur checks if the specified role has the privilege on the resource.  If &#x60;permitted_roles&#x60; and &#x60;check&#x60; are both given, Conjur responds to the &#x60;check&#x60; call ONLY.  ##### Permissions Required 
+     * @param account Organization account name 
+     * @param kind Type of resource 
+     * @param identifier ID of the resource for which to get the information about 
+     * @return ApiResponse&lt;Resource&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains the list of role memberships or permitted roles </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Permissions check was successful </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Resource> showResourceWithHttpInfo(String account, String kind, String identifier) throws ApiException {
+        okhttp3.Call localVarCall = showResourceValidateBeforeCall(account, kind, identifier, null, null, null, null, null, null);
         Type localVarReturnType = new TypeToken<Resource>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -378,6 +430,28 @@ public class ResourcesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Lists resources within an organization account.
+     * Lists resources within an organization account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
+     * @param account Organization account name
+     * @return List&lt;Resource&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public List<Resource> showResourcesForAccount(String account) throws ApiException {
+        ApiResponse<List<Resource>> localVarResp = showResourcesForAccountWithHttpInfo(account, null, null, null, null, null, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Lists resources within an organization account.
      * Lists resources within an organization account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
@@ -404,6 +478,28 @@ public class ResourcesApi {
      */
     public ApiResponse<List<Resource>> showResourcesForAccountWithHttpInfo(String account, String kind, String search, Integer offset, Integer limit, Boolean count, String role, String actingAs, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = showResourcesForAccountValidateBeforeCall(account, kind, search, offset, limit, count, role, actingAs, xRequestId, null);
+        Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Lists resources within an organization account.
+     * Lists resources within an organization account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;List&lt;Resource&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<Resource>> showResourcesForAccountWithHttpInfo(String account) throws ApiException {
+        okhttp3.Call localVarCall = showResourcesForAccountValidateBeforeCall(account, null, null, null, null, null, null, null, null, null);
         Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -565,6 +661,26 @@ public class ResourcesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Lists resources within an organization account.
+     * Lists resources within an organization account.  In the absence of an &#x60;account&#x60; query parameter, shows results for the account of the authorization token user.  If an &#x60;account&#x60; query parameter is given, shows results for the specified account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;.\&quot; 
+     * @return List&lt;Resource&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public List<Resource> showResourcesForAllAccounts() throws ApiException {
+        ApiResponse<List<Resource>> localVarResp = showResourcesForAllAccountsWithHttpInfo(null, null, null, null, null, null, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Lists resources within an organization account.
      * Lists resources within an organization account.  In the absence of an &#x60;account&#x60; query parameter, shows results for the account of the authorization token user.  If an &#x60;account&#x60; query parameter is given, shows results for the specified account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;.\&quot; 
@@ -590,6 +706,26 @@ public class ResourcesApi {
      */
     public ApiResponse<List<Resource>> showResourcesForAllAccountsWithHttpInfo(String account, String kind, String search, Integer offset, Integer limit, Boolean count, String role, String actingAs, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = showResourcesForAllAccountsValidateBeforeCall(account, kind, search, offset, limit, count, role, actingAs, xRequestId, null);
+        Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Lists resources within an organization account.
+     * Lists resources within an organization account.  In the absence of an &#x60;account&#x60; query parameter, shows results for the account of the authorization token user.  If an &#x60;account&#x60; query parameter is given, shows results for the specified account.  If a &#x60;kind&#x60; query parameter is given, narrows results to only resources of that kind.  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;.\&quot; 
+     * @return ApiResponse&lt;List&lt;Resource&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<Resource>> showResourcesForAllAccountsWithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = showResourcesForAllAccountsValidateBeforeCall(null, null, null, null, null, null, null, null, null, null);
         Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -756,6 +892,29 @@ public class ResourcesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Lists resources of the same kind within an organization account.
+     * Lists resources of the same kind within an organization account.  Kinds of resources include: policy, user, host, group, layer, or variable  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
+     * @param account Organization account name
+     * @param kind Type of resource
+     * @return List&lt;Resource&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public List<Resource> showResourcesForKind(String account, String kind) throws ApiException {
+        ApiResponse<List<Resource>> localVarResp = showResourcesForKindWithHttpInfo(account, kind, null, null, null, null, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Lists resources of the same kind within an organization account.
      * Lists resources of the same kind within an organization account.  Kinds of resources include: policy, user, host, group, layer, or variable  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
@@ -782,6 +941,29 @@ public class ResourcesApi {
      */
     public ApiResponse<List<Resource>> showResourcesForKindWithHttpInfo(String account, String kind, String search, Integer offset, Integer limit, Boolean count, String role, String actingAs, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = showResourcesForKindValidateBeforeCall(account, kind, search, offset, limit, count, role, actingAs, xRequestId, null);
+        Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Lists resources of the same kind within an organization account.
+     * Lists resources of the same kind within an organization account.  Kinds of resources include: policy, user, host, group, layer, or variable  If a &#x60;limit&#x60; is given, returns no more than that number of results. Providing an &#x60;offset&#x60; skips a number of resources before returning the rest. In addition, providing an &#x60;offset&#x60; will give &#x60;limit&#x60; a default value of 10 if none other is provided. These two parameters can be combined to page through results.  If the parameter &#x60;count&#x60; is &#x60;true&#x60;, returns only the number of items in the list.  ##### Text search  If the &#x60;search&#x60; parameter is provided, narrows results to those pertaining to the search query. Search works across resource IDs and the values of annotations. It weighs results so that those with matching id or a matching value of an annotation called &#x60;name&#x60; appear first, then those with another matching annotation value, and finally those with a matching  &#x60;kind&#x60;. 
+     * @param account Organization account name 
+     * @param kind Type of resource 
+     * @return ApiResponse&lt;List&lt;Resource&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body contains a list of resources </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<Resource>> showResourcesForKindWithHttpInfo(String account, String kind) throws ApiException {
+        okhttp3.Call localVarCall = showResourcesForKindValidateBeforeCall(account, kind, null, null, null, null, null, null, null, null);
         Type localVarReturnType = new TypeToken<List<Resource>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }

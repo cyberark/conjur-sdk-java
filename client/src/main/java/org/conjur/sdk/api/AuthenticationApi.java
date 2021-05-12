@@ -146,6 +146,27 @@ public class AuthenticationApi {
         changePasswordWithHttpInfo(account, body, xRequestId);
     }
 
+
+    /**
+     * Changes a user’s password.
+     * You must provide the login name and current password or API key of the user whose password is to be updated in an HTTP Basic Authentication header. Also replaces the user’s API key with a new securely generated random value. You can fetch the new API key using the Login method.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords. They authenticate using their API keys, while passwords are only used by human users. 
+     * @param account Organization account name
+     * @param body New password
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> The password has been changed </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public void changePassword(String account, String body) throws ApiException {
+        changePasswordWithHttpInfo(account, body, null);
+    }
+
     /**
      * Changes a user’s password.
      * You must provide the login name and current password or API key of the user whose password is to be updated in an HTTP Basic Authentication header. Also replaces the user’s API key with a new securely generated random value. You can fetch the new API key using the Login method.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords. They authenticate using their API keys, while passwords are only used by human users. 
@@ -166,6 +187,28 @@ public class AuthenticationApi {
      */
     public ApiResponse<Void> changePasswordWithHttpInfo(String account, String body, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = changePasswordValidateBeforeCall(account, body, xRequestId, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     * Changes a user’s password.
+     * You must provide the login name and current password or API key of the user whose password is to be updated in an HTTP Basic Authentication header. Also replaces the user’s API key with a new securely generated random value. You can fetch the new API key using the Login method.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords. They authenticate using their API keys, while passwords are only used by human users. 
+     * @param account Organization account name 
+     * @param body New password 
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> The password has been changed </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> changePasswordWithHttpInfo(String account, String body) throws ApiException {
+        okhttp3.Call localVarCall = changePasswordValidateBeforeCall(account, body, null, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -301,6 +344,28 @@ public class AuthenticationApi {
         enableAuthenticatorInstanceWithHttpInfo(authenticator, serviceId, account, xRequestId, enabled);
     }
 
+
+    /**
+     * Enables or disables authenticator service instances.
+     * Allows you to either enable or disable a given authenticator service instance.  When you enable or disable an authenticator service instance via this endpoint, the status of the authenticator service instance is stored in the Conjur database. The enablement status of the authenticator service instance may be overridden by setting the &#x60;CONJUR_AUTHENTICATORS&#x60; environment variable on the Conjur server; in the case where this environment variable is set, the database record of whether the authenticator service instance is enabled will be ignored.  **This endpoint is part of an early implementation of support for enabling Conjur authenticators via the API, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future.** 
+     * @param authenticator The authenticator to update
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> The config was updated properly </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public void enableAuthenticatorInstance(ServiceAuthenticators authenticator, String serviceId, String account) throws ApiException {
+        enableAuthenticatorInstanceWithHttpInfo(authenticator, serviceId, account, null, null);
+    }
+
     /**
      * Enables or disables authenticator service instances.
      * Allows you to either enable or disable a given authenticator service instance.  When you enable or disable an authenticator service instance via this endpoint, the status of the authenticator service instance is stored in the Conjur database. The enablement status of the authenticator service instance may be overridden by setting the &#x60;CONJUR_AUTHENTICATORS&#x60; environment variable on the Conjur server; in the case where this environment variable is set, the database record of whether the authenticator service instance is enabled will be ignored.  **This endpoint is part of an early implementation of support for enabling Conjur authenticators via the API, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future.** 
@@ -323,6 +388,29 @@ public class AuthenticationApi {
      */
     public ApiResponse<Void> enableAuthenticatorInstanceWithHttpInfo(ServiceAuthenticators authenticator, String serviceId, String account, String xRequestId, Boolean enabled) throws ApiException {
         okhttp3.Call localVarCall = enableAuthenticatorInstanceValidateBeforeCall(authenticator, serviceId, account, xRequestId, enabled, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     * Enables or disables authenticator service instances.
+     * Allows you to either enable or disable a given authenticator service instance.  When you enable or disable an authenticator service instance via this endpoint, the status of the authenticator service instance is stored in the Conjur database. The enablement status of the authenticator service instance may be overridden by setting the &#x60;CONJUR_AUTHENTICATORS&#x60; environment variable on the Conjur server; in the case where this environment variable is set, the database record of whether the authenticator service instance is enabled will be ignored.  **This endpoint is part of an early implementation of support for enabling Conjur authenticators via the API, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future.** 
+     * @param authenticator The authenticator to update 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> The config was updated properly </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> enableAuthenticatorInstanceWithHttpInfo(ServiceAuthenticators authenticator, String serviceId, String account) throws ApiException {
+        okhttp3.Call localVarCall = enableAuthenticatorInstanceValidateBeforeCall(authenticator, serviceId, account, null, null, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -442,6 +530,29 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets the API key of a user given the username and password via HTTP Basic Authentication. 
+     * Passwords are stored in the Conjur database using &#x60;bcrypt&#x60; with a work factor of 12. Therefore, login is a fairly expensive operation. However, once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords and do not need to use this endpoint. 
+     * @param account Organization account name
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAPIKey(String account) throws ApiException {
+        ApiResponse<String> localVarResp = getAPIKeyWithHttpInfo(account, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets the API key of a user given the username and password via HTTP Basic Authentication. 
      * Passwords are stored in the Conjur database using &#x60;bcrypt&#x60; with a work factor of 12. Therefore, login is a fairly expensive operation. However, once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords and do not need to use this endpoint. 
@@ -462,6 +573,29 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAPIKeyWithHttpInfo(String account, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAPIKeyValidateBeforeCall(account, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets the API key of a user given the username and password via HTTP Basic Authentication. 
+     * Passwords are stored in the Conjur database using &#x60;bcrypt&#x60; with a work factor of 12. Therefore, login is a fairly expensive operation. However, once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  Note that machine roles (Hosts) do not have passwords and do not need to use this endpoint. 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAPIKeyWithHttpInfo(String account) throws ApiException {
+        okhttp3.Call localVarCall = getAPIKeyValidateBeforeCall(account, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -589,6 +723,30 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets the Conjur API key of a user given the LDAP username and password via HTTP Basic Authentication. 
+     * Exchange your LDAP credentials for a Conjur API key. Once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the LDAP username, a literal colon character &#39;:&#39;,    and the password to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAPIKeyViaLDAP(String serviceId, String account) throws ApiException {
+        ApiResponse<String> localVarResp = getAPIKeyViaLDAPWithHttpInfo(serviceId, account, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets the Conjur API key of a user given the LDAP username and password via HTTP Basic Authentication. 
      * Exchange your LDAP credentials for a Conjur API key. Once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the LDAP username, a literal colon character &#39;:&#39;,    and the password to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. 
@@ -610,6 +768,30 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAPIKeyViaLDAPWithHttpInfo(String serviceId, String account, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAPIKeyViaLDAPValidateBeforeCall(serviceId, account, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets the Conjur API key of a user given the LDAP username and password via HTTP Basic Authentication. 
+     * Exchange your LDAP credentials for a Conjur API key. Once the API key is obtained, it may be used to inexpensively obtain access tokens by calling the Authenticate method. An access token is required to use most other parts of the Conjur API.  The Basic authentication-compliant header is formed by: 1. Concatenating the LDAP username, a literal colon character &#39;:&#39;,    and the password to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAPIKeyViaLDAPWithHttpInfo(String serviceId, String account) throws ApiException {
+        okhttp3.Call localVarCall = getAPIKeyViaLDAPValidateBeforeCall(serviceId, account, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -749,6 +931,30 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token, which is required in the header of most subsequent API requests. 
+     * A client can obtain an access token by presenting a valid login name and API key.  The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  This is the default authentication endpoint only. See other endpoints for details on authenticating to Conjur using another method, e.g. for applications running in Azure or Kubernetes. 
+     * @param account Organization account name
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60;
+     * @param body API Key
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessToken(String account, String login, String body) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenWithHttpInfo(account, login, body, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token, which is required in the header of most subsequent API requests. 
      * A client can obtain an access token by presenting a valid login name and API key.  The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  This is the default authentication endpoint only. See other endpoints for details on authenticating to Conjur using another method, e.g. for applications running in Azure or Kubernetes. 
@@ -771,6 +977,30 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenWithHttpInfo(String account, String login, String body, String acceptEncoding, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenValidateBeforeCall(account, login, body, acceptEncoding, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token, which is required in the header of most subsequent API requests. 
+     * A client can obtain an access token by presenting a valid login name and API key.  The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  This is the default authentication endpoint only. See other endpoints for details on authenticating to Conjur using another method, e.g. for applications running in Azure or Kubernetes. 
+     * @param account Organization account name 
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60; 
+     * @param body API Key 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenWithHttpInfo(String account, String login, String body) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenValidateBeforeCall(account, login, body, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -919,6 +1149,31 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Get a short-lived access token for applications running in AWS.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For detailed instructions on authenticating to Conjur using this endpoint, reference the documentation: [AWS IAM Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/AWS_IAM_Authenticator.htm) (&#x60;authn-iam&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @param login URL-encoded login name. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60;
+     * @param body AWS Signature header
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaAWS(String serviceId, String account, String login, String body) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaAWSWithHttpInfo(serviceId, account, login, body, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Get a short-lived access token for applications running in AWS.
      * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For detailed instructions on authenticating to Conjur using this endpoint, reference the documentation: [AWS IAM Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/AWS_IAM_Authenticator.htm) (&#x60;authn-iam&#x60;). 
@@ -942,6 +1197,31 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaAWSWithHttpInfo(String serviceId, String account, String login, String body, String acceptEncoding, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaAWSValidateBeforeCall(serviceId, account, login, body, acceptEncoding, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Get a short-lived access token for applications running in AWS.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For detailed instructions on authenticating to Conjur using this endpoint, reference the documentation: [AWS IAM Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/AWS_IAM_Authenticator.htm) (&#x60;authn-iam&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @param login URL-encoded login name. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60; 
+     * @param body AWS Signature header 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaAWSWithHttpInfo(String serviceId, String account, String login, String body) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaAWSValidateBeforeCall(serviceId, account, login, body, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1090,6 +1370,30 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token for applications running in Azure.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Azure Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/azure_authn.htm) (&#x60;authn-azure&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60;
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaAzure(String serviceId, String account, String login) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaAzureWithHttpInfo(serviceId, account, login, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token for applications running in Azure.
      * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Azure Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/azure_authn.htm) (&#x60;authn-azure&#x60;). 
@@ -1113,6 +1417,30 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaAzureWithHttpInfo(String serviceId, String account, String login, String acceptEncoding, String xRequestId, String jwt) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaAzureValidateBeforeCall(serviceId, account, login, acceptEncoding, xRequestId, jwt, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token for applications running in Azure.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Azure Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/azure_authn.htm) (&#x60;authn-azure&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60; 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaAzureWithHttpInfo(String serviceId, String account, String login) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaAzureValidateBeforeCall(serviceId, account, login, null, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1243,6 +1571,27 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token for applications running in Google Cloud Platform. 
+     * Use the GCP Authenticator API to send an authentication request from a Google Cloud service to Conjur.  For more information, see [the documentation](https://docs.conjur.org/Latest/en/Content/Operations/Services/cjr-gcp-authn.htm). 
+     * @param account Organization account name
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaGCP(String account) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaGCPWithHttpInfo(account, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token for applications running in Google Cloud Platform. 
      * Use the GCP Authenticator API to send an authentication request from a Google Cloud service to Conjur.  For more information, see [the documentation](https://docs.conjur.org/Latest/en/Content/Operations/Services/cjr-gcp-authn.htm). 
@@ -1263,6 +1612,27 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaGCPWithHttpInfo(String account, String acceptEncoding, String xRequestId, String jwt) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaGCPValidateBeforeCall(account, acceptEncoding, xRequestId, jwt, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token for applications running in Google Cloud Platform. 
+     * Use the GCP Authenticator API to send an authentication request from a Google Cloud service to Conjur.  For more information, see [the documentation](https://docs.conjur.org/Latest/en/Content/Operations/Services/cjr-gcp-authn.htm). 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaGCPWithHttpInfo(String account) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaGCPValidateBeforeCall(account, null, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1402,6 +1772,30 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token for applications running in Kubernetes.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Kubernetes Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/k8s_auth.htm) (&#x60;authn-k8s&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60;
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaKubernetes(String serviceId, String account, String login) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaKubernetesWithHttpInfo(serviceId, account, login, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token for applications running in Kubernetes.
      * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Kubernetes Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/k8s_auth.htm) (&#x60;authn-k8s&#x60;). 
@@ -1424,6 +1818,30 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaKubernetesWithHttpInfo(String serviceId, String account, String login, String acceptEncoding, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaKubernetesValidateBeforeCall(serviceId, account, login, acceptEncoding, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token for applications running in Kubernetes.
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded and the host ID must have the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  To authenticate to Conjur using this endpoint, reference the detailed documentation: [Kubernetes Authenticator](https://docs.conjur.org/Latest/en/Content/Operations/Services/k8s_auth.htm) (&#x60;authn-k8s&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60; 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaKubernetesWithHttpInfo(String serviceId, String account, String login) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaKubernetesValidateBeforeCall(serviceId, account, login, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1567,6 +1985,30 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  To authenticate to Conjur using a LDAP, reference the detailed documentation: [LDAP Authenticator](https://docs.conjur.org/Latest/en/Content/Integrations/ldap/ldap_authenticator.html) (&#x60;authn-ldap&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60;
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaLDAP(String serviceId, String account, String login) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaLDAPWithHttpInfo(serviceId, account, login, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
      * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  To authenticate to Conjur using a LDAP, reference the detailed documentation: [LDAP Authenticator](https://docs.conjur.org/Latest/en/Content/Integrations/ldap/ldap_authenticator.html) (&#x60;authn-ldap&#x60;). 
@@ -1590,6 +2032,30 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaLDAPWithHttpInfo(String serviceId, String account, String login, String acceptEncoding, String xRequestId, String body) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaLDAPValidateBeforeCall(serviceId, account, login, acceptEncoding, xRequestId, body, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
+     * The access token is used to communicate to the REST API that the bearer of the token has been authorized to access the API and perform specific actions specified by the scope that was granted during authorization.  For API usage, the base64-encoded access token is ordinarily passed as an HTTP Authorization header as &#x60;Authorization: Token token&#x3D;&lt;base64-encoded token&gt;&#x60;.  The &#x60;login&#x60; must be URL encoded. For example, &#x60;alice@devops&#x60; must be encoded as &#x60;alice%40devops&#x60;.  The &#x60;service_id&#x60;, if given, must be URL encoded. For example, &#x60;prod/gke&#x60; must be encoded as &#x60;prod%2Fgke&#x60;.  For host authentication, the &#x60;login&#x60; is the host ID with the prefix &#x60;host/&#x60;. For example, the host webserver would login as &#x60;host/webserver&#x60;, and would be encoded as &#x60;host%2Fwebserver&#x60;.  To authenticate to Conjur using a LDAP, reference the detailed documentation: [LDAP Authenticator](https://docs.conjur.org/Latest/en/Content/Integrations/ldap/ldap_authenticator.html) (&#x60;authn-ldap&#x60;). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @param login URL-encoded login name. For users, it’s the user ID. For hosts, the login name is &#x60;host/&lt;host-id&gt;&#x60; 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaLDAPWithHttpInfo(String serviceId, String account, String login) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaLDAPValidateBeforeCall(serviceId, account, login, null, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1722,6 +2188,28 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
+     * Use the OIDC Authenticator to leverage the identity layer provided by OIDC to authenticate with Conjur.  For more information see [the documentation](https://docs.conjur.org/Latest/en/Content/OIDC/OIDC.htm). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param account Organization account name
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getAccessTokenViaOIDC(String serviceId, String account) throws ApiException {
+        ApiResponse<String> localVarResp = getAccessTokenViaOIDCWithHttpInfo(serviceId, account, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
      * Use the OIDC Authenticator to leverage the identity layer provided by OIDC to authenticate with Conjur.  For more information see [the documentation](https://docs.conjur.org/Latest/en/Content/OIDC/OIDC.htm). 
@@ -1742,6 +2230,28 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> getAccessTokenViaOIDCWithHttpInfo(String serviceId, String account, String xRequestId, String idToken) throws ApiException {
         okhttp3.Call localVarCall = getAccessTokenViaOIDCValidateBeforeCall(serviceId, account, xRequestId, idToken, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
+     * Use the OIDC Authenticator to leverage the identity layer provided by OIDC to authenticate with Conjur.  For more information see [the documentation](https://docs.conjur.org/Latest/en/Content/OIDC/OIDC.htm). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getAccessTokenViaOIDCWithHttpInfo(String serviceId, String account) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenViaOIDCValidateBeforeCall(serviceId, account, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1868,6 +2378,26 @@ public class AuthenticationApi {
         k8sInjectClientCertWithHttpInfo(serviceId, body, hostIdPrefix, xRequestId);
     }
 
+
+    /**
+     * For applications running in Kubernetes; sends Conjur a certificate signing request (CSR) and requests a client certificate injected into the application&#39;s Kubernetes pod. 
+     * This request sends a Certificate Signing Request to Conjur, which uses the Kubernetes API to inject a client certificate into the application pod.  This endpoint requires a properly configured Conjur Certificate Authority service alongside a properly configured and enabled Kubernetes authenticator. For detailed instructions, see [the documentation](https://docs.conjur.org/Latest/en/Content/Integrations/kubernetes.htm). 
+     * @param serviceId URL-Encoded authenticator service ID
+     * @param body Valid certificate signing request that includes the host identity suffix as the CSR common name 
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 202 </td><td> The injected certificate was accepted. </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+     </table>
+    */
+    public void k8sInjectClientCert(String serviceId, String body) throws ApiException {
+        k8sInjectClientCertWithHttpInfo(serviceId, body, null, null);
+    }
+
     /**
      * For applications running in Kubernetes; sends Conjur a certificate signing request (CSR) and requests a client certificate injected into the application&#39;s Kubernetes pod. 
      * This request sends a Certificate Signing Request to Conjur, which uses the Kubernetes API to inject a client certificate into the application pod.  This endpoint requires a properly configured Conjur Certificate Authority service alongside a properly configured and enabled Kubernetes authenticator. For detailed instructions, see [the documentation](https://docs.conjur.org/Latest/en/Content/Integrations/kubernetes.htm). 
@@ -1888,6 +2418,27 @@ public class AuthenticationApi {
      */
     public ApiResponse<Void> k8sInjectClientCertWithHttpInfo(String serviceId, String body, String hostIdPrefix, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = k8sInjectClientCertValidateBeforeCall(serviceId, body, hostIdPrefix, xRequestId, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     * For applications running in Kubernetes; sends Conjur a certificate signing request (CSR) and requests a client certificate injected into the application&#39;s Kubernetes pod. 
+     * This request sends a Certificate Signing Request to Conjur, which uses the Kubernetes API to inject a client certificate into the application pod.  This endpoint requires a properly configured Conjur Certificate Authority service alongside a properly configured and enabled Kubernetes authenticator. For detailed instructions, see [the documentation](https://docs.conjur.org/Latest/en/Content/Integrations/kubernetes.htm). 
+     * @param serviceId URL-Encoded authenticator service ID 
+     * @param body Valid certificate signing request that includes the host identity suffix as the CSR common name  
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 202 </td><td> The injected certificate was accepted. </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> k8sInjectClientCertWithHttpInfo(String serviceId, String body) throws ApiException {
+        okhttp3.Call localVarCall = k8sInjectClientCertValidateBeforeCall(serviceId, body, null, null, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -2009,6 +2560,28 @@ public class AuthenticationApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Rotates a role&#39;s API key.
+     * Any role can rotate its own API key. The name and password (for users) or current API key (for hosts and users) of the role must be provided via HTTP Basic Authorization.  To rotate another role&#39;s API key, you may provide your name and password (for users) or current API key (for hosts and users) via HTTP Basic Authorization with the request. Alternatively, you may provide your Conjur access token via the standard Conjur &#x60;Authorization&#x60; header.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  If using the Conjur &#x60;Authorization&#x60; header, its value should be set to &#x60;Token token&#x3D;&lt;base64-encoded access token&gt;&#x60;.  Note that the body of the request must be the empty string. 
+     * @param account Organization account name
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+    */
+    public String rotateApiKey(String account) throws ApiException {
+        ApiResponse<String> localVarResp = rotateApiKeyWithHttpInfo(account, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Rotates a role&#39;s API key.
      * Any role can rotate its own API key. The name and password (for users) or current API key (for hosts and users) of the role must be provided via HTTP Basic Authorization.  To rotate another role&#39;s API key, you may provide your name and password (for users) or current API key (for hosts and users) via HTTP Basic Authorization with the request. Alternatively, you may provide your Conjur access token via the standard Conjur &#x60;Authorization&#x60; header.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  If using the Conjur &#x60;Authorization&#x60; header, its value should be set to &#x60;Token token&#x3D;&lt;base64-encoded access token&gt;&#x60;.  Note that the body of the request must be the empty string. 
@@ -2029,6 +2602,28 @@ public class AuthenticationApi {
      */
     public ApiResponse<String> rotateApiKeyWithHttpInfo(String account, String role, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = rotateApiKeyValidateBeforeCall(account, role, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Rotates a role&#39;s API key.
+     * Any role can rotate its own API key. The name and password (for users) or current API key (for hosts and users) of the role must be provided via HTTP Basic Authorization.  To rotate another role&#39;s API key, you may provide your name and password (for users) or current API key (for hosts and users) via HTTP Basic Authorization with the request. Alternatively, you may provide your Conjur access token via the standard Conjur &#x60;Authorization&#x60; header.  The Basic authentication-compliant header is formed by: 1. Concatenating the role&#39;s name, a literal colon character &#39;:&#39;,    and the password or API key to create the authentication string. 2. Base64-encoding the authentication string. 3. Prefixing the authentication string with the scheme: &#x60;Basic &#x60;    (note the required space). 4. Providing the result as the value of the &#x60;Authorization&#x60; HTTP header:    &#x60;Authorization: Basic &lt;authentication string&gt;&#x60;.  Your HTTP/REST client probably provides HTTP basic authentication support. For example, &#x60;curl&#x60; and all of the Conjur client libraries provide this.  If using the Conjur &#x60;Authorization&#x60; header, its value should be set to &#x60;Token token&#x3D;&lt;base64-encoded access token&gt;&#x60;.  Note that the body of the request must be the empty string. 
+     * @param account Organization account name 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The response body is the API key </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> Malfromed request, rejected by the server </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> rotateApiKeyWithHttpInfo(String account) throws ApiException {
+        okhttp3.Call localVarCall = rotateApiKeyValidateBeforeCall(account, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
