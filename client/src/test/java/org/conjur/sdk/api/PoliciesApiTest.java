@@ -59,8 +59,7 @@ public class PoliciesApiTest extends ConfiguredTest {
      */
     @Test
     public void loadPolicyTest() throws ApiException {
-        String xRequestId = null;
-        ApiResponse<LoadedPolicy> response = api.loadPolicyWithHttpInfo(account, "root", TEST_POLICY, xRequestId);
+        ApiResponse<LoadedPolicy> response = api.loadPolicyWithHttpInfo(account, "root", TEST_POLICY);
 
         Assert.assertEquals(201, response.getStatusCode());
     }
@@ -73,8 +72,7 @@ public class PoliciesApiTest extends ConfiguredTest {
      */
     @Test
     public void replacePolicyTest() throws ApiException {
-        String xRequestId = null;
-        ApiResponse<LoadedPolicy> response = api.replacePolicyWithHttpInfo(account, "root", MODIFY_POLICY, xRequestId);
+        ApiResponse<LoadedPolicy> response = api.replacePolicyWithHttpInfo(account, "root", MODIFY_POLICY);
 
         Assert.assertEquals(201, response.getStatusCode());
     }
@@ -87,10 +85,8 @@ public class PoliciesApiTest extends ConfiguredTest {
      */
     @Test
     public void updatePolicyTest() throws ApiException {
-        String xRequestId = null;
-        ApiResponse<LoadedPolicy> response = api.updatePolicyWithHttpInfo(account, "root", UPDATE_POLICY, xRequestId);
+        ApiResponse<LoadedPolicy> response = api.updatePolicyWithHttpInfo(account, "root", UPDATE_POLICY);
 
         Assert.assertEquals(201, response.getStatusCode());
-        // TODO: test validations
     }
 }

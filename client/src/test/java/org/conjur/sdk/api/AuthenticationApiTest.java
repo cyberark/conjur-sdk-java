@@ -68,11 +68,10 @@ public class AuthenticationApiTest extends ConfiguredTest {
     @Test
     public void changePasswordTest() throws ApiException {
         String newPassword = "@Sup3rS3cr3t@";
-        String xRequestId = null;
-        api.changePassword(account, newPassword, xRequestId);
+        api.changePassword(account, newPassword);
 
         basicAuth.setPassword(newPassword);
-        ApiResponse<String> response = api.getAPIKeyWithHttpInfo(account, xRequestId);
+        ApiResponse<String> response = api.getAPIKeyWithHttpInfo(account);
         Assert.assertEquals(response.getStatusCode(), 200);
     }
 
@@ -84,7 +83,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
      */
     @Test
     public void getAPIKeyTest() throws ApiException {
-        String response = api.getAPIKey(account, null);
+        String response = api.getAPIKey(account);
 
         Assert.assertEquals(response, apiKey());
     }
@@ -97,9 +96,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
      */
     @Test
     public void getAccessToken() throws ApiException {
-        String xRequestId = null;
-        String encoding = null;
-        String response = api.getAccessToken(account, login, apiKey(), encoding, xRequestId);
+        String response = api.getAccessToken(account, login, apiKey());
 
         String[] keys = { "protected", "payload", "signature" };
         Gson gson = new Gson();
@@ -119,10 +116,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
     @Ignore("Causes issues with other tests because Java doesn't allow setting Environment variables")
     @Test
     public void rotateApiKeyTest() throws ApiException {
-        String xRequestId = null;
-        String role = null;
-        
-        ApiResponse<String> response = api.rotateApiKeyWithHttpInfo(account, role, xRequestId);
+        ApiResponse<String> response = api.rotateApiKeyWithHttpInfo(account);
         Assert.assertEquals(200, response.getStatusCode());
     }
 }

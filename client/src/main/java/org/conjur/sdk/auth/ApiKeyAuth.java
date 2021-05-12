@@ -79,6 +79,7 @@ public class ApiKeyAuth implements Authentication {
     } else {
       value = getApiKey();
     }
+
     if ("query".equals(location)) {
       queryParams.add(new Pair(paramName, value));
     } else if ("header".equals(location)) {

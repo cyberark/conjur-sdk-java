@@ -56,13 +56,13 @@ public class HostFactoryApiTest extends ConfiguredTest {
     public static void setUpClass() throws ApiException {
         ConfiguredTest.setUpClass();
         PoliciesApi policiesApi = new PoliciesApi();
-        policiesApi.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", FACTORY_POLICY, null);
+        policiesApi.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", FACTORY_POLICY);
     }
 
     public String getHostToken() throws ApiException {
         String expiration = "2100-05-05";
         String hostFactory = HOST_FACTORY_ID;
-        List<?> response = api.createToken(expiration, hostFactory, null, null, null);
+        List<?> response = api.createToken(expiration, hostFactory);
 
         LinkedTreeMap result = (LinkedTreeMap) response.get(0);
         return (String)result.get("token");
@@ -81,10 +81,8 @@ public class HostFactoryApiTest extends ConfiguredTest {
         conjurAuth.setApiKey(String.format("token=\"%s\"", token));
 
         String id = HOST_FACTORY_ID;
-        String xRequestId = null;
-        Object annotations = null;
 
-        ApiResponse<?> response = api.createHostWithHttpInfo(id, xRequestId, annotations);
+        ApiResponse<?> response = api.createHostWithHttpInfo(id);
         
         Assert.assertEquals(201, response.getStatusCode());
         conjurAuth.setApiKey(oldApiKey);
@@ -100,10 +98,7 @@ public class HostFactoryApiTest extends ConfiguredTest {
     public void createTokenTest() throws ApiException {
         String expiration = "2100-05-05";
         String hostFactory = HOST_FACTORY_ID;
-        String xRequestId = null;
-        List<String> cidr = null;
-        Integer count = null;
-        ApiResponse<List<Object>> response = api.createTokenWithHttpInfo(expiration, hostFactory, xRequestId, cidr, count);
+        ApiResponse<List<Object>> response = api.createTokenWithHttpInfo(expiration, hostFactory);
 
         Assert.assertEquals(200, response.getStatusCode());
     }
@@ -117,9 +112,8 @@ public class HostFactoryApiTest extends ConfiguredTest {
     @Test
     public void revokeTokenTest() throws ApiException {
         String token = this.getHostToken();
-        String xRequestId = null;
 
-        ApiResponse<?> response = api.revokeTokenWithHttpInfo(token, xRequestId);
+        ApiResponse<?> response = api.revokeTokenWithHttpInfo(token);
         Assert.assertEquals(204, response.getStatusCode());
     }
     

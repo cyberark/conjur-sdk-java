@@ -32,16 +32,6 @@ import java.util.Map;
 public class StatusApiTest extends ConfiguredTest {
 
     private final StatusApi api = new StatusApi();
- 
-    @After
-    public void waitForPolicy() throws InterruptedException {
-        Thread.sleep(2000);
-    }
-
-    @AfterClass
-    public static void waitForFinish() throws InterruptedException {
-        Thread.sleep(1000);
-    }
 
     /**
      * Details about which authenticators are on the Conjur Server
@@ -51,8 +41,7 @@ public class StatusApiTest extends ConfiguredTest {
      */
     @Test
     public void getAuthenticatorsTest() throws ApiException {
-        String xRequestId = null;
-        AuthenticatorsResponse response = api.getAuthenticators(xRequestId);
+        AuthenticatorsResponse response = api.getAuthenticators();
 
         String[] enabled = {"authn", "authn-oidc/test", "authn-ldap/test"};
 
@@ -73,8 +62,7 @@ public class StatusApiTest extends ConfiguredTest {
         setupOIDCWebservice();
         String authenticator = "authn-oidc";
         String serviceId = "test";
-        String xRequestId = null;
-        ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(authenticator, serviceId, account, xRequestId);
+        ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(authenticator, serviceId, account);
 
         Assert.assertEquals("ok", response.getData().getStatus());
         Assert.assertEquals(200, response.getStatusCode());
@@ -88,8 +76,7 @@ public class StatusApiTest extends ConfiguredTest {
      */
     @Test
     public void whoAmITest() throws ApiException {
-        String xRequestId = null;
-        ApiResponse<WhoAmI> response = api.whoAmIWithHttpInfo(xRequestId);
+        ApiResponse<WhoAmI> response = api.whoAmIWithHttpInfo();
 
         Assert.assertEquals(200, response.getStatusCode());
         Assert.assertEquals(account, response.getData().getAccount());
