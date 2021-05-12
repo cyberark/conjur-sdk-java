@@ -219,6 +219,38 @@ public class {{classname}} {
         {{#returnType}}ApiResponse<{{{returnType}}}> localVarResp = {{/returnType}}{{operationId}}WithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{#returnType}}
         return localVarResp.getData();{{/returnType}}
     }
+
+
+    /**
+     * {{summary}}
+     * {{notes}}{{#allParams}}{{#required}}
+     * @param {{paramName}} {{description}}{{/required}}{{/allParams}}{{#returnType}}
+     * @return {{returnType}}{{/returnType}}
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     {{#responses.0}}
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        {{#responses}}
+        <tr><td> {{code}} </td><td> {{message}} </td><td> {{#headers}} * {{baseName}} - {{description}} <br> {{/headers}}{{^headers.0}} - {{/headers.0}} </td></tr>
+        {{/responses}}
+     </table>
+     {{/responses.0}}
+     {{#isDeprecated}}
+     * @deprecated
+     {{/isDeprecated}}
+        {{#externalDocs}}
+     * {{description}}
+     * @see <a href="{{url}}">{{summary}} Documentation</a>
+        {{/externalDocs}}
+    */
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{operationId}}({{#allParams}}{{#required}}{{#secondaryParam}}, {{/secondaryParam}}{{{dataType}}} {{paramName}}{{/required}}{{/allParams}}) throws ApiException {
+        {{#returnType}}ApiResponse<{{{returnType}}}> localVarResp = {{/returnType}}{{operationId}}WithHttpInfo({{#allParams}}{{#required}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/required}}{{^required}}null{{#hasMore}}, {{/hasMore}}{{/required}}{{/allParams}});{{#returnType}}
+        return localVarResp.getData();{{/returnType}}
+    }
     {{/vendorExtensions.x-group-parameters}}
 
     {{^vendorExtensions.x-group-parameters}}/**
@@ -249,6 +281,38 @@ public class {{classname}} {
     {{/isDeprecated}}
     public{{/vendorExtensions.x-group-parameters}}{{#vendorExtensions.x-group-parameters}}private{{/vendorExtensions.x-group-parameters}} ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{#useBeanValidation}}{{>beanValidationQueryParams}}{{/useBeanValidation}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException {
         okhttp3.Call localVarCall = {{operationId}}ValidateBeforeCall({{#allParams}}{{paramName}}, {{/allParams}}null);
+        {{#returnType}}Type localVarReturnType = new TypeToken<{{{returnType}}}>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);{{/returnType}}{{^returnType}}return localVarApiClient.execute(localVarCall);{{/returnType}}
+    }
+
+    {{^vendorExtensions.x-group-parameters}}/**
+     * {{summary}}
+     * {{notes}}{{#allParams}}{{#required}}
+     * @param {{paramName}} {{description}} {{/required}}{{/allParams}}
+     * @return ApiResponse&lt;{{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Void{{/returnType}}&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     {{#responses.0}}
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        {{#responses}}
+        <tr><td> {{code}} </td><td> {{message}} </td><td> {{#headers}} * {{baseName}} - {{description}} <br> {{/headers}}{{^headers.0}} - {{/headers.0}} </td></tr>
+        {{/responses}}
+     </table>
+     {{/responses.0}}
+     {{#isDeprecated}}
+     * @deprecated
+     {{/isDeprecated}}
+        {{#externalDocs}}
+     * {{description}}
+     * @see <a href="{{url}}">{{summary}} Documentation</a>
+        {{/externalDocs}}
+     */
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    public{{/vendorExtensions.x-group-parameters}}{{#vendorExtensions.x-group-parameters}}private{{/vendorExtensions.x-group-parameters}} ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{#required}}{{#secondaryParam}}, {{/secondaryParam}}{{#useBeanValidation}}{{>beanValidationQueryParams}}{{/useBeanValidation}}{{{dataType}}} {{paramName}}{{/required}}{{/allParams}}) throws ApiException {
+        okhttp3.Call localVarCall = {{operationId}}ValidateBeforeCall({{#allParams}}{{#required}}{{paramName}}{{/required}}{{^required}}null{{/required}}, {{/allParams}}null);
         {{#returnType}}Type localVarReturnType = new TypeToken<{{{returnType}}}>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);{{/returnType}}{{^returnType}}return localVarApiClient.execute(localVarCall);{{/returnType}}
     }
