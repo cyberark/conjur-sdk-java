@@ -26,7 +26,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.ResourcesApi;
+import org.conjur.sdk.endpoint.ResourcesApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -115,7 +115,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.ResourcesApi;
+import org.conjur.sdk.endpoint.ResourcesApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -204,7 +204,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.ResourcesApi;
+import org.conjur.sdk.endpoint.ResourcesApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -292,7 +292,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.ResourcesApi;
+import org.conjur.sdk.endpoint.ResourcesApi;
 
 public class Example {
   public static void main(String[] args) {

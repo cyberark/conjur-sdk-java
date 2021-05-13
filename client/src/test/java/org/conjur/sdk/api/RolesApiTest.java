@@ -11,10 +11,10 @@
  */
 
 
-package org.conjur.sdk.api;
+package org.conjur.sdk.endpoint;
 
 import org.conjur.sdk.*;
-import org.conjur.sdk.api.*;
+import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.model.*;
 import org.conjur.sdk.ApiException;
 import org.junit.*;
