@@ -74,6 +74,7 @@ run_java_tests(){
     -e CONJUR_ACCOUNT=dev \
     -e CONJUR_AUTHN_LOGIN=admin \
     -e CONJUR_CERT_FILE=/https/ca.crt \
+    -e CONJUR_AUTO_UPDATE_TOKEN=true \
     --env-file .env \
     -w /client \
     maven:3-openjdk-$major_java_version bash -c "mvn test $install"
