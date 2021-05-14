@@ -160,6 +160,32 @@ public class PoliciesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name
+     * @param identifier ID of the policy to update
+     * @param body Policy
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public LoadedPolicy loadPolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = loadPolicyWithHttpInfo(account, identifier, body, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Adds data to the existing Conjur policy.
      * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
@@ -183,6 +209,32 @@ public class PoliciesApi {
      */
     public ApiResponse<LoadedPolicy> loadPolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = loadPolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to update 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> loadPolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = loadPolicyValidateBeforeCall(account, identifier, body, null, null);
         Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -322,6 +374,32 @@ public class PoliciesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet)
+     * @param body Policy
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public LoadedPolicy replacePolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = replacePolicyWithHttpInfo(account, identifier, body, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Loads or replaces a Conjur policy document.
      * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
@@ -345,6 +423,32 @@ public class PoliciesApi {
      */
     public ApiResponse<LoadedPolicy> replacePolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = replacePolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> replacePolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = replacePolicyValidateBeforeCall(account, identifier, body, null, null);
         Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -484,6 +588,32 @@ public class PoliciesApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name
+     * @param identifier ID of the policy to update
+     * @param body Policy
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public LoadedPolicy updatePolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = updatePolicyWithHttpInfo(account, identifier, body, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Modifies an existing Conjur policy.
      * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
@@ -507,6 +637,32 @@ public class PoliciesApi {
      */
     public ApiResponse<LoadedPolicy> updatePolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = updatePolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to update 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> updatePolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = updatePolicyValidateBeforeCall(account, identifier, body, null, null);
         Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }

@@ -41,8 +41,7 @@ public class PublicKeysApiTest extends ConfiguredTest{
     public void showPublicKeysTest() throws ApiException {
         String kind = "user";
         String identifier = "admin";
-        String xRequestId = null;
-        ApiResponse<String> response = api.showPublicKeysWithHttpInfo(account, kind, identifier, xRequestId);
+        ApiResponse<String> response = api.showPublicKeysWithHttpInfo(account, kind, identifier);
         
         Assert.assertEquals(200, response.getStatusCode());
     }

@@ -51,7 +51,7 @@ public class RolesApiTest extends ConfiguredTest {
     public static void setUpClass() throws ApiException {
         ConfiguredTest.setUpClass();
         PoliciesApi api = new PoliciesApi();
-        api.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", ROLES_POLICY, null);
+        api.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", ROLES_POLICY);
     }
 
     /**
@@ -63,8 +63,7 @@ public class RolesApiTest extends ConfiguredTest {
     @Test
     public void addMemberToRoleTest() throws ApiException {
         String member = BOB_ID;
-        String xRequestId = null;
-        ApiResponse<?> response = api.addMemberToRoleWithHttpInfo(account, "group", "userGroup", "", member, xRequestId);
+        ApiResponse<?> response = api.addMemberToRoleWithHttpInfo(account, "group", "userGroup", "", member);
 
         Assert.assertEquals(204, response.getStatusCode());       
     }
@@ -81,8 +80,7 @@ public class RolesApiTest extends ConfiguredTest {
         String identifier = "userGroup";
         String members = "";
         String member = BOB_ID;
-        String xRequestId = null;
-        ApiResponse<?> response = api.removeMemberFromRoleWithHttpInfo(account, kind, identifier, members, member, xRequestId);
+        ApiResponse<?> response = api.removeMemberFromRoleWithHttpInfo(account, kind, identifier, members, member);
 
         Assert.assertEquals(204, response.getStatusCode());
     }
@@ -97,17 +95,8 @@ public class RolesApiTest extends ConfiguredTest {
     public void showRoleTest() throws ApiException {
         String kind = "user";
         String identifier = "admin";
-        String all = null;
-        String memberships = null;
-        String members = null;
-        Integer offset = null;
-        Integer limit = null;
-        Boolean count = null;
-        String search = null;
-        String graph = null;
-        String xRequestId = null;
 
-        ApiResponse<Object> response = api.showRoleWithHttpInfo(account, kind, identifier, all, memberships, members, offset, limit, count, search, graph, xRequestId);
+        ApiResponse<Object> response = api.showRoleWithHttpInfo(account, kind, identifier);
 
         Assert.assertEquals(200, response.getStatusCode());
     }

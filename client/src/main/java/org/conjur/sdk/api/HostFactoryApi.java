@@ -146,6 +146,26 @@ public class HostFactoryApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Creates a Host using the Host Factory.
+     * Creates a Host using the Host Factory and returns a JSON description of it.  Requires a host factory token, which can be created using the create tokens API. In practice, this token is usually provided automatically as part of Conjur integration with your host provisioning infrastructure.  Note: If the token was created with a CIDR restriction, you must make this API request from a whitelisted address. 
+     * @param id Identifier of the host to be created. It will be created within the account of the host factory.
+     * @return CreateHost
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The response body contains the newly-created host </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public CreateHost createHost(String id) throws ApiException {
+        ApiResponse<CreateHost> localVarResp = createHostWithHttpInfo(id, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Creates a Host using the Host Factory.
      * Creates a Host using the Host Factory and returns a JSON description of it.  Requires a host factory token, which can be created using the create tokens API. In practice, this token is usually provided automatically as part of Conjur integration with your host provisioning infrastructure.  Note: If the token was created with a CIDR restriction, you must make this API request from a whitelisted address. 
@@ -164,6 +184,26 @@ public class HostFactoryApi {
      */
     public ApiResponse<CreateHost> createHostWithHttpInfo(String id, String xRequestId, Object annotations) throws ApiException {
         okhttp3.Call localVarCall = createHostValidateBeforeCall(id, xRequestId, annotations, null);
+        Type localVarReturnType = new TypeToken<CreateHost>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Creates a Host using the Host Factory.
+     * Creates a Host using the Host Factory and returns a JSON description of it.  Requires a host factory token, which can be created using the create tokens API. In practice, this token is usually provided automatically as part of Conjur integration with your host provisioning infrastructure.  Note: If the token was created with a CIDR restriction, you must make this API request from a whitelisted address. 
+     * @param id Identifier of the host to be created. It will be created within the account of the host factory. 
+     * @return ApiResponse&lt;CreateHost&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The response body contains the newly-created host </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<CreateHost> createHostWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = createHostValidateBeforeCall(id, null, null, null);
         Type localVarReturnType = new TypeToken<CreateHost>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -305,6 +345,29 @@ public class HostFactoryApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Creates one or more host identity tokens.
+     * Creates one or more tokens which can be used to bootstrap host identity. Responds with a JSON document containing the tokens and their restrictions.  If the tokens are created with a CIDR restriction, Conjur will only accept them from the whitelisted IP ranges.  ##### Permissions required # &#x60;execute&#x60; privilege on the Host Factory.\&quot; 
+     * @param expiration &#x60;ISO 8601 datetime&#x60; denoting a requested expiration time.
+     * @param hostFactory Fully qualified host factory ID
+     * @return List&lt;Object&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Zero or more tokens were created and delivered in the response body </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public List<Object> createToken(String expiration, String hostFactory) throws ApiException {
+        ApiResponse<List<Object>> localVarResp = createTokenWithHttpInfo(expiration, hostFactory, null, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Creates one or more host identity tokens.
      * Creates one or more tokens which can be used to bootstrap host identity. Responds with a JSON document containing the tokens and their restrictions.  If the tokens are created with a CIDR restriction, Conjur will only accept them from the whitelisted IP ranges.  ##### Permissions required # &#x60;execute&#x60; privilege on the Host Factory.\&quot; 
@@ -327,6 +390,29 @@ public class HostFactoryApi {
      */
     public ApiResponse<List<Object>> createTokenWithHttpInfo(String expiration, String hostFactory, String xRequestId, List<String> cidr, Integer count) throws ApiException {
         okhttp3.Call localVarCall = createTokenValidateBeforeCall(expiration, hostFactory, xRequestId, cidr, count, null);
+        Type localVarReturnType = new TypeToken<List<Object>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Creates one or more host identity tokens.
+     * Creates one or more tokens which can be used to bootstrap host identity. Responds with a JSON document containing the tokens and their restrictions.  If the tokens are created with a CIDR restriction, Conjur will only accept them from the whitelisted IP ranges.  ##### Permissions required # &#x60;execute&#x60; privilege on the Host Factory.\&quot; 
+     * @param expiration &#x60;ISO 8601 datetime&#x60; denoting a requested expiration time. 
+     * @param hostFactory Fully qualified host factory ID 
+     * @return ApiResponse&lt;List&lt;Object&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Zero or more tokens were created and delivered in the response body </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<Object>> createTokenWithHttpInfo(String expiration, String hostFactory) throws ApiException {
+        okhttp3.Call localVarCall = createTokenValidateBeforeCall(expiration, hostFactory, null, null, null, null);
         Type localVarReturnType = new TypeToken<List<Object>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -442,6 +528,25 @@ public class HostFactoryApi {
         revokeTokenWithHttpInfo(token, xRequestId);
     }
 
+
+    /**
+     * Revokes a token, immediately disabling it.
+     * Revokes a token, immediately disabling it.  ##### Permissions required  &#x60;update&#x60; privilege on the host factory.\&quot; 
+     * @param token The host factory token to revoke
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> Token was successfully revoked </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+     </table>
+    */
+    public void revokeToken(String token) throws ApiException {
+        revokeTokenWithHttpInfo(token, null);
+    }
+
     /**
      * Revokes a token, immediately disabling it.
      * Revokes a token, immediately disabling it.  ##### Permissions required  &#x60;update&#x60; privilege on the host factory.\&quot; 
@@ -460,6 +565,26 @@ public class HostFactoryApi {
      */
     public ApiResponse<Void> revokeTokenWithHttpInfo(String token, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = revokeTokenValidateBeforeCall(token, xRequestId, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     * Revokes a token, immediately disabling it.
+     * Revokes a token, immediately disabling it.  ##### Permissions required  &#x60;update&#x60; privilege on the host factory.\&quot; 
+     * @param token The host factory token to revoke 
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 204 </td><td> Token was successfully revoked </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> revokeTokenWithHttpInfo(String token) throws ApiException {
+        okhttp3.Call localVarCall = revokeTokenValidateBeforeCall(token, null, null);
         return localVarApiClient.execute(localVarCall);
     }
 

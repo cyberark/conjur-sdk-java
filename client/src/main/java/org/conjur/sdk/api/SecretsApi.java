@@ -162,6 +162,28 @@ public class SecretsApi {
         createSecretWithHttpInfo(account, kind, identifier, expirations, xRequestId, body);
     }
 
+
+    /**
+     * Creates a secret value within the specified variable.
+     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
+     * @param account Organization account name
+     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60;
+     * @param identifier URL-encoded variable ID
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public void createSecret(String account, String kind, String identifier) throws ApiException {
+        createSecretWithHttpInfo(account, kind, identifier, null, null, null);
+    }
+
     /**
      * Creates a secret value within the specified variable.
      * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
@@ -185,6 +207,29 @@ public class SecretsApi {
      */
     public ApiResponse<Void> createSecretWithHttpInfo(String account, String kind, String identifier, String expirations, String xRequestId, String body) throws ApiException {
         okhttp3.Call localVarCall = createSecretValidateBeforeCall(account, kind, identifier, expirations, xRequestId, body, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     * Creates a secret value within the specified variable.
+     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
+     * @param account Organization account name 
+     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; 
+     * @param identifier URL-encoded variable ID 
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> createSecretWithHttpInfo(String account, String kind, String identifier) throws ApiException {
+        okhttp3.Call localVarCall = createSecretValidateBeforeCall(account, kind, identifier, null, null, null, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -327,6 +372,31 @@ public class SecretsApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Fetches the value of a secret from the specified Secret.
+     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
+     * @param account Organization account name
+     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60;
+     * @param identifier URL-encoded variable ID
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public String getSecret(String account, String kind, String identifier) throws ApiException {
+        ApiResponse<String> localVarResp = getSecretWithHttpInfo(account, kind, identifier, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Fetches the value of a secret from the specified Secret.
      * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
@@ -350,6 +420,31 @@ public class SecretsApi {
      */
     public ApiResponse<String> getSecretWithHttpInfo(String account, String kind, String identifier, Integer version, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getSecretValidateBeforeCall(account, kind, identifier, version, xRequestId, null);
+        Type localVarReturnType = new TypeToken<String>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Fetches the value of a secret from the specified Secret.
+     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
+     * @param account Organization account name 
+     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; 
+     * @param identifier URL-encoded variable ID 
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<String> getSecretWithHttpInfo(String account, String kind, String identifier) throws ApiException {
+        okhttp3.Call localVarCall = getSecretValidateBeforeCall(account, kind, identifier, null, null, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -481,6 +576,29 @@ public class SecretsApi {
         return localVarResp.getData();
     }
 
+
+    /**
+     * Fetch multiple secrets
+     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
+     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables.
+     * @return Object
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
+        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public Object getSecrets(String variableIds) throws ApiException {
+        ApiResponse<Object> localVarResp = getSecretsWithHttpInfo(variableIds, null, null);
+        return localVarResp.getData();
+    }
+
     /**
      * Fetch multiple secrets
      * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
@@ -502,6 +620,29 @@ public class SecretsApi {
      */
     public ApiResponse<Object> getSecretsWithHttpInfo(String variableIds, String acceptEncoding, String xRequestId) throws ApiException {
         okhttp3.Call localVarCall = getSecretsValidateBeforeCall(variableIds, acceptEncoding, xRequestId, null);
+        Type localVarReturnType = new TypeToken<Object>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Fetch multiple secrets
+     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
+     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. 
+     * @return ApiResponse&lt;Object&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
+        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Object> getSecretsWithHttpInfo(String variableIds) throws ApiException {
+        okhttp3.Call localVarCall = getSecretsValidateBeforeCall(variableIds, null, null, null);
         Type localVarReturnType = new TypeToken<Object>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }

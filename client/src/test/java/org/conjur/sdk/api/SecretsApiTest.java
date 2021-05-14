@@ -77,12 +77,10 @@ public class SecretsApiTest extends ConfiguredTest {
     @Test
     public void getSecretTest() throws ApiException {
         String kind = "variable";
-        Integer version = null;
-        String xRequestId = null;
         String secretValue;
         for (String identifier : defaultSecrets.keySet()) {
             secretValue = defaultSecrets.get(identifier);
-            String response = api.getSecret(account, kind, identifier, version, xRequestId);
+            String response = api.getSecret(account, kind, identifier);
             Assert.assertEquals(secretValue, response);
         }
     }

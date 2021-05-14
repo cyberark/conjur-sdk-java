@@ -19,17 +19,6 @@ public class ConfiguredTest {
     private static final String OIDC_POLICY_FILE = "/config/oidc-webservice.yml";
     private static final String DEFAULT_POLICY_FILE = "/config/policy.yaml";
 
-    private static void setupAccessToken(String apiKey) throws ApiException {
-        String account = System.getenv("CONJUR_ACCOUNT");
-        String login = System.getenv("CONJUR_AUTHN_LOGIN");
-        ApiClient client = Configuration.getDefaultApiClient();
-        AuthenticationApi authApi = new AuthenticationApi();
-        String apiToken = authApi.getAccessToken(account, login, apiKey, "base64", null);
-        ApiKeyAuth conjurAuth = (ApiKeyAuth) client.getAuthentication("conjurAuth");
-        conjurAuth.setApiKeyPrefix("Token");
-        conjurAuth.setApiKey(String.format("token=\"%s\"", apiToken));
-    }
-
     private static void setupClientAuth() throws ApiException {
         String apiKey = System.getenv("CONJUR_AUTHN_API_KEY");
         ApiClient client = Configuration.getDefaultApiClient();
@@ -37,8 +26,8 @@ public class ConfiguredTest {
         HttpBasicAuth basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         basicAuth.setUsername(login);
         basicAuth.setPassword(apiKey);
-        
-        setupAccessToken(apiKey);
+        ApiKeyAuth conjurAuth = (ApiKeyAuth) client.getAuthentication("conjurAuth");
+        conjurAuth.setApiKeyPrefix("Token");
     }
 
     public void setupOIDCWebservice() throws ApiException {
@@ -92,7 +81,5 @@ public class ConfiguredTest {
         conjurAuth = (ApiKeyAuth) client.getAuthentication("conjurAuth");
         login = System.getenv("CONJUR_AUTHN_LOGIN");
         account = System.getenv("CONJUR_ACCOUNT");
-
-        setupClientAuth();
     }
 }
