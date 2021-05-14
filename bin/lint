@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+source bin/util
+
+announce "Linting Test Files with Checkstyle..."
+
+docker run --rm \
+  -v ${PWD}:/code \
+  openjdk:11 \
+  /bin/bash -c "
+    apt-get update && \\
+    apt-get -y install curl wget && \\
+    curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \\
+    | grep \"browser_download_url\" \\
+    | cut -d '\"' -f 4 \\
+    | wget -qi - && \\
+    java -jar checkstyle-8.42-all.jar -c /code/config.xml /code/client/src/test
+  "
+
+echo "No style errors!"
