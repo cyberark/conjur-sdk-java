@@ -13,24 +13,24 @@
 
 package org.conjur.sdk.endpoint;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.conjur.sdk.*;
 import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.model.*;
 import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
- * API tests for PublicKeysApi
+ * API tests for PublicKeysApi.
  */
-public class PublicKeysApiTest extends ConfiguredTest{
+public class PublicKeysApiTest extends ConfiguredTest {
 
     private final PublicKeysApi api = new PublicKeysApi();
 
-    
+
     /**
      * Shows all public keys for a resource.
      *
@@ -42,7 +42,7 @@ public class PublicKeysApiTest extends ConfiguredTest{
         String kind = "user";
         String identifier = "admin";
         ApiResponse<String> response = api.showPublicKeysWithHttpInfo(account, kind, identifier);
-        
+
         Assert.assertEquals(200, response.getStatusCode());
     }
 }

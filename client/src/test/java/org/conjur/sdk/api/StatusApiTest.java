@@ -13,22 +13,23 @@
 
 package org.conjur.sdk.endpoint;
 
+import java.io.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.conjur.sdk.*;
-import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.ApiException;
+import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.model.AuthenticatorStatus;
 import org.conjur.sdk.model.AuthenticatorsResponse;
 import org.conjur.sdk.model.WhoAmI;
 import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.io.*;
 
 /**
- * API tests for StatusApi
+ * API tests for StatusApi.
  */
 public class StatusApiTest extends ConfiguredTest {
 
@@ -36,17 +37,17 @@ public class StatusApiTest extends ConfiguredTest {
     private StatusApi badAuthApi;
 
     @BeforeClass
-    public static void setUpWebservice() throws ApiException {
-        ConfiguredTest.setupOIDCWebservice();
+    public static void setUpWebservice() throws ApiException, IOException {
+        ConfiguredTest.setupOidcWebservice();
     }
 
     @Before
-    public void setUpApis() throws ApiException, IOException{
+    public void setUpApis() throws ApiException, IOException {
         badAuthApi = new StatusApi(nonAuthClient);
     }
 
     /**
-     * Details about which authenticators are on the Conjur Server
+     * Details about which authenticators are on the Conjur Server.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -57,30 +58,36 @@ public class StatusApiTest extends ConfiguredTest {
 
         String[] enabled = {"authn", "authn-oidc/test", "authn-ldap/test"};
 
-        for (int i = 0; i < enabled.length; i++){
+        for (int i = 0; i < enabled.length; i++) {
             Assert.assertTrue(response.getEnabled().contains(enabled[i]));
             Assert.assertTrue(response.getConfigured().contains(enabled[i]));
         }
     }
-    
+
     /**
-     * Details whether an authentication service has been configured properly
+     * Details whether an authentication service has been configured properly.
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException
+     *          if webservice setup encounters I/O error reading policy from file
      */
     @Test
     public void getServiceAuthenticatorStatusTest200() throws ApiException {
         String authenticator = "authn-oidc";
         String serviceId = "test";
-        ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(authenticator, serviceId, account);
+        ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(
+            authenticator,
+            serviceId,
+            account
+        );
 
         Assert.assertEquals("ok", response.getData().getStatus());
         Assert.assertEquals(200, response.getStatusCode());
     }
 
     /**
-     * Details whether an authentication service has been configured properly
+     * Details whether an authentication service has been configured properly.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -99,7 +106,7 @@ public class StatusApiTest extends ConfiguredTest {
     }
 
     /**
-     * Details whether an authentication service has been configured properly
+     * Details whether an authentication service has been configured properly.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -116,7 +123,7 @@ public class StatusApiTest extends ConfiguredTest {
     }
 
     /**
-     * Details whether an authentication service has been configured properly
+     * Details whether an authentication service has been configured properly.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -133,7 +140,7 @@ public class StatusApiTest extends ConfiguredTest {
     }
 
     /**
-     * Details whether an authentication service has been configured properly
+     * Details whether an authentication service has been configured properly.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -156,13 +163,14 @@ public class StatusApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
+    @SuppressWarnings("checkstyle:abbreviationaswordinname")
     public void whoAmITest200() throws ApiException {
         ApiResponse<WhoAmI> response = api.whoAmIWithHttpInfo();
 
         Assert.assertEquals(200, response.getStatusCode());
         Assert.assertEquals(account, response.getData().getAccount());
         Assert.assertEquals(login, response.getData().getUsername());
-    }   
+    }
 
     /**
      * Provides information about the client making an API request.
@@ -171,6 +179,7 @@ public class StatusApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
+    @SuppressWarnings("checkstyle:abbreviationaswordinname")
     public void whoAmITest401() throws ApiException {
         try {
             badAuthApi.whoAmIWithHttpInfo();

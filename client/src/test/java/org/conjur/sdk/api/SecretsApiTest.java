@@ -13,28 +13,34 @@
 
 package org.conjur.sdk.endpoint;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.ApiException;
 import java.io.File;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Assert;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.conjur.sdk.*;
+import org.conjur.sdk.ApiException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 /**
- * API tests for SecretsApi
+ * API tests for SecretsApi.
  */
 public class SecretsApiTest extends ConfiguredTest {
 
     private final SecretsApi api = new SecretsApi();
     private static Map<String, String> defaultSecrets;
 
-    
+
+    /**
+     * Creates two variables in Conjur for testing secret retrieval.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
     @Before
     public void setDefaultSecrets() throws ApiException {
         defaultSecrets = new HashMap<String, String>();
@@ -50,8 +56,6 @@ public class SecretsApiTest extends ConfiguredTest {
     /**
      * Creates a secret value within the specified variable.
      *
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     *
      * @throws ApiException
      *          if the Api call fails
      */
@@ -60,16 +64,21 @@ public class SecretsApiTest extends ConfiguredTest {
         String kind = "variable";
         String identifier = "testSecret";
         String expirations = null;
-        String xRequestId = null;
-        ApiResponse<?> response = api.createSecretWithHttpInfo(account, kind, identifier, expirations, xRequestId, defaultSecrets.get(identifier));
+        String requestId = null;
+        ApiResponse<?> response = api.createSecretWithHttpInfo(
+            account,
+            kind,
+            identifier,
+            expirations,
+            requestId,
+            defaultSecrets.get(identifier)
+        );
 
         Assert.assertEquals(201, response.getStatusCode());
     }
-    
+
     /**
      * Fetches the value of a secret from the specified Secret.
-     *
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
      *
      * @throws ApiException
      *          if the Api call fails
@@ -84,11 +93,9 @@ public class SecretsApiTest extends ConfiguredTest {
             Assert.assertEquals(secretValue, response);
         }
     }
-    
+
     /**
-     * Fetch multiple secrets
-     *
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
+     * Fetch multiple secrets.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -97,7 +104,7 @@ public class SecretsApiTest extends ConfiguredTest {
     public void getSecretsTest() throws ApiException {
         String variableIds = "";
         String acceptEncoding = null;
-        String xRequestId = null;
+        String requestId = null;
         String kind = "variable";
         String nextId;
         List<String> ids = new ArrayList<String>();
@@ -108,11 +115,11 @@ public class SecretsApiTest extends ConfiguredTest {
         }
 
         variableIds = variableIds.substring(0, variableIds.length());
-        Map<?, ?> response = (Map<?, ?>)api.getSecrets(variableIds, acceptEncoding, xRequestId);
+        Map<?, ?> response = (Map<?, ?>) api.getSecrets(variableIds, acceptEncoding, requestId);
         for (String identifier : ids) {
             String splitId = identifier.split(":")[2];
 
             Assert.assertEquals(defaultSecrets.get(splitId), response.get(identifier));
         }
-    }   
+    }
 }

@@ -13,40 +13,47 @@
 
 package org.conjur.sdk.endpoint;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.endpoint.*;
-import org.conjur.sdk.model.*;
-import org.conjur.sdk.ApiException;
-import org.junit.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.conjur.sdk.*;
+import org.conjur.sdk.ApiException;
+import org.conjur.sdk.endpoint.*;
+import org.conjur.sdk.model.*;
+import org.junit.*;
+
 
 /**
- * API tests for RolesApi
+ * API tests for RolesApi.
  */
 public class RolesApiTest extends ConfiguredTest {
 
     private static final String ROLES_POLICY = String.join("\n",
-              "- !layer testLayer",
-              "- !group",
-              "  id: userGroup",
-              "  annotations:",
-              "    editable: true",
-              "- !group",
-              "  id: anotherGroup",
-              "  annotations:",
-              "    editable: true",
-              "- !user bob",
-              "- !user alice"
-            );
+        "- !layer testLayer",
+        "- !group",
+        "  id: userGroup",
+        "  annotations:",
+        "    editable: true",
+        "- !group",
+        "  id: anotherGroup",
+        "  annotations:",
+        "    editable: true",
+        "- !user bob",
+        "- !user alice"
+    );
 
-    private final String BOB_ID = String.format("%s:user:bob", System.getenv("CONJUR_ACCOUNT"));
+    private static final String BOB_ID = String.format(
+        "%s:user:bob", System.getenv("CONJUR_ACCOUNT"));
 
     private final RolesApi api = new RolesApi();
 
+    /**
+     * Setup roles to test by loading new policy.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
     @BeforeClass
     public static void setUpClass() throws ApiException {
         ConfiguredTest.setUpClass();
@@ -55,7 +62,7 @@ public class RolesApiTest extends ConfiguredTest {
     }
 
     /**
-     * Update or modify an existing role membership
+     * Update or modify an existing role membership.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -63,13 +70,19 @@ public class RolesApiTest extends ConfiguredTest {
     @Test
     public void addMemberToRoleTest() throws ApiException {
         String member = BOB_ID;
-        ApiResponse<?> response = api.addMemberToRoleWithHttpInfo(account, "group", "userGroup", "", member);
+        ApiResponse<?> response = api.addMemberToRoleWithHttpInfo(
+            account,
+            "group",
+            "userGroup",
+            "",
+            member
+        );
 
-        Assert.assertEquals(204, response.getStatusCode());       
+        Assert.assertEquals(204, response.getStatusCode());
     }
-    
+
     /**
-     * Deletes an existing role membership
+     * Deletes an existing role membership.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -80,13 +93,19 @@ public class RolesApiTest extends ConfiguredTest {
         String identifier = "userGroup";
         String members = "";
         String member = BOB_ID;
-        ApiResponse<?> response = api.removeMemberFromRoleWithHttpInfo(account, kind, identifier, members, member);
+        ApiResponse<?> response = api.removeMemberFromRoleWithHttpInfo(
+            account,
+            kind,
+            identifier,
+            members,
+            member
+        );
 
         Assert.assertEquals(204, response.getStatusCode());
     }
-    
+
     /**
-     * Get role information
+     * Get role information.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -96,7 +115,11 @@ public class RolesApiTest extends ConfiguredTest {
         String kind = "user";
         String identifier = "admin";
 
-        ApiResponse<Object> response = api.showRoleWithHttpInfo(account, kind, identifier);
+        ApiResponse<Object> response = api.showRoleWithHttpInfo(
+            account,
+            kind,
+            identifier
+        );
 
         Assert.assertEquals(200, response.getStatusCode());
     }
