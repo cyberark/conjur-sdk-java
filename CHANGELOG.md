@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-sdk-java#15](https://github.com/cyberark/conjur-sdk-java/pull/15)
 - Basic client infrastructure and generation tools as well as minimal templates.
   [cyberark/conjur-sdk-java#1](https://github.com/cyberark/conjur-sdk-java/pull/1)
+- New script to lint handwritten test files, uses Checkstyle to enforce
+  [Google's Java Style](https://google.github.io/styleguide/javaguide.html).
+  [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
