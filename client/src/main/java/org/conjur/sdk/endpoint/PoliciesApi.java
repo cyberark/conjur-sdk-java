@@ -11,7 +11,7 @@
  */
 
 
-package org.conjur.sdk.api;
+package org.conjur.sdk.endpoint;
 
 import org.conjur.sdk.ApiCallback;
 import org.conjur.sdk.ApiClient;
@@ -27,6 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
+import org.conjur.sdk.model.LoadedPolicy;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,14 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SecretsApi {
+public class PoliciesApi {
     private ApiClient localVarApiClient;
 
-    public SecretsApi() {
+    public PoliciesApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public SecretsApi(ApiClient apiClient) {
+    public PoliciesApi(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
     }
 
@@ -54,466 +55,37 @@ public class SecretsApi {
     }
 
     /**
-     * Build call for createSecret
+     * Build call for loadPolicy
      * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param expirations Tells the server to reset the variables expiration date (optional)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
      * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param body Secret data (optional)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createSecretCall(String account, String kind, String identifier, String expirations, String xRequestId, String body, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call loadPolicyCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = body;
 
         // create path and map variables
-        String localVarPath = "/secrets/{account}/{kind}/{identifier}"
+        String localVarPath = "/policies/{account}/policy/{identifier}"
             .replaceAll("\\{" + "account" + "\\}", localVarApiClient.escapeString(account.toString()))
-            .replaceAll("\\{" + "kind" + "\\}", localVarApiClient.escapeString(kind.toString()))
             .replaceAll("\\{" + "identifier" + "\\}", localVarApiClient.escapeString(identifier.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        if (expirations != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("expirations", expirations));
-        }
-
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (xRequestId != null) {
-            localVarHeaderParams.put("X-Request-Id", localVarApiClient.parameterToString(xRequestId));
-        }
-
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-        final String[] localVarAccepts = {
-            
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-            "application/octet-stream"
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[] { "conjurAuth" };
-        return localVarApiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call createSecretValidateBeforeCall(String account, String kind, String identifier, String expirations, String xRequestId, String body, final ApiCallback _callback) throws ApiException {
-        
-        // verify the required parameter 'account' is set
-        if (account == null) {
-            throw new ApiException("Missing the required parameter 'account' when calling createSecret(Async)");
-        }
-        
-        // verify the required parameter 'kind' is set
-        if (kind == null) {
-            throw new ApiException("Missing the required parameter 'kind' when calling createSecret(Async)");
-        }
-        
-        // verify the required parameter 'identifier' is set
-        if (identifier == null) {
-            throw new ApiException("Missing the required parameter 'identifier' when calling createSecret(Async)");
-        }
-        
-
-        okhttp3.Call localVarCall = createSecretCall(account, kind, identifier, expirations, xRequestId, body, _callback);
-        return localVarCall;
-
-    }
-
-    /**
-     * Creates a secret value within the specified variable.
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param expirations Tells the server to reset the variables expiration date (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param body Secret data (optional)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public void createSecret(String account, String kind, String identifier, String expirations, String xRequestId, String body) throws ApiException {
-        createSecretWithHttpInfo(account, kind, identifier, expirations, xRequestId, body);
-    }
-
-
-    /**
-     * Creates a secret value within the specified variable.
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60;
-     * @param identifier URL-encoded variable ID
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-    */
-    public void createSecret(String account, String kind, String identifier) throws ApiException {
-        createSecretWithHttpInfo(account, kind, identifier, null, null, null);
-    }
-
-    /**
-     * Creates a secret value within the specified variable.
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param expirations Tells the server to reset the variables expiration date (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param body Secret data (optional)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<Void> createSecretWithHttpInfo(String account, String kind, String identifier, String expirations, String xRequestId, String body) throws ApiException {
-        okhttp3.Call localVarCall = createSecretValidateBeforeCall(account, kind, identifier, expirations, xRequestId, body, null);
-        return localVarApiClient.execute(localVarCall);
-    }
-
-    /**
-     * Creates a secret value within the specified variable.
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name 
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; 
-     * @param identifier URL-encoded variable ID 
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<Void> createSecretWithHttpInfo(String account, String kind, String identifier) throws ApiException {
-        okhttp3.Call localVarCall = createSecretValidateBeforeCall(account, kind, identifier, null, null, null, null);
-        return localVarApiClient.execute(localVarCall);
-    }
-
-    /**
-     * Creates a secret value within the specified variable. (asynchronously)
-     * Creates a secret value within the specified Secret.   Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param expirations Tells the server to reset the variables expiration date (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param body Secret data (optional)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call createSecretAsync(String account, String kind, String identifier, String expirations, String xRequestId, String body, final ApiCallback<Void> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = createSecretValidateBeforeCall(account, kind, identifier, expirations, xRequestId, body, _callback);
-        localVarApiClient.executeAsync(localVarCall, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for getSecret
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param version (**Optional**) Version you want to retrieve (Conjur keeps the last 20 versions of a secret) (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call getSecretCall(String account, String kind, String identifier, Integer version, String xRequestId, final ApiCallback _callback) throws ApiException {
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/secrets/{account}/{kind}/{identifier}"
-            .replaceAll("\\{" + "account" + "\\}", localVarApiClient.escapeString(account.toString()))
-            .replaceAll("\\{" + "kind" + "\\}", localVarApiClient.escapeString(kind.toString()))
-            .replaceAll("\\{" + "identifier" + "\\}", localVarApiClient.escapeString(identifier.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        if (version != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("version", version));
-        }
-
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (xRequestId != null) {
-            localVarHeaderParams.put("X-Request-Id", localVarApiClient.parameterToString(xRequestId));
-        }
-
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-        final String[] localVarAccepts = {
-            "text/plain"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-            
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[] { "conjurAuth" };
-        return localVarApiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call getSecretValidateBeforeCall(String account, String kind, String identifier, Integer version, String xRequestId, final ApiCallback _callback) throws ApiException {
-        
-        // verify the required parameter 'account' is set
-        if (account == null) {
-            throw new ApiException("Missing the required parameter 'account' when calling getSecret(Async)");
-        }
-        
-        // verify the required parameter 'kind' is set
-        if (kind == null) {
-            throw new ApiException("Missing the required parameter 'kind' when calling getSecret(Async)");
-        }
-        
-        // verify the required parameter 'identifier' is set
-        if (identifier == null) {
-            throw new ApiException("Missing the required parameter 'identifier' when calling getSecret(Async)");
-        }
-        
-
-        okhttp3.Call localVarCall = getSecretCall(account, kind, identifier, version, xRequestId, _callback);
-        return localVarCall;
-
-    }
-
-    /**
-     * Fetches the value of a secret from the specified Secret.
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param version (**Optional**) Version you want to retrieve (Conjur keeps the last 20 versions of a secret) (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @return String
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public String getSecret(String account, String kind, String identifier, Integer version, String xRequestId) throws ApiException {
-        ApiResponse<String> localVarResp = getSecretWithHttpInfo(account, kind, identifier, version, xRequestId);
-        return localVarResp.getData();
-    }
-
-
-    /**
-     * Fetches the value of a secret from the specified Secret.
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60;
-     * @param identifier URL-encoded variable ID
-     * @return String
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-    */
-    public String getSecret(String account, String kind, String identifier) throws ApiException {
-        ApiResponse<String> localVarResp = getSecretWithHttpInfo(account, kind, identifier, null, null);
-        return localVarResp.getData();
-    }
-
-    /**
-     * Fetches the value of a secret from the specified Secret.
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param version (**Optional**) Version you want to retrieve (Conjur keeps the last 20 versions of a secret) (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @return ApiResponse&lt;String&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<String> getSecretWithHttpInfo(String account, String kind, String identifier, Integer version, String xRequestId) throws ApiException {
-        okhttp3.Call localVarCall = getSecretValidateBeforeCall(account, kind, identifier, version, xRequestId, null);
-        Type localVarReturnType = new TypeToken<String>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * Fetches the value of a secret from the specified Secret.
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name 
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; 
-     * @param identifier URL-encoded variable ID 
-     * @return ApiResponse&lt;String&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<String> getSecretWithHttpInfo(String account, String kind, String identifier) throws ApiException {
-        okhttp3.Call localVarCall = getSecretValidateBeforeCall(account, kind, identifier, null, null, null);
-        Type localVarReturnType = new TypeToken<String>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * Fetches the value of a secret from the specified Secret. (asynchronously)
-     * Fetches the value of a secret from the specified Secret. The latest version will be retrieved unless the version parameter is specified. The twenty most recent secret versions are retained.  The secret data is returned in the response body.  Note: Conjur will allow you to add a secret to any resource, but the best practice is to store and retrieve secret data only using Secret resources. 
-     * @param account Organization account name (required)
-     * @param kind Type of resource - in almost all cases this should be &#x60;variable&#x60; (required)
-     * @param identifier URL-encoded variable ID (required)
-     * @param version (**Optional**) Version you want to retrieve (Conjur keeps the last 20 versions of a secret) (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The secret value was added successfully </td><td>  -  </td></tr>
-        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call getSecretAsync(String account, String kind, String identifier, Integer version, String xRequestId, final ApiCallback<String> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = getSecretValidateBeforeCall(account, kind, identifier, version, xRequestId, _callback);
-        Type localVarReturnType = new TypeToken<String>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for getSecrets
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. (required)
-     * @param acceptEncoding Set the encoding of the response object (optional)
-     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
-        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
-        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call getSecretsCall(String variableIds, String acceptEncoding, String xRequestId, final ApiCallback _callback) throws ApiException {
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/secrets";
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        if (variableIds != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("variable_ids", variableIds));
-        }
-
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (acceptEncoding != null) {
-            localVarHeaderParams.put("Accept-Encoding", localVarApiClient.parameterToString(acceptEncoding));
-        }
-
         if (xRequestId != null) {
             localVarHeaderParams.put("X-Request-Id", localVarApiClient.parameterToString(xRequestId));
         }
@@ -529,129 +101,150 @@ public class SecretsApi {
         }
 
         final String[] localVarContentTypes = {
-            
+            "application/x-yaml", "text/plain", "text/x-yaml", "text/yaml"
         };
         final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         String[] localVarAuthNames = new String[] { "conjurAuth" };
-        return localVarApiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+        return localVarApiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getSecretsValidateBeforeCall(String variableIds, String acceptEncoding, String xRequestId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call loadPolicyValidateBeforeCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
         
-        // verify the required parameter 'variableIds' is set
-        if (variableIds == null) {
-            throw new ApiException("Missing the required parameter 'variableIds' when calling getSecrets(Async)");
+        // verify the required parameter 'account' is set
+        if (account == null) {
+            throw new ApiException("Missing the required parameter 'account' when calling loadPolicy(Async)");
+        }
+        
+        // verify the required parameter 'identifier' is set
+        if (identifier == null) {
+            throw new ApiException("Missing the required parameter 'identifier' when calling loadPolicy(Async)");
+        }
+        
+        // verify the required parameter 'body' is set
+        if (body == null) {
+            throw new ApiException("Missing the required parameter 'body' when calling loadPolicy(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getSecretsCall(variableIds, acceptEncoding, xRequestId, _callback);
+        okhttp3.Call localVarCall = loadPolicyCall(account, identifier, body, xRequestId, _callback);
         return localVarCall;
 
     }
 
     /**
-     * Fetch multiple secrets
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. (required)
-     * @param acceptEncoding Set the encoding of the response object (optional)
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
      * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @return Object
+     * @return LoadedPolicy
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
      */
-    public Object getSecrets(String variableIds, String acceptEncoding, String xRequestId) throws ApiException {
-        ApiResponse<Object> localVarResp = getSecretsWithHttpInfo(variableIds, acceptEncoding, xRequestId);
+    public LoadedPolicy loadPolicy(String account, String identifier, String body, String xRequestId) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = loadPolicyWithHttpInfo(account, identifier, body, xRequestId);
         return localVarResp.getData();
     }
 
 
     /**
-     * Fetch multiple secrets
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables.
-     * @return Object
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name
+     * @param identifier ID of the policy to update
+     * @param body Policy
+     * @return LoadedPolicy
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
     */
-    public Object getSecrets(String variableIds) throws ApiException {
-        ApiResponse<Object> localVarResp = getSecretsWithHttpInfo(variableIds, null, null);
+    public LoadedPolicy loadPolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = loadPolicyWithHttpInfo(account, identifier, body, null);
         return localVarResp.getData();
     }
 
     /**
-     * Fetch multiple secrets
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. (required)
-     * @param acceptEncoding Set the encoding of the response object (optional)
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
      * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
-     * @return ApiResponse&lt;Object&gt;
+     * @return ApiResponse&lt;LoadedPolicy&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Object> getSecretsWithHttpInfo(String variableIds, String acceptEncoding, String xRequestId) throws ApiException {
-        okhttp3.Call localVarCall = getSecretsValidateBeforeCall(variableIds, acceptEncoding, xRequestId, null);
-        Type localVarReturnType = new TypeToken<Object>(){}.getType();
+    public ApiResponse<LoadedPolicy> loadPolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
+        okhttp3.Call localVarCall = loadPolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
-     * Fetch multiple secrets
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. 
-     * @return ApiResponse&lt;Object&gt;
+     * Adds data to the existing Conjur policy.
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to update 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Object> getSecretsWithHttpInfo(String variableIds) throws ApiException {
-        okhttp3.Call localVarCall = getSecretsValidateBeforeCall(variableIds, null, null, null);
-        Type localVarReturnType = new TypeToken<Object>(){}.getType();
+    public ApiResponse<LoadedPolicy> loadPolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = loadPolicyValidateBeforeCall(account, identifier, body, null, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
-     * Fetch multiple secrets (asynchronously)
-     * Fetches multiple secret values in one invocation. It’s faster to fetch secrets in batches than to fetch them one at a time.
-     * @param variableIds Comma-delimited, URL-encoded resource IDs of the variables. (required)
-     * @param acceptEncoding Set the encoding of the response object (optional)
+     * Adds data to the existing Conjur policy. (asynchronously)
+     * Adds data to the existing Conjur policy. Deletions are not allowed. Any policy objects that exist on the server but are omitted from the policy file will not be deleted and any explicit deletions in the policy file will result in an error.  ##### Permissions required  &#x60;create&#x60; privilege on the policy.\&quot; 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
      * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -659,18 +252,447 @@ public class SecretsApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> The batch secret values </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
         <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> At least one resource was unable to be found </td><td>  -  </td></tr>
-        <tr><td> 406 </td><td> Issue encoding secret into JSON format </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
         <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getSecretsAsync(String variableIds, String acceptEncoding, String xRequestId, final ApiCallback<Object> _callback) throws ApiException {
+    public okhttp3.Call loadPolicyAsync(String account, String identifier, String body, String xRequestId, final ApiCallback<LoadedPolicy> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getSecretsValidateBeforeCall(variableIds, acceptEncoding, xRequestId, _callback);
-        Type localVarReturnType = new TypeToken<Object>(){}.getType();
+        okhttp3.Call localVarCall = loadPolicyValidateBeforeCall(account, identifier, body, xRequestId, _callback);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for replacePolicy
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replacePolicyCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = body;
+
+        // create path and map variables
+        String localVarPath = "/policies/{account}/policy/{identifier}"
+            .replaceAll("\\{" + "account" + "\\}", localVarApiClient.escapeString(account.toString()))
+            .replaceAll("\\{" + "identifier" + "\\}", localVarApiClient.escapeString(identifier.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        if (xRequestId != null) {
+            localVarHeaderParams.put("X-Request-Id", localVarApiClient.parameterToString(xRequestId));
+        }
+
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "application/x-yaml", "text/plain", "text/x-yaml", "text/yaml"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] { "conjurAuth" };
+        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call replacePolicyValidateBeforeCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'account' is set
+        if (account == null) {
+            throw new ApiException("Missing the required parameter 'account' when calling replacePolicy(Async)");
+        }
+        
+        // verify the required parameter 'identifier' is set
+        if (identifier == null) {
+            throw new ApiException("Missing the required parameter 'identifier' when calling replacePolicy(Async)");
+        }
+        
+        // verify the required parameter 'body' is set
+        if (body == null) {
+            throw new ApiException("Missing the required parameter 'body' when calling replacePolicy(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = replacePolicyCall(account, identifier, body, xRequestId, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public LoadedPolicy replacePolicy(String account, String identifier, String body, String xRequestId) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = replacePolicyWithHttpInfo(account, identifier, body, xRequestId);
+        return localVarResp.getData();
+    }
+
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet)
+     * @param body Policy
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public LoadedPolicy replacePolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = replacePolicyWithHttpInfo(account, identifier, body, null);
+        return localVarResp.getData();
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> replacePolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
+        okhttp3.Call localVarCall = replacePolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> replacePolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = replacePolicyValidateBeforeCall(account, identifier, body, null, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document. (asynchronously)
+     * Loads or replaces a Conjur policy document.  **Any policy data which already exists on the server but is not explicitly specified in the new policy file will be deleted!**. 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to load (root if no root policy has been loaded yet) (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replacePolicyAsync(String account, String identifier, String body, String xRequestId, final ApiCallback<LoadedPolicy> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = replacePolicyValidateBeforeCall(account, identifier, body, xRequestId, _callback);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for updatePolicy
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call updatePolicyCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = body;
+
+        // create path and map variables
+        String localVarPath = "/policies/{account}/policy/{identifier}"
+            .replaceAll("\\{" + "account" + "\\}", localVarApiClient.escapeString(account.toString()))
+            .replaceAll("\\{" + "identifier" + "\\}", localVarApiClient.escapeString(identifier.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        if (xRequestId != null) {
+            localVarHeaderParams.put("X-Request-Id", localVarApiClient.parameterToString(xRequestId));
+        }
+
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "application/x-yaml", "text/plain", "text/x-yaml", "text/yaml"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] { "conjurAuth" };
+        return localVarApiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call updatePolicyValidateBeforeCall(String account, String identifier, String body, String xRequestId, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'account' is set
+        if (account == null) {
+            throw new ApiException("Missing the required parameter 'account' when calling updatePolicy(Async)");
+        }
+        
+        // verify the required parameter 'identifier' is set
+        if (identifier == null) {
+            throw new ApiException("Missing the required parameter 'identifier' when calling updatePolicy(Async)");
+        }
+        
+        // verify the required parameter 'body' is set
+        if (body == null) {
+            throw new ApiException("Missing the required parameter 'body' when calling updatePolicy(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = updatePolicyCall(account, identifier, body, xRequestId, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public LoadedPolicy updatePolicy(String account, String identifier, String body, String xRequestId) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = updatePolicyWithHttpInfo(account, identifier, body, xRequestId);
+        return localVarResp.getData();
+    }
+
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name
+     * @param identifier ID of the policy to update
+     * @param body Policy
+     * @return LoadedPolicy
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+    */
+    public LoadedPolicy updatePolicy(String account, String identifier, String body) throws ApiException {
+        ApiResponse<LoadedPolicy> localVarResp = updatePolicyWithHttpInfo(account, identifier, body, null);
+        return localVarResp.getData();
+    }
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> updatePolicyWithHttpInfo(String account, String identifier, String body, String xRequestId) throws ApiException {
+        okhttp3.Call localVarCall = updatePolicyValidateBeforeCall(account, identifier, body, xRequestId, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Modifies an existing Conjur policy.
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name 
+     * @param identifier ID of the policy to update 
+     * @param body Policy 
+     * @return ApiResponse&lt;LoadedPolicy&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<LoadedPolicy> updatePolicyWithHttpInfo(String account, String identifier, String body) throws ApiException {
+        okhttp3.Call localVarCall = updatePolicyValidateBeforeCall(account, identifier, body, null, null);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Modifies an existing Conjur policy. (asynchronously)
+     * Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x60;!delete&#x60;, &#x60;!revoke&#x60;, and &#x60;!deny&#x60; statements. Unlike &#x60;replace&#x60; mode, no data is ever implicitly deleted.  ##### Permissions required 
+     * @param account Organization account name (required)
+     * @param identifier ID of the policy to update (required)
+     * @param body Policy (required)
+     * @param xRequestId Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Decsribes new data created by a successful policy load </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> The authenticated user lacks the necessary privileges </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Similar operation already in progress, retry after a delay </td><td>  -  </td></tr>
+        <tr><td> 422 </td><td> A request parameter was either missing or invalid. </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call updatePolicyAsync(String account, String identifier, String body, String xRequestId, final ApiCallback<LoadedPolicy> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = updatePolicyValidateBeforeCall(account, identifier, body, xRequestId, _callback);
+        Type localVarReturnType = new TypeToken<LoadedPolicy>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

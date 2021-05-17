@@ -11,7 +11,7 @@
  */
 
 
-package org.conjur.sdk.api;
+package org.conjur.sdk.endpoint;
 
 import org.conjur.sdk.*;
 import org.conjur.sdk.auth.*;

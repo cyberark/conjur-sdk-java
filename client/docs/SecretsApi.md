@@ -25,7 +25,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.SecretsApi;
+import org.conjur.sdk.endpoint.SecretsApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -107,7 +107,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.SecretsApi;
+import org.conjur.sdk.endpoint.SecretsApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -189,7 +189,7 @@ import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
 import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
-import org.conjur.sdk.api.SecretsApi;
+import org.conjur.sdk.endpoint.SecretsApi;
 
 public class Example {
   public static void main(String[] args) {
