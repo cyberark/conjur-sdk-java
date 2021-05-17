@@ -11,8 +11,9 @@ import java.io.*;
 
 public class ConfiguredTest {
     protected ApiClient client;
+    protected ApiClient nonAuthClient;
     protected String login;
-    protected String account;
+    protected static String account = System.getenv("CONJUR_ACCOUNT");
     protected HttpBasicAuth basicAuth;
     protected ApiKeyAuth conjurAuth;
 
@@ -30,7 +31,7 @@ public class ConfiguredTest {
         conjurAuth.setApiKeyPrefix("Token");
     }
 
-    public void setupOIDCWebservice() throws ApiException {
+    public static void setupOIDCWebservice() throws ApiException {
         PoliciesApi policiesApi = new PoliciesApi();
         SecretsApi secretsApi = new SecretsApi();
         try {
@@ -59,12 +60,40 @@ public class ConfiguredTest {
         }
     }
 
+    private String getApiKey(String username, String role) throws ApiException {
+        if (username.equals("admin"))
+            return System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
+        AuthenticationApi authApi = new AuthenticationApi();
+        String apiKey = authApi.rotateApiKey(account, String.format("%s:%s", role, username), null);
+        return apiKey;
+    }
+
+    public ApiClient getApiClient(String username, String role) throws ApiException {
+        String apiKey = getApiKey(username, role);
+
+        if (role.equals("host"))
+            username = "host/" + username;
+
+        ApiClient newClient = new ApiClient();
+        newClient.setUsername(username);
+        newClient.setPassword(apiKey);
+        newClient.setApiKey(apiKey);
+        newClient.setSslCaCert(newClient.getCertInputStream());
+        ApiKeyAuth conjurAuth = (ApiKeyAuth) newClient.getAuthentication("conjurAuth");
+        conjurAuth.setApiKeyPrefix("Token");
+        return newClient;
+    }
+
+    public ApiClient getApiClient(String username) throws ApiException {
+        return getApiClient(username, "user");
+    }
+
     @AfterClass
     public static void loadDefaultPolicy() throws ApiException, IOException {
         PoliciesApi policiesApi = new PoliciesApi();
         List<String> lines = Files.readAllLines(Paths.get(DEFAULT_POLICY_FILE));
         String policyText = String.join(System.lineSeparator(), lines);
-        policiesApi.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", policyText, null);
+        policiesApi.replacePolicy(account, "root", policyText, null);
     }
 
     @BeforeClass
@@ -77,9 +106,12 @@ public class ConfiguredTest {
     @Before
     public void setUp() throws ApiException, IOException {
         client = Configuration.getDefaultApiClient();
+        nonAuthClient = new ApiClient();
+        nonAuthClient.setSslCaCert(nonAuthClient.getCertInputStream());
+        ApiKeyAuth badAuth = (ApiKeyAuth) nonAuthClient.getAuthentication("conjurAuth");
+        badAuth.setApiKey("");
         basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         conjurAuth = (ApiKeyAuth) client.getAuthentication("conjurAuth");
         login = System.getenv("CONJUR_AUTHN_LOGIN");
-        account = System.getenv("CONJUR_ACCOUNT");
     }
 }
