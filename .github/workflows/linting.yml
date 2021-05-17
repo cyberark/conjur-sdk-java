@@ -1,0 +1,19 @@
+name: Test Code Quality
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    name: Test File Linting
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Lint the tests
+        run: ./bin/lint
