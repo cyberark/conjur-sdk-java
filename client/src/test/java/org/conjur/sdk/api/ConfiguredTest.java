@@ -53,6 +53,7 @@ public class ConfiguredTest {
     public static void setupOidcWebservice() throws ApiException, IOException {
         PoliciesApi policiesApi = new PoliciesApi();
         SecretsApi secretsApi = new SecretsApi();
+        String account = System.getenv("CONJUR_ACCOUNT");
         try {
             List<String> lines = Files.readAllLines(Paths.get(OIDC_POLICY_FILE));
             String policyText = String.join(System.lineSeparator(), lines);
