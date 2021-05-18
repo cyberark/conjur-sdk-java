@@ -452,10 +452,9 @@ public class ApiClient {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setUsername(username);
-                return;
             }
         }
-        throw new RuntimeException("No HTTP basic authentication configured!");
+        this.username = username;
     }
 
     /**
@@ -467,21 +466,30 @@ public class ApiClient {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setPassword(password);
-                return;
             }
         }
-        throw new RuntimeException("No HTTP basic authentication configured!");
+        this.password = password;
+    }
+
+
+    /**
+     * Sets the value of the API key for this class
+     *
+     * @param apiKey The API key
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     /**
      * Helper method to set API key value for the first API key authentication.
      *
-     * @param apiKey API key
+     * @param encodedToken encoded API token
      */
-    public void setApiKey(String apiKey) {
+    public void setAccessToken(String encodedToken) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof ApiKeyAuth) {
-                ((ApiKeyAuth) auth).setApiKey(apiKey);
+                ((ApiKeyAuth) auth).setApiKey(encodedToken);
                 return;
             }
         }
@@ -491,33 +499,16 @@ public class ApiClient {
     /**
      * Helper method to set API key prefix for the first API key authentication.
      *
-     * @param apiKeyPrefix API key prefix
+     * @param tokenPrefix API token prefix
      */
-    public void setApiKeyPrefix(String apiKeyPrefix) {
+    public void setAccessTokenPrefix(String tokenPrefix) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof ApiKeyAuth) {
-                ((ApiKeyAuth) auth).setApiKeyPrefix(apiKeyPrefix);
+                ((ApiKeyAuth) auth).setApiKeyPrefix(tokenPrefix);
                 return;
             }
         }
         throw new RuntimeException("No API key authentication configured!");
-    }
-
-    /**
-     * Helper method to set access token for the first OAuth2 authentication.
-     *
-     * @param accessToken Access token
-     */
-    public void setAccessToken(String accessToken) {
-        {{#hasOAuthMethods}}
-        for (Authentication auth : authentications.values()) {
-            if (auth instanceof OAuth) {
-                ((OAuth) auth).setAccessToken(accessToken);
-                return;
-            }
-        }
-        {{/hasOAuthMethods}}
-        throw new RuntimeException("No OAuth2 authentication configured!");
     }
 
     /**

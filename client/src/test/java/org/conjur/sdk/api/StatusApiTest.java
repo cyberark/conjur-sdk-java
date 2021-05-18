@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.*;
 
 /**
  * API tests for StatusApi
@@ -32,6 +33,17 @@ import java.util.Map;
 public class StatusApiTest extends ConfiguredTest {
 
     private final StatusApi api = new StatusApi();
+    private StatusApi badAuthApi;
+
+    @BeforeClass
+    public static void setUpWebservice() throws ApiException {
+        ConfiguredTest.setupOIDCWebservice();
+    }
+
+    @Before
+    public void setUpApis() throws ApiException, IOException{
+        badAuthApi = new StatusApi(nonAuthClient);
+    }
 
     /**
      * Details about which authenticators are on the Conjur Server
@@ -40,7 +52,7 @@ public class StatusApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void getAuthenticatorsTest() throws ApiException {
+    public void getAuthenticatorsTest200() throws ApiException {
         AuthenticatorsResponse response = api.getAuthenticators();
 
         String[] enabled = {"authn", "authn-oidc/test", "authn-ldap/test"};
@@ -58,8 +70,7 @@ public class StatusApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void getServiceAuthenticatorStatusTest() throws ApiException {
-        setupOIDCWebservice();
+    public void getServiceAuthenticatorStatusTest200() throws ApiException {
         String authenticator = "authn-oidc";
         String serviceId = "test";
         ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(authenticator, serviceId, account);
@@ -67,7 +78,77 @@ public class StatusApiTest extends ConfiguredTest {
         Assert.assertEquals("ok", response.getData().getStatus());
         Assert.assertEquals(200, response.getStatusCode());
     }
-    
+
+    /**
+     * Details whether an authentication service has been configured properly
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getServiceAuthenticatorStatusTest403() throws ApiException {
+        String authenticator = "authn-oidc";
+        String serviceId = "test";
+        ApiClient aliceClient = getApiClient("alice");
+        StatusApi aliceApi = new StatusApi(aliceClient);
+        try {
+            aliceApi.getServiceAuthenticatorStatus(authenticator, serviceId, account, "thing1");
+        } catch (ApiException e) {
+            Assert.assertEquals(e.getCode(), 403);
+        }
+    }
+
+    /**
+     * Details whether an authentication service has been configured properly
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getServiceAuthenticatorStatusTest404() throws ApiException {
+        String authenticator = "nonexist";
+        String serviceId = "test";
+        try {
+            api.getServiceAuthenticatorStatus(authenticator, serviceId, account);
+        } catch (ApiException e) {
+            Assert.assertEquals(e.getCode(), 404);
+        }
+    }
+
+    /**
+     * Details whether an authentication service has been configured properly
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getServiceAuthenticatorStatusTest500() throws ApiException {
+        String authenticator = "authn-oidc";
+        String serviceId = "okta";
+        try {
+            api.getServiceAuthenticatorStatus(authenticator, serviceId, account);
+        } catch (ApiException e) {
+            Assert.assertEquals(e.getCode(), 500);
+        }
+    }
+
+    /**
+     * Details whether an authentication service has been configured properly
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getServiceAuthenticatorStatusTest501() throws ApiException {
+        String authenticator = "authn-ldap";
+        String serviceId = "test";
+        try {
+            api.getServiceAuthenticatorStatus(authenticator, serviceId, account);
+        } catch (ApiException e) {
+            Assert.assertEquals(e.getCode(), 501);
+        }
+    }
+
     /**
      * Provides information about the client making an API request.
      *
@@ -75,11 +156,26 @@ public class StatusApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void whoAmITest() throws ApiException {
+    public void whoAmITest200() throws ApiException {
         ApiResponse<WhoAmI> response = api.whoAmIWithHttpInfo();
 
         Assert.assertEquals(200, response.getStatusCode());
         Assert.assertEquals(account, response.getData().getAccount());
         Assert.assertEquals(login, response.getData().getUsername());
     }   
+
+    /**
+     * Provides information about the client making an API request.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void whoAmITest401() throws ApiException {
+        try {
+            badAuthApi.whoAmIWithHttpInfo();
+        } catch (ApiException e) {
+            Assert.assertEquals(e.getCode(), 401);
+        }
+    }
 }
