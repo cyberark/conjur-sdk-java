@@ -6,10 +6,10 @@ announce "Linting Test Files with Checkstyle..."
 
 docker run --rm \
   -v ${PWD}:/code \
-  openjdk:11 \
+  openjdk:16-jdk-oraclelinux7 \
   /bin/bash -c "
-    apt-get update && \\
-    apt-get -y install curl wget && \\
+    yum -y update && \\
+    yum -y install curl wget && \\
     curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \\
     | grep \"browser_download_url\" \\
     | cut -d '\"' -f 4 \\
