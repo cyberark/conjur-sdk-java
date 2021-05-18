@@ -13,26 +13,24 @@
 
 package org.conjur.sdk.endpoint;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.model.ServiceAuthenticators;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Assert;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gson.Gson;
+import org.conjur.sdk.*;
+import org.conjur.sdk.auth.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * API tests for AuthenticationApi
+ * API tests for AuthenticationApi.
  */
 public class AuthenticationApiTest extends ConfiguredTest {
+
     private AuthenticationApi api;
 
     @Override
@@ -48,6 +46,9 @@ public class AuthenticationApiTest extends ConfiguredTest {
         basicAuth.setPassword(apiKey());
     }
 
+    /**
+     * Reset basic auth password after each test.
+     */
     @After
     public void tearDown() {
         basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
@@ -55,10 +56,15 @@ public class AuthenticationApiTest extends ConfiguredTest {
         basicAuth.setPassword(apiKey());
     }
 
-    public String apiKey(){
+    /**
+     * Get the API key admin user's API key from an env var.
+     *
+     * @return API key
+     */
+    public String apiKey() {
         return System.getenv("CONJUR_AUTHN_API_KEY");
     }
-    
+
     /**
      * Test changing a user’s password.
      *
@@ -76,20 +82,21 @@ public class AuthenticationApiTest extends ConfiguredTest {
     }
 
     /**
-     * Tests getting the API key of a user given the username and password via HTTP Basic Authentication. 
+     * Tests getting the API key of a user given the
+     * username and password via HTTP Basic Authentication.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void getAPIKeyTest() throws ApiException {
+    public void getApiKeyTest() throws ApiException {
         String response = api.getAPIKey(account);
 
         Assert.assertEquals(response, apiKey());
     }
 
     /**
-     * Tests getting an API token for a given user
+     * Tests getting an API token for a given user.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -98,22 +105,24 @@ public class AuthenticationApiTest extends ConfiguredTest {
     public void getAccessToken() throws ApiException {
         String response = api.getAccessToken(account, login, apiKey());
 
-        String[] keys = { "protected", "payload", "signature" };
+        String[] keys = {
+            "protected", "payload", "signature"
+        };
         Gson gson = new Gson();
         Map<?, ?> map = gson.fromJson(response, Map.class);
 
-        for (int i = 0; i < keys.length; i++){
+        for (int i = 0; i < keys.length; i++) {
             Assert.assertTrue(map.keySet().contains(keys[i]));
         }
     }
 
     /**
-     * Tests rotating the current role's api key
+     * Tests rotating the current role's api key.
      *
      * @throws ApiException
      *          if the api call fails
      */
-    @Ignore("Causes issues with other tests because Java doesn't allow setting Environment variables")
+    @Ignore("Causes issues with other tests - Java doesn't allow setting Environment variables")
     @Test
     public void rotateApiKeyTest() throws ApiException {
         ApiResponse<String> response = api.rotateApiKeyWithHttpInfo(account);

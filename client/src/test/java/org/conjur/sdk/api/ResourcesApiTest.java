@@ -13,25 +13,24 @@
 
 package org.conjur.sdk.endpoint;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.endpoint.*;
-import org.conjur.sdk.model.*;
-
-import org.junit.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.conjur.sdk.*;
+import org.conjur.sdk.endpoint.*;
+import org.conjur.sdk.model.*;
+import org.junit.*;
+
 
 /**
- * API tests for ResourcesApi
+ * API tests for ResourcesApi.
  */
 public class ResourcesApiTest extends ConfiguredTest {
 
     private final ResourcesApi api = new ResourcesApi();
 
-    
+
     /**
      * Shows a description of a single resource.
      *
@@ -46,14 +45,17 @@ public class ResourcesApiTest extends ConfiguredTest {
         String privilege = null;
         Boolean check = null;
         String role = null;
-        String xRequestId = null;
-        ApiResponse<Resource> response = api.showResourceWithHttpInfo(account, kind, identifier, permittedRoles, privilege, check, role, xRequestId);
+        String requestId = null;
+        ApiResponse<Resource> response = api.showResourceWithHttpInfo(
+            account, kind, identifier, permittedRoles,
+            privilege, check, role, requestId
+        );
 
         Assert.assertEquals(200, response.getStatusCode());
         Resource result = response.getData();
         Assert.assertEquals(String.format("%s:variable:testSecret", account), result.getId());
     }
-    
+
     /**
      * Lists resources within an organization account.
      *
@@ -69,12 +71,15 @@ public class ResourcesApiTest extends ConfiguredTest {
         Boolean count = null;
         String role = null;
         String actingAs = null;
-        String xRequestId = null;
+        String requestId = null;
 
-        ApiResponse<List<Resource>> response = api.showResourcesForAccountWithHttpInfo(account, kind, search, offset, limit, count, role, actingAs, xRequestId);
+        ApiResponse<List<Resource>> response = api.showResourcesForAccountWithHttpInfo(
+            account, kind, search, offset, limit,
+            count, role, actingAs, requestId
+        );
         Assert.assertEquals(200, response.getStatusCode());
     }
-    
+
     /**
      * Lists resources within an organization account.
      *
@@ -90,12 +95,15 @@ public class ResourcesApiTest extends ConfiguredTest {
         Boolean count = null;
         String role = null;
         String actingAs = null;
-        String xRequestId = null;
-        ApiResponse<List<Resource>> response = api.showResourcesForAllAccountsWithHttpInfo(account, kind, search, offset, limit, count, role, actingAs, xRequestId);
+        String requestId = null;
 
+        ApiResponse<List<Resource>> response = api.showResourcesForAllAccountsWithHttpInfo(
+            account, kind, search, offset, limit,
+            count, role, actingAs, requestId
+        );
         Assert.assertEquals(200, response.getStatusCode());
     }
-    
+
     /**
      * Lists resources of the same kind within an organization account.
      *
@@ -111,10 +119,12 @@ public class ResourcesApiTest extends ConfiguredTest {
         Boolean count = null;
         String role = null;
         String actingAs = null;
-        String xRequestId = null;
+        String requestId = null;
 
-        ApiResponse<List<Resource>> response = api.showResourcesForKindWithHttpInfo(account, kind, search, offset, limit, count, role, actingAs, xRequestId);
+        ApiResponse<List<Resource>> response = api.showResourcesForKindWithHttpInfo(
+            account, kind, search, offset, limit,
+            count, role, actingAs, requestId
+        );
         Assert.assertEquals(200, response.getStatusCode());
     }
-    
 }

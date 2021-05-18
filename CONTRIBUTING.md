@@ -46,6 +46,10 @@ section when releasing the client after a refresh.
 `bin/start_conjur`
 * Used to start a new local Conjur instance based on the project's `docker-compose` file.
 
+`bin/lint`
+* Used to enforce [Google's Java Style](https://google.github.io/styleguide/javaguide.html) on
+  handwritten test files.
+
 ## Testing
 
 To run the integration tests use the `bin/test_integration` script. This will bring up an

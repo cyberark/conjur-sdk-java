@@ -8,7 +8,7 @@ source bin/util
 
 regen_client=true
 rebuild_conjur=true
-major_java_version=8
+major_java_version=16
 install=""
 
 if [ "$(tty)" == "not a tty" ]; then

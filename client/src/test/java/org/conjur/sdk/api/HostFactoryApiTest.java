@@ -13,45 +13,50 @@
 
 package org.conjur.sdk.endpoint;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.endpoint.*;
-import org.conjur.sdk.model.*;
-
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.model.CreateHost;
-import org.junit.*;
-
+import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gson.internal.LinkedTreeMap;
-
+import org.conjur.sdk.*;
+import org.conjur.sdk.ApiException;
+import org.conjur.sdk.endpoint.*;
+import org.conjur.sdk.model.*;
+import org.conjur.sdk.model.CreateHost;
+import org.junit.*;
 
 /**
- * API tests for HostFactoryApi
+ * API tests for HostFactoryApi.
  */
 public class HostFactoryApiTest extends ConfiguredTest {
 
     private final HostFactoryApi api = new HostFactoryApi();
 
-    private final String HOST_FACTORY_ID = String.format("%s:host_factory:testFactory", System.getenv("CONJUR_ACCOUNT"));
+    private static final String HOST_FACTORY_ID = String.format(
+        "%s:host_factory:testFactory",
+        System.getenv("CONJUR_ACCOUNT"));
+
     private static final String FACTORY_POLICY = String.join("\n",
-            "- !layer testLayer",
-            "- !host_factory",
-            "    id: testFactory",
-            "    annotations:",
-            "        description: Testing factory",
-            "    layers: [ !layer testLayer ]",
+        "- !layer testLayer",
+        "- !host_factory",
+        "  id: testFactory",
+        "  annotations:",
+        "    description: Testing factory",
+        "  layers: [ !layer testLayer ]",
 
-            "- !user carl",
-            "- !permit",
-            "  role: !user carl",
-            "  privileges: [ read ]",
-            "  resource: !host_factory testFactory"
-        );
+        "- !user carl",
+        "- !permit",
+        "  role: !user carl",
+        "  privileges: [ read ]",
+        "  resource: !host_factory testFactory"
+    );
 
+    /**
+     * Set up Conjur with Host Factory policy.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
     @BeforeClass
     public static void setUpClass() throws ApiException {
         ConfiguredTest.setUpClass();
@@ -59,13 +64,20 @@ public class HostFactoryApiTest extends ConfiguredTest {
         policiesApi.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", FACTORY_POLICY);
     }
 
+    /**
+     * Get a new token from the Host Factory.
+     *
+     * @return host token
+     * @throws ApiException
+     *          if the Api call fails
+     */
     public String getHostToken() throws ApiException {
         String expiration = "2100-05-05";
         String hostFactory = HOST_FACTORY_ID;
         List<?> response = api.createToken(expiration, hostFactory);
 
         LinkedTreeMap result = (LinkedTreeMap) response.get(0);
-        return (String)result.get("token");
+        return (String) result.get("token");
     }
 
     /**
@@ -83,11 +95,11 @@ public class HostFactoryApiTest extends ConfiguredTest {
         String id = HOST_FACTORY_ID;
 
         ApiResponse<?> response = api.createHostWithHttpInfo(id);
-        
+
         Assert.assertEquals(201, response.getStatusCode());
         conjurAuth.setApiKey(oldApiKey);
     }
-    
+
     /**
      * Creates one or more host identity tokens.
      *
@@ -102,7 +114,7 @@ public class HostFactoryApiTest extends ConfiguredTest {
 
         Assert.assertEquals(200, response.getStatusCode());
     }
-    
+
     /**
      * Revokes a token, immediately disabling it.
      *
@@ -116,5 +128,4 @@ public class HostFactoryApiTest extends ConfiguredTest {
         ApiResponse<?> response = api.revokeTokenWithHttpInfo(token);
         Assert.assertEquals(204, response.getStatusCode());
     }
-    
 }
