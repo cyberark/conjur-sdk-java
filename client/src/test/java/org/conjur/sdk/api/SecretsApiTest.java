@@ -32,7 +32,15 @@ import org.junit.Test;
 public class SecretsApiTest extends ConfiguredTest {
 
     private final SecretsApi api = new SecretsApi();
+    private SecretsApi badAuthApi;
     private static Map<String, String> defaultSecrets;
+    private final String[] testVariables = {"one/password", "testSecret"};
+    private final String grantPolicy = String.join("\n",
+            "- !permit",
+            "  role: !user alice",
+            "  privileges: [ read ]",
+            String.format("  resource: !variable %s", testVariables[0]));
+    private SecretsApi aliceApi;
 
 
     /**
@@ -43,24 +51,30 @@ public class SecretsApiTest extends ConfiguredTest {
      */
     @Before
     public void setDefaultSecrets() throws ApiException {
+        badAuthApi = new SecretsApi(nonAuthClient);
         defaultSecrets = new HashMap<String, String>();
         defaultSecrets.put("testSecret", "testvalue");
         defaultSecrets.put("one/password", "testvalue2");
+        ApiClient aliceClient = getApiClient("alice");
+        aliceApi = new SecretsApi(aliceClient);
 
         for (String identifier : defaultSecrets.keySet()) {
             String secretValue = defaultSecrets.get(identifier);
             api.createSecret(account, "variable", identifier, null, null, secretValue);
         }
+
+        PoliciesApi policiesApi = new PoliciesApi();
+        policiesApi.updatePolicy(account, "root", grantPolicy);
     }
 
     /**
-     * Creates a secret value within the specified variable.
+     * Creates a secret value within the specified variable. Test case for 200 response code
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void createSecretTest() throws ApiException {
+    public void createSecretTest200() throws ApiException {
         String kind = "variable";
         String identifier = "testSecret";
         String expirations = null;
@@ -78,33 +92,237 @@ public class SecretsApiTest extends ConfiguredTest {
     }
 
     /**
-     * Fetches the value of a secret from the specified Secret.
+     * Creates a secret value within the specified variable. Test case for 401 response code
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void getSecretTest() throws ApiException {
-        String kind = "variable";
+    public void createSecretTest401() throws ApiException {
+        String expirations = null;
+        String requestId = null;
+        try {
+            badAuthApi.createSecret(
+                    account,
+                    "variable",
+                    testVariables[0],
+                    expirations,
+                    requestId,
+                    "testing");
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Creates a secret value within the specified variable. Test case for 403 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretTest403() throws ApiException {
+        String expirations = null;
+        String requestId = null;
+        try {
+            aliceApi.createSecret(
+                    account,
+                    "variable",
+                    testVariables[0],
+                    expirations,
+                    requestId,
+                    "testing");
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Creates a secret value within the specified variable. Test case for 422 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretTest422() throws ApiException {
+        String expirations = null;
+        String requestId = null;
+        try {
+            api.createSecret(account, "variable", testVariables[0], expirations, requestId, "");
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
+     * Sets the expiration for the specified variable. Test case for 201 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretExpirationsTest201() throws ApiException {
+        String requestId = null;
+        String body = null;
+        ApiResponse<?> response = api.createSecretWithHttpInfo(
+                account,
+                "variable",
+                testVariables[0],
+                "",
+                requestId,
+                body);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    /**
+     * Sets the expiration for the specified variable. Test case for 401 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretExpirationsTest401() throws ApiException {
+        String requestId = null;
+        String body = null;
+        try {
+            badAuthApi.createSecretWithHttpInfo(
+                    account,
+                    "variable",
+                    testVariables[0],
+                    "",
+                    requestId,
+                    body);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Sets the expiration for the specified variable. Test case for 403 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretExpirationsTest403() throws ApiException {
+        String requestId = null;
+        String body = null;
+        try {
+            aliceApi.createSecretWithHttpInfo(
+                    account,
+                    "variable",
+                    testVariables[0],
+                    "",
+                    requestId,
+                    body);
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Sets the expiration for the specified variable. Test case for 404 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void createSecretExpirationsTest404() throws ApiException {
+        String requestId = null;
+        String body = null;
+        try {
+            aliceApi.createSecretWithHttpInfo(account, "variable", "fakevar", "", requestId, body);
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+    
+    /**
+     * Fetches the value of a secret from the specified Secret. Test case for 200 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretTest200() throws ApiException {
         String secretValue;
         for (String identifier : defaultSecrets.keySet()) {
             secretValue = defaultSecrets.get(identifier);
-            String response = api.getSecret(account, kind, identifier);
+            String response = api.getSecret(account, "variable", identifier);
             Assert.assertEquals(secretValue, response);
         }
     }
 
     /**
-     * Fetch multiple secrets.
+     * Fetches the value of a secret from the specified Secret. Test case for 401 response code
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void getSecretsTest() throws ApiException {
+    public void getSecretTest401() throws ApiException {
+        try {
+            badAuthApi.getSecret(account, "variable", testVariables[0]);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Fetches the value of a secret from the specified Secret. Test case for 403 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretTest403() throws ApiException {
+        try {
+            aliceApi.getSecret(account, "variable", testVariables[0]);
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Fetches the value of a secret from the specified Secret. Test case for 404 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretTest404() throws ApiException {
+        try {
+            api.getSecret(account, "variable", "nonexist");
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Fetches the value of a secret from the specified Secret. Test case for 422 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretTest422() throws ApiException {
+        client.setBasePath(System.getenv("CONJUR_HTTP_APPLIANCE_URL"));
+
+        try {
+            api.getSecret(account, "variable", "\0", 1, null);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+
+        client.setBasePath(System.getenv("CONJUR_APPLIANCE_URL"));
+    }
+
+    /**
+     * Combines all testing secrets into one comma delimited string.
+     */
+    public String getDefaultSecretList() {
         String variableIds = "";
-        String acceptEncoding = null;
-        String requestId = null;
         String kind = "variable";
         String nextId;
         List<String> ids = new ArrayList<String>();
@@ -114,12 +332,89 @@ public class SecretsApiTest extends ConfiguredTest {
             ids.add(nextId.substring(0, nextId.length()));
         }
 
-        variableIds = variableIds.substring(0, variableIds.length());
-        Map<?, ?> response = (Map<?, ?>) api.getSecrets(variableIds, acceptEncoding, requestId);
+        return variableIds.substring(0, variableIds.length());
+    }
+    
+    /**
+     * Fetch multiple secrets. Test case for 200 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretsTest200() throws ApiException {
+        String variableIds = getDefaultSecretList();
+        String[] ids = variableIds.split(",");
+
+        Map<?, ?> response = (Map<?, ?>) api.getSecrets(variableIds);
         for (String identifier : ids) {
             String splitId = identifier.split(":")[2];
 
             Assert.assertEquals(defaultSecrets.get(splitId), response.get(identifier));
+        }
+    }
+
+    /**
+     * Fetch multiple secrets. Test case for 401 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretsTest401() throws ApiException {
+        String variableIds = getDefaultSecretList();
+
+        try {
+            badAuthApi.getSecrets(variableIds);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Fetch multiple secrets. Test case for 403 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretsTest403() throws ApiException {
+        String variableIds = getDefaultSecretList();
+
+        try {
+            aliceApi.getSecrets(variableIds);
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Fetch multiple secrets. Test case for 404 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretsTest404() throws ApiException {
+        try {
+            api.getSecrets("nonexist");
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Fetch multiple secrets. Test case for 422 response code
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getSecretsTest422() throws ApiException {
+        try {
+            aliceApi.getSecrets("\0");
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
         }
     }
 }
