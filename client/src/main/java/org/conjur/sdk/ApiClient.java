@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import org.conjur.sdk.AccessToken;
 import org.conjur.sdk.auth.Authentication;
@@ -1264,7 +1265,14 @@ public class ApiClient {
 
     public AccessToken getNewAccessToken() {
         //NOTE: We cannot use the AuthenticationApi class here because it would create a circular dependancy
-        String path = String.format("%s/%s/%s/authenticate", getAuthenticationUrl(), account, username);
+        String encodedUsername;
+        try {
+            encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Username encoded with Unsupported Encoding");
+            return null;
+        }
+        String path = String.format("%s/%s/%s/authenticate", getAuthenticationUrl(), account, encodedUsername);
         String method = "POST";
         String body = apiKey;
         Map<String, String> headerParams = new HashMap<String, String>();
