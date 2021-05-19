@@ -33,50 +33,46 @@ import org.junit.*;
 public class PoliciesApiTest extends ConfiguredTest {
 
     private final PoliciesApi api = new PoliciesApi();
+    private PoliciesApi badAuthApi;
+    private PoliciesApi aliceApi;
 
     private static final String NEW_VARIABLE = "policy/test";
 
-    private static final String TEST_POLICY = String.format(
-        "- !variable one/password\n- !variable testSecret\n- !variable %s",
-        NEW_VARIABLE
-    );
+    private static final String TEST_POLICY = String.join("\n",
+        "- !variable one/password",
+        "- !variable testSecret",
+        String.format("- !variable %s", NEW_VARIABLE));
 
-    private static final String MODIFY_POLICY = String.format(
-        "- !delete\n  record: !variable %s",
-        NEW_VARIABLE
-    );
+    private static final String MODIFY_POLICY = String.join("\n",
+        "- !delete",
+        String.format("  record: !variable %s", NEW_VARIABLE));
 
-    private static final String UPDATE_POLICY = String.format(
-        "- !variable %s",
-        NEW_VARIABLE
-    );
-
+    private static final String UPDATE_POLICY = String.join("\n",
+        String.format("- !variable %s", NEW_VARIABLE));
 
     /**
-     * Adds data to the existing Conjur policy.
-     *
-     * @throws ApiException
-     *          if the Api call fails
+     * Sets up some of the api clients used in tests.
      */
-    @Test
-    public void loadPolicyTest() throws ApiException {
-        ApiResponse<LoadedPolicy> response = api.loadPolicyWithHttpInfo(
-            account,
-            "root",
-            TEST_POLICY
-        );
+    @Before
+    public void setUpApis() throws ApiException {
+        badAuthApi = new PoliciesApi(nonAuthClient);
+        ApiClient aliceClient = getApiClient("alice");
+        aliceApi = new PoliciesApi(aliceClient);
+    }
 
-        Assert.assertEquals(201, response.getStatusCode());
+    @After
+    public void reloadPolicies() throws ApiException, IOException {
+        loadDefaultPolicy();
     }
 
     /**
-     * Loads or replaces a Conjur policy document.
+     * Loads or replaces a Conjur policy document. Test case for 201 response code.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void replacePolicyTest() throws ApiException {
+    public void replacePolicyTest201() throws ApiException {
         ApiResponse<LoadedPolicy> response = api.replacePolicyWithHttpInfo(
             account,
             "root",
@@ -87,13 +83,202 @@ public class PoliciesApiTest extends ConfiguredTest {
     }
 
     /**
-     * Modifies an existing Conjur policy.
+     * Loads or replaces a Conjur policy document. Test case for 401 response code.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void updatePolicyTest() throws ApiException {
+    public void replacePolicyTest401() throws ApiException {
+        try {
+            badAuthApi.replacePolicyWithHttpInfo(
+                account,
+                "root",
+                MODIFY_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void replacePolicyTest403() throws ApiException {
+        try {
+            aliceApi.replacePolicyWithHttpInfo(
+                account,
+                "root",
+                MODIFY_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void replacePolicyTest404() throws ApiException {
+        try {
+            aliceApi.replacePolicyWithHttpInfo(
+                account,
+                "fakelocation",
+                MODIFY_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Loads or replaces a Conjur policy document. Test case for 409 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Ignore("There is no reliable way to test this error code so we skip it")
+    @Test
+    public void replacePolicyTest409() throws ApiException {}
+
+    /**
+     * Loads or replaces a Conjur policy document. Test case for 422 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void replacePolicyTest422() throws ApiException {
+        try {
+            api.replacePolicyWithHttpInfo(
+                account,
+                "root",
+                "\0bad policy"
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 201 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void loadPolicyTest201() throws ApiException {
+        ApiResponse<LoadedPolicy> response = api.loadPolicyWithHttpInfo(
+            account,
+            "root",
+            TEST_POLICY
+        );
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 401 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void loadPolicyTest401() throws ApiException {
+        try {
+            badAuthApi.loadPolicyWithHttpInfo(
+                account,
+                "root",
+                TEST_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void loadPolicyTest403() throws ApiException {
+        try {
+            aliceApi.loadPolicyWithHttpInfo(
+                account,
+                "root",
+                TEST_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void loadPolicyTest404() throws ApiException {
+        try {
+            aliceApi.loadPolicyWithHttpInfo(
+                account,
+                "fakelocation",
+                TEST_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 409 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Ignore("There is no reliable way to test this error code so we skip it")
+    @Test
+    public void loadPolicyTest409() throws ApiException {}
+
+    /**
+     * Adds data to the existing Conjur policy. Test case for 422 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void loadPolicyTest422() throws ApiException {
+        try {
+            api.loadPolicyWithHttpInfo(
+                account,
+                "root",
+                "\0bad policy"
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 201 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void updatePolicyTest201() throws ApiException {
         ApiResponse<LoadedPolicy> response = api.updatePolicyWithHttpInfo(
             account,
             "root",
@@ -101,5 +286,91 @@ public class PoliciesApiTest extends ConfiguredTest {
         );
 
         Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 401 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void updatePolicyTest401() throws ApiException {
+        try {
+            badAuthApi.updatePolicyWithHttpInfo(
+                account,
+                "root",
+                UPDATE_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void updatePolicyTest403() throws ApiException {
+        try {
+            aliceApi.updatePolicyWithHttpInfo(
+                account,
+                "root",
+                UPDATE_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void updatePolicyTest404() throws ApiException {
+        try {
+            aliceApi.updatePolicyWithHttpInfo(
+                account,
+                "fakelocation",
+                UPDATE_POLICY
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 409 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Ignore("There is no reliable way to test this error code so we skip it")
+    @Test
+    public void updatePolicyTest409() throws ApiException {}
+
+    /**
+     * Modifies an existing Conjur policy. Test case for 422 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void updatePolicyTest422() throws ApiException {
+        try {
+            api.updatePolicyWithHttpInfo(
+                account,
+                "root",
+                "\0bad policy"
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
     }
 }
