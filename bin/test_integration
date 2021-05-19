@@ -10,6 +10,7 @@ regen_client=true
 rebuild_conjur=true
 major_java_version=16
 install=""
+test_case=""
 
 if [ "$(tty)" == "not a tty" ]; then
   copy_prefix="sudo"
@@ -77,7 +78,7 @@ run_java_tests(){
     -e CONJUR_AUTO_UPDATE_TOKEN=true \
     --env-file .env \
     -w /client \
-    maven:3-openjdk-$major_java_version bash -c "mvn test $install"
+    maven:3-openjdk-$major_java_version bash -c "mvn test $test_case $install"
 }
 
 while test $# -gt 0
@@ -104,6 +105,10 @@ do
       ;;
     --jar)
       install="install"
+      ;;
+    -t|--test)
+      test_case="-Dtest=$1"
+      shift
       ;;
     *)
       break
