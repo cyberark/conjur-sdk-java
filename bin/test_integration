@@ -119,5 +119,6 @@ fi
 announce "Configuring Test Environment"
 bin/get_conjur_admin_key
 setup_keycloak
+config/https/generate_csr
 
 run_java_tests
