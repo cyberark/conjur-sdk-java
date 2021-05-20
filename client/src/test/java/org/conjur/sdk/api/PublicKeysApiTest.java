@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.*;
 import org.conjur.sdk.*;
 import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.model.*;
@@ -29,7 +30,7 @@ import org.junit.*;
 public class PublicKeysApiTest extends ConfiguredTest {
 
     private final PublicKeysApi api = new PublicKeysApi();
-
+    private final Pattern sshKeyPattern = Pattern.compile("ssh-rsa \\S+ \\S+\n");
 
     /**
      * Shows all public keys for a resource.
@@ -40,9 +41,11 @@ public class PublicKeysApiTest extends ConfiguredTest {
     @Test
     public void showPublicKeysTest() throws ApiException {
         String kind = "user";
-        String identifier = "admin";
+        String identifier = "alice";
         ApiResponse<String> response = api.showPublicKeysWithHttpInfo(account, kind, identifier);
 
         Assert.assertEquals(200, response.getStatusCode());
+        Matcher m = sshKeyPattern.matcher(response.getData());
+        Assert.assertTrue(m.matches());
     }
 }
