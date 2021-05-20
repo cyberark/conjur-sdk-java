@@ -1,7 +1,11 @@
 - !variable one/password
 - !variable testSecret
 
-- !user alice
+- !user
+  id: alice
+  public_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkP8DBDkCiPxnoXgSnrWq9QkYZ6mUmSsWQIEH81eSvllH+lTZQjgNwvwTaSSpBJ5QupyMf9/PCcP3D7weSrL3YkUSvb0GtE6Sq0mehHAPUNuT8qfXpjFVUe50LcGTUfqrD6EGdn+9t6PXeg7dFVyZt66Lg4ei3If7K+VeWDqaHFIIBevy/qLD8WEjKYBSfzf0cgxuRmfrqeu67bbL2ipHMhZQ0ZkVneQ5O++eRmbiEE3eoza6ut/jcPk5dzX+LHhJIZhI5JOyhRPxnrCrQkipoKtJgj3xxSCFfYQNvH9dAZZK6CTkY2SQT8YbAxgKagJ+JTg2LzKz3WzEe49HhIqxF laptop
+
 - !user bob
 
 - !policy
