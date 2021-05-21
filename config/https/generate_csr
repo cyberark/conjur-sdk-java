@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+echo "Generating Private Key and CSR for testing Conjur Certificate Authority..."
+
+common_name="test-client"
+
+rm -rf ./config/https/test-java.key ./config/https/test-java.csr
+openssl genrsa -out ./config/https/test-java.key 2048
+chmod 400 ./config/https/test-java.key
+openssl req -config ./config/https/openssl.conf -new -sha256 \
+  -subj "/C=US/ST=./L=./O=./CN=${common_name}" \
+  -extensions v3_intermediate_ca \
+  -outform PEM \
+  -key ./config/https/test-java.key -out ./config/https/test-java.csr
