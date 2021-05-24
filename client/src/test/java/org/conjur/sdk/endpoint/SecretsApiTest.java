@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class SecretsApiTest extends ConfiguredTest {
 
-    private final SecretsApi api = new SecretsApi();
+    private SecretsApi api;
     private SecretsApi badAuthApi;
     private static Map<String, String> defaultSecrets;
     private final String[] testVariables = {"one/password", "testSecret"};
@@ -52,6 +52,8 @@ public class SecretsApiTest extends ConfiguredTest {
     @Before
     public void setDefaultSecrets() throws ApiException {
         badAuthApi = new SecretsApi(nonAuthClient);
+        api = new SecretsApi();
+
         defaultSecrets = new HashMap<String, String>();
         defaultSecrets.put("testSecret", "testvalue");
         defaultSecrets.put("one/password", "testvalue2");

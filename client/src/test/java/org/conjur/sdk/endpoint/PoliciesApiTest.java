@@ -32,7 +32,7 @@ import org.junit.*;
  */
 public class PoliciesApiTest extends ConfiguredTest {
 
-    private final PoliciesApi api = new PoliciesApi();
+    private PoliciesApi api;
     private PoliciesApi badAuthApi;
     private PoliciesApi aliceApi;
 
@@ -47,14 +47,14 @@ public class PoliciesApiTest extends ConfiguredTest {
         "- !delete",
         String.format("  record: !variable %s", NEW_VARIABLE));
 
-    private static final String UPDATE_POLICY = String.join("\n",
-        String.format("- !variable %s", NEW_VARIABLE));
+    private static final String UPDATE_POLICY = String.format("- !variable %s", NEW_VARIABLE);
 
     /**
      * Sets up some of the api clients used in tests.
      */
     @Before
     public void setUpApis() throws ApiException {
+        api = new PoliciesApi();
         badAuthApi = new PoliciesApi(nonAuthClient);
         ApiClient aliceClient = getApiClient("alice");
         aliceApi = new PoliciesApi(aliceClient);
