@@ -29,6 +29,10 @@ import org.junit.*;
  */
 public class RolesApiTest extends ConfiguredTest {
 
+    private RolesApi badAuthApi;
+    private RolesApi api;
+    private RolesApi aliceApi;
+
     private static final String ROLES_POLICY = String.join("\n",
         "- !layer testLayer",
         "- !group",
@@ -46,8 +50,6 @@ public class RolesApiTest extends ConfiguredTest {
     private static final String BOB_ID = String.format(
         "%s:user:bob", System.getenv("CONJUR_ACCOUNT"));
 
-    private final RolesApi api = new RolesApi();
-
     /**
      * Setup roles to test by loading new policy.
      *
@@ -62,7 +64,22 @@ public class RolesApiTest extends ConfiguredTest {
     }
 
     /**
-     * Update or modify an existing role membership.
+     * Set up the api clients for use in the tests.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Before
+    public void setUpApis() throws ApiException {
+        badAuthApi = new RolesApi(nonAuthClient);
+        api = new RolesApi();
+
+        ApiClient aliceClient = getApiClient("alice");
+        aliceApi = new RolesApi(aliceClient);
+    }
+
+    /**
+     * Update or modify an existing role membership. Test case for 204 response code.
      *
      * @throws ApiException
      *          if the Api call fails
@@ -82,13 +99,78 @@ public class RolesApiTest extends ConfiguredTest {
     }
 
     /**
-     * Deletes an existing role membership.
+     * Update or modify an existing role membership. Test case for 401 response code.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void removeMemberFromRoleTest() throws ApiException {
+    public void addMemberToRoleTest401() throws ApiException {
+        String member = BOB_ID;
+        try {
+            badAuthApi.addMemberToRole(
+                account,
+                "group",
+                "userGroup",
+                "",
+                member
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Update or modify an existing role membership. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void addMemberToRoleTest403() throws ApiException {
+        String member = BOB_ID;
+        try {
+            aliceApi.addMemberToRole(
+                account,
+                "group",
+                "userGroup",
+                "",
+                member
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Update or modify an existing role membership. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void addMemberToRoleTest404() throws ApiException {
+        try {
+            api.addMemberToRole(
+                account,
+                "group",
+                "userGroup",
+                "",
+                "nonexist"
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Deletes an existing role membership. Test case for 204 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void removeMemberFromRoleTest204() throws ApiException {
         String kind = "group";
         String identifier = "userGroup";
         String members = "";
@@ -105,13 +187,88 @@ public class RolesApiTest extends ConfiguredTest {
     }
 
     /**
-     * Get role information.
+     * Deletes an existing role membership. Test case for 401 response code.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showRoleTest() throws ApiException {
+    public void removeMemberFromRoleTest401() throws ApiException {
+        String kind = "group";
+        String identifier = "userGroup";
+        String members = "";
+        String member = BOB_ID;
+        try {
+            badAuthApi.removeMemberFromRole(
+                account,
+                kind,
+                identifier,
+                members,
+                member
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Deletes an existing role membership. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void removeMemberFromRoleTest403() throws ApiException {
+        String kind = "group";
+        String identifier = "userGroup";
+        String members = "";
+        String member = BOB_ID;
+        try {
+            aliceApi.removeMemberFromRole(
+                account,
+                kind,
+                identifier,
+                members,
+                member
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Deletes an existing role membership. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void removeMemberFromRoleTest404() throws ApiException {
+        String kind = "group";
+        String identifier = "userGroup";
+        String members = "";
+        String member = "nonexist";
+        try {
+            api.removeMemberFromRole(
+                account,
+                kind,
+                identifier,
+                members,
+                member
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Get role information. Test case for 200 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void showRoleTest200() throws ApiException {
         String kind = "user";
         String identifier = "admin";
 
@@ -122,5 +279,71 @@ public class RolesApiTest extends ConfiguredTest {
         );
 
         Assert.assertEquals(200, response.getStatusCode());
+    }
+
+    /**
+     * Get role information. Test case for 401 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void showRoleTest401() throws ApiException {
+        String kind = "user";
+        String identifier = "admin";
+
+        try {
+            badAuthApi.showRole(
+                account,
+                kind,
+                identifier
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Get role information. Test case for 403 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void showRoleTest403() throws ApiException {
+        String kind = "user";
+        String identifier = "admin";
+
+        try {
+            aliceApi.showRole(
+                account,
+                kind,
+                identifier
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Get role information. Test case for 404 response code.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void showRoleTest404() throws ApiException {
+        String kind = "user";
+        String identifier = "nonexist";
+
+        try {
+            api.showRole(
+                account,
+                kind,
+                identifier
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
     }
 }
