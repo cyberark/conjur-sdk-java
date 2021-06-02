@@ -9,12 +9,12 @@ docker run --rm \
   openjdk:16-jdk-oraclelinux7 \
   /bin/bash -c "
     yum -y update && \\
-    yum -y install curl wget && \\
-    curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \\
-    | grep \"browser_download_url\" \\
-    | cut -d '\"' -f 4 \\
-    | wget -qi - && \\
-    java -jar checkstyle-8.42-all.jar -c /code/config.xml /code/client/src/test
+    yum -y install curl wget jq && \\
+    export RESPONSE=\"\$(curl https://api.github.com/repos/checkstyle/checkstyle/releases/latest)\" && \\
+    export JAR_NAME=\"\$(echo \$RESPONSE | jq -r '.assets[0].name')\" && \\
+    export DOWNLOAD_URL=\"\$(echo \$RESPONSE | jq -r '.assets[0].browser_download_url')\" && \\
+    wget \$DOWNLOAD_URL && \\
+    java -jar \$JAR_NAME -c /code/config.xml /code/client/src/test
   "
 
 echo "No style errors!"
