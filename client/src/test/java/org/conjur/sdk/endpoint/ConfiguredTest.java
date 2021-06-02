@@ -23,11 +23,12 @@ public class ConfiguredTest {
     protected ApiKeyAuth conjurAuth;
 
     // Whether environment variables have been set to properly configure the client
-    private static final boolean envVariablesSet =
+    private static final boolean ENV_VARIABLES_SET =
         System.getenv("ENV_VARIABLES_SET").equals("true");
 
     private static final String OIDC_POLICY_FILE = "/config/oidc-webservice.yml";
     private static final String DEFAULT_POLICY_FILE = "/config/policy.yaml";
+    private static final String HOST_LOGIN_PREFIX = "host/";
 
     /**
      * Set up API client with HttpBasicAuth then ApiKeyAuth.
@@ -39,15 +40,11 @@ public class ConfiguredTest {
             throws ApiException {
         String apiKey = getApiKey(login, role);
         if (role.equals("host")) {
-            login = "host/" + login;
+            login = HOST_LOGIN_PREFIX + login;
         }
         HttpBasicAuth basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         basicAuth.setUsername(login);
         basicAuth.setPassword(apiKey);
-    }
-
-    private static void setupClientAuth(ApiClient client, String login) throws ApiException {
-        setupClientAuth(client, login, "user");
     }
 
     private static void authenticateClient(ApiClient client, String login, String role)
@@ -55,7 +52,7 @@ public class ConfiguredTest {
         String apiKey = getApiKey(login, role);
         AuthenticationApi authApi = new AuthenticationApi(client);
         if (role.equals("host")) {
-            login = "host/" + login;
+            login = HOST_LOGIN_PREFIX + login;
         }
 
         String token = authApi.getAccessToken(account, login, apiKey, "base64", null);
@@ -150,14 +147,14 @@ public class ConfiguredTest {
         String loginName = username;
 
         if (role.equals("host")) {
-            loginName = "host/" + username;
+            loginName = HOST_LOGIN_PREFIX + username;
         }
 
         ApiClient newClient = new ApiClient();
         newClient.setUsername(loginName);
         newClient.setPassword(apiKey);
         newClient.setApiKey(apiKey);
-        if (!envVariablesSet) {
+        if (!ENV_VARIABLES_SET) {
             setupClient(newClient, username, role);
             authenticateClient(newClient, username, role);
         }
@@ -202,7 +199,7 @@ public class ConfiguredTest {
     @BeforeClass
     public static void setUpClass() throws ApiException {
         ApiClient client = Configuration.getDefaultApiClient();
-        if (!envVariablesSet) {
+        if (!ENV_VARIABLES_SET) {
             setupClient(client, login);
             authenticateClient(client, login);
         }
@@ -220,7 +217,7 @@ public class ConfiguredTest {
     public void setUp() throws ApiException {
         client = Configuration.getDefaultApiClient();
         nonAuthClient = new ApiClient();
-        if (!envVariablesSet) {
+        if (!ENV_VARIABLES_SET) {
             setupClient(nonAuthClient, login);
         }
 
@@ -228,6 +225,5 @@ public class ConfiguredTest {
         badAuth.setApiKey("");
         basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         conjurAuth = (ApiKeyAuth) client.getAuthentication("conjurAuth");
-        login = System.getenv("AUTHN_LOGIN");
     }
 }
