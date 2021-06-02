@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.ArrayUtils;
 import org.conjur.sdk.*;
 import org.conjur.sdk.endpoint.*;
 import org.conjur.sdk.model.*;
@@ -28,56 +29,201 @@ import org.junit.*;
  */
 public class ResourcesApiTest extends ConfiguredTest {
 
-    private final ResourcesApi api = new ResourcesApi();
+    private ResourcesApi api;
+    private ResourcesApi badAuthApi;
 
+    String kind = "variable";
+
+    private String rootPolicy = String.format("%s:policy:root", account);
+    private String onePassword = String.format("%s:variable:one/password", account);
+    private String testSecret = String.format("%s:variable:testSecret", account);
+    private String alice = String.format("%s:user:alice", account);
+    private String aliceKey = String.format("%s:public_key:user/alice/laptop", account);
+    private String bob = String.format("%s:user:bob", account);
+    private String ldapPolicy = String.format("%s:policy:conjur/authn-ldap/test", account);
+    private String ldapWebservice = String.format("%s:webservice:conjur/authn-ldap/test", account);
+    private String ldapGroup = String.format("%s:group:conjur/authn-ldap/test/users", account);
+    private final String[] resourceIds = {
+        rootPolicy, onePassword, testSecret,
+        alice, aliceKey, bob,
+        ldapPolicy, ldapWebservice, ldapGroup
+    };
+
+    /**
+     * Set up authenticated and unauthenticated API clients.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Before
+    public void setUpApi() throws ApiException {
+        api = new ResourcesApi();
+        badAuthApi = new ResourcesApi(nonAuthClient);
+    }
 
     /**
      * Shows a description of a single resource.
+     * Test 200 response.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showResourceTest() throws ApiException {
-        String kind = "variable";
+    public void showResourceTest200() throws ApiException {
         String identifier = "testSecret";
-        Boolean permittedRoles = null;
-        String privilege = null;
-        Boolean check = null;
-        String role = null;
-        String requestId = null;
-        ApiResponse<Resource> response = api.showResourceWithHttpInfo(
-            account, kind, identifier, permittedRoles,
-            privilege, check, role, requestId
-        );
 
+        ApiResponse<Resource> response = api.showResourceWithHttpInfo(account, kind, identifier);
         Assert.assertEquals(200, response.getStatusCode());
         Resource result = response.getData();
         Assert.assertEquals(String.format("%s:variable:testSecret", account), result.getId());
     }
 
     /**
-     * Lists resources within an organization account.
+     * Test 204 response for a successful permission check.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showResourcesForAccountTest() throws ApiException {
-        String kind = "variable";
-        String search = null;
-        Integer offset = null;
-        Integer limit = null;
-        Boolean count = null;
+    public void showResourceTest204() throws ApiException {
+        String identifier = "testSecret";
+        Boolean permittedRoles = null;
+        String privilege = "update";
+        Boolean check = true;
         String role = null;
-        String actingAs = null;
         String requestId = null;
 
-        ApiResponse<List<Resource>> response = api.showResourcesForAccountWithHttpInfo(
-            account, kind, search, offset, limit,
-            count, role, actingAs, requestId
+        ApiResponse<Resource> response = api.showResourceWithHttpInfo(
+            account,
+            kind,
+            identifier,
+            permittedRoles,
+            privilege,
+            check,
+            role,
+            requestId
         );
-        Assert.assertEquals(200, response.getStatusCode());
+        Assert.assertEquals(204, response.getStatusCode());
+        Assert.assertNull(response.getData());
+    }
+
+    /**
+     * Test 400 response when showing a single resource.
+     */
+    @Test
+    public void showResourceTest400() {
+        String identifier = "testSecret";
+
+        try {
+            api.showResource("\0", kind, identifier);
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when showing a single resource.
+     */
+    @Test
+    public void showResourceTest401() {
+        String identifier = "testSecret";
+
+        try {
+            badAuthApi.showResource(account, kind, identifier);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 403 response when showing a single resource.
+     */
+    @Test
+    public void showResourceTest403() {
+        String identifier = "testSecret";
+        Boolean permittedRoles = null;
+        String privilege = "read";
+        Boolean check = true;
+        String role = "user:alice";
+        String requestId = null;
+
+        try {
+            api.showResource(
+                account,
+                kind,
+                identifier,
+                permittedRoles,
+                privilege,
+                check,
+                role,
+                requestId
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Test 404 response when showing a single resource.
+     * This case has an privileged user attempting to find
+     * a resource that doesn't exist.
+     */
+    @Test
+    public void showResourceTest404a() {
+        String identifier = "fakeVar";
+
+        try {
+            api.showResource(account, kind, identifier);
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Test 404 response when showing a single resource.
+     * This case has a user without read privilege attempting
+     * to find an existing resource.
+     */
+    @Test
+    public void showResourceTest404b() throws ApiException {
+        ApiClient aliceClient = getApiClient("alice");
+        ResourcesApi aliceApi = new ResourcesApi(aliceClient);
+
+        String identifier = "testSecret";
+
+        try {
+            aliceApi.showResource(account, kind, identifier);
+        } catch (ApiException e) {
+            Assert.assertEquals(404, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when showing a single resource.
+     */
+    @Test
+    public void showResourceTest422() {
+        String identifier = "testSecret";
+        Boolean permittedRoles = null;
+        String privilege = "\0";
+        Boolean check = true;
+        String role = null;
+        String requestId = null;
+
+        try {
+            api.showResource(
+                account,
+                kind,
+                identifier,
+                permittedRoles,
+                privilege,
+                check,
+                role,
+                requestId
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
     }
 
     /**
@@ -87,7 +233,89 @@ public class ResourcesApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void showResourcesForAllAccountsTest() throws ApiException {
+    public void showResourcesForAccountTest200() throws ApiException {
+        ApiResponse<List<Resource>> response = api.showResourcesForAccountWithHttpInfo(account);
+        List<Resource> responseData = response.getData();
+
+        Assert.assertEquals(200, response.getStatusCode());
+        for (int i = 0; i < responseData.size(); i++) {
+            Assert.assertTrue(ArrayUtils.contains(resourceIds, responseData.get(i).getId()));
+        }
+    }
+
+    @Test
+    public void showResourcesForAccountTest400() {
+        try {
+            api.showResourcesForAccount(account);
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAccountTest401() {
+        try {
+            badAuthApi.showResourcesForAccount(account);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 403 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAccountTest403() {
+        String search = null;
+        Integer offset = null;
+        Integer limit = null;
+        Boolean count = null;
+        String role = null;
+        String actingAs = "user:alice";
+        String requestId = null;
+
+        try {
+            api.showResourcesForAccount(
+                account,
+                kind,
+                search,
+                offset,
+                limit,
+                count,
+                role,
+                actingAs,
+                requestId
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAccountTest422() {
+        String kind = "\0";
+
+        try {
+            api.showResourcesForAccount(account, kind, null, null, null, null, null, null, null);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
+     * Lists resources within an organization account.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void showResourcesForAllAccountsTest200() throws ApiException {
         String kind = null;
         String search = null;
         Integer offset = null;
@@ -105,14 +333,61 @@ public class ResourcesApiTest extends ConfiguredTest {
     }
 
     /**
+     * Test 401 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAllAccountsTest401() {
+        try {
+            badAuthApi.showResourcesForAllAccounts();
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 403 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAllAccountsTest403() {
+        String actingAs = "user:alice";
+
+        try {
+            api.showResourcesForAllAccounts(
+                account,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                actingAs,
+                null
+            );
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when listing resources within an organization account.
+     */
+    @Test
+    public void showResourcesForAllAccountsTest422() {
+        try {
+            api.showResourcesForAllAccounts("\0", null, null, null, null, null, null, null, null);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
      * Lists resources of the same kind within an organization account.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showResourcesForKindTest() throws ApiException {
-        String kind = "variable";
+    public void showResourcesForKindTest200() throws ApiException {
         String search = null;
         Integer offset = null;
         Integer limit = null;
@@ -126,5 +401,90 @@ public class ResourcesApiTest extends ConfiguredTest {
             count, role, actingAs, requestId
         );
         Assert.assertEquals(200, response.getStatusCode());
+    }
+
+    /**
+     * Test 400 response when listing resources of the same kind.
+     */
+    @Test
+    public void showResourcesForKindTest400() {
+        String account = "\0";
+
+        try {
+            api.showResourcesForKind(account, kind);
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when listing resources of the same kind.
+     */
+    @Test
+    public void showResourcesForKindTest401() {
+        try {
+            badAuthApi.showResourcesForKind(account, kind);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 403 response when listing resources of the same kind.
+     */
+    @Test
+    public void showResourcesForKindTest403() {
+        String actingAs = "user:alice";
+
+        try {
+            api.showResourcesForKind(account, kind, null, null, null, null, null, actingAs, null);
+        } catch (ApiException e) {
+            Assert.assertEquals(403, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when listing resources of the same kind.
+     */
+    @Test
+    public void showResourcesForKindTest422() {
+        String search = "\0";
+
+        try {
+            api.showResourcesForKind(account, kind, search, null, null, null, null, null, null);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    /**
+     * Test Conjur response when request is configured as both a
+     * permitted roles check and a privilege check. Conjur responds
+     * with the results of the privilege check.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void permittedRolesAndCheckTest() throws ApiException {
+        String identifier = "testSecret";
+        Boolean permittedRoles = true;
+        String privilege = "read";
+        Boolean check = true;
+        String role = null;
+        String requestId = null;
+
+        ApiResponse response = api.showResourceWithHttpInfo(
+            account,
+            kind,
+            identifier,
+            permittedRoles,
+            privilege,
+            check,
+            null,
+            null
+        );
+        Assert.assertEquals(204, response.getStatusCode());
+        Assert.assertNull(response.getData());
     }
 }
