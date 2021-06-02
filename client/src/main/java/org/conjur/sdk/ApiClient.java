@@ -81,6 +81,7 @@ public class ApiClient {
     private HttpLoggingInterceptor loggingInterceptor;
 
     // Custom fields & Getters/Setters
+    private String conjurAuthenticator = "conjurAuth";
     private String username = System.getenv().getOrDefault("CONJUR_AUTHN_LOGIN", null);
     private String password = System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
     private String account = System.getenv().getOrDefault("CONJUR_ACCOUNT", null);
@@ -155,7 +156,7 @@ public class ApiClient {
             ((HttpBasicAuth)this.getAuthentication("basicAuth")).setPassword(password);
         }
 
-        ((ApiKeyAuth)this.getAuthentication("conjurAuth")).setApiKeyPrefix("Token");
+        ((ApiKeyAuth)this.getAuthentication(conjurAuthenticator)).setApiKeyPrefix("Token");
         if (certFile != null)
             setSslCaCert(getCertInputStream());
     }
@@ -1257,7 +1258,7 @@ public class ApiClient {
             Authentication auth = authentications.get(authName);
             if (auth == null) {
                 throw new RuntimeException("Authentication undefined: " + authName);
-            } else if (authName == "conjurAuth" && ((ApiKeyAuth)auth).getAccessToken().needsRefresh() && canRefreshAccessToken()) {
+            } else if (authName == conjurAuthenticator && ((ApiKeyAuth)auth).getAccessToken().needsRefresh() && canRefreshAccessToken()) {
                 AccessToken newToken = this.getNewAccessToken();
                 ((ApiKeyAuth)auth).setAccessToken(newToken);
             }

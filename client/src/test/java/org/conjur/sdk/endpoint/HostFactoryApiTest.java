@@ -36,7 +36,7 @@ public class HostFactoryApiTest extends ConfiguredTest {
 
     private static final String HOST_FACTORY_ID = String.format(
         "%s:host_factory:testFactory",
-        System.getenv("CONJUR_ACCOUNT"));
+        System.getenv("ACCOUNT"));
 
     private static final String FACTORY_POLICY = String.join("\n", "- !layer testLayer",
         "- !host_factory",
@@ -59,10 +59,9 @@ public class HostFactoryApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @BeforeClass
-    public static void setUpClass() throws ApiException {
-        ConfiguredTest.setUpClass();
+    public static void setUpPolicies() throws ApiException {
         PoliciesApi policiesApi = new PoliciesApi();
-        policiesApi.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", FACTORY_POLICY);
+        policiesApi.replacePolicy(System.getenv("ACCOUNT"), "root", FACTORY_POLICY);
     }
 
     /**
@@ -108,6 +107,7 @@ public class HostFactoryApiTest extends ConfiguredTest {
         ApiResponse<?> response = api.createHostWithHttpInfo(id);
 
         Assert.assertEquals(201, response.getStatusCode());
+
         conjurAuth.setApiKey(oldApiKey);
     }
 

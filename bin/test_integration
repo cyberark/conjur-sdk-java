@@ -12,6 +12,7 @@ major_java_version=16
 install=""
 test_case=""
 coverage=false
+unset_environment=false
 
 if [ "$(tty)" == "not a tty" ]; then
   copy_prefix="sudo"
@@ -59,6 +60,8 @@ print_help(){
   echo -e "\tThe --jar flag will test then build the project outputing to client/target"
   echo
   echo -e "\tThe -j or --java-version flag allows you yo specify a specific java version used to compile/test the project"
+  echo
+  echo -e "\tThe -e flag will turn off the default client environment variables to make sure the client works with a manual configuration"
 }
 
 run_java_tests(){
@@ -73,16 +76,31 @@ run_java_tests(){
     maven_command+=" && mvn jacoco:report"
   fi
 
-  docker run --rm --network conjur-sdk-java \
-    -v ${PWD}/client:/client \
-    -v ${PWD}/test/config:/config \
-    -v ${PWD}/config/https:/https \
-    -e CONJUR_HTTP_APPLIANCE_URL=http://conjur \
+  environment="-e CONJUR_HTTP_APPLIANCE_URL=http://conjur \
+  -e APPLIANCE_URL=https://conjur-https \
+  -e ACCOUNT=dev \
+  -e AUTHN_LOGIN=admin \
+  -e CERT_FILE=/https/ca.crt "
+
+  if [ "$unset_environment" = false ]; then
+    environment+="\
     -e CONJUR_APPLIANCE_URL=https://conjur-https \
     -e CONJUR_ACCOUNT=dev \
     -e CONJUR_AUTHN_LOGIN=admin \
     -e CONJUR_CERT_FILE=/https/ca.crt \
     -e CONJUR_AUTO_UPDATE_TOKEN=true \
+    -e ENV_VARIABLES_SET=true"
+  else
+    environment+="\
+    -e CONJUR_AUTO_UPDATE_TOKEN=false \
+    -e ENV_VARIABLES_SET=false"
+  fi
+
+  docker run --rm --network conjur-sdk-java \
+    -v ${PWD}/client:/client \
+    -v ${PWD}/test/config:/config \
+    -v ${PWD}/config/https:/https \
+    $environment \
     --env-file .env \
     -w /client \
     maven:3-openjdk-$major_java_version bash -c "$maven_command"
@@ -119,6 +137,9 @@ do
       ;;
     -c|--coverage)
       coverage=true
+      ;;
+    -e)
+      unset_environment=true
       ;;
     *)
       break
