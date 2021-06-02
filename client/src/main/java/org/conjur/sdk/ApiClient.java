@@ -154,6 +154,10 @@ public class ApiClient {
         if (password != null) {
             ((HttpBasicAuth)this.getAuthentication("basicAuth")).setPassword(password);
         }
+
+        ((ApiKeyAuth)this.getAuthentication("conjurAuth")).setApiKeyPrefix("Token");
+        if (certFile != null)
+            setSslCaCert(getCertInputStream());
     }
 
     private void initHttpClient() {
@@ -380,6 +384,13 @@ public class ApiClient {
         this.password = password;
     }
 
+    public void setCertFile(String filename) {
+        certFile = filename;
+    }
+
+    public String getCertFile() {
+        return certFile;
+    }
 
     /**
      * Sets the value of the API key for this class
@@ -1278,7 +1289,6 @@ public class ApiClient {
         Map<String, String> headerParams = new HashMap<String, String>();
         headerParams.put("Accept-Encoding", "base64");
         headerParams.put("Content-Type", "text/plain");
-        headerParams.put("X-Request-Id", "testingid");
         String accessToken = null;
         try {
             Call c = this.buildCall(path, method, new ArrayList<Pair>(), new ArrayList<Pair>(), body, headerParams, new HashMap<String, String>(), new HashMap<String, Object>(), new String[]{}, null);
