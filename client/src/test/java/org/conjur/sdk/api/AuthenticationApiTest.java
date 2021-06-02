@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.conjur.sdk.*;
 import org.conjur.sdk.auth.*;
+import org.conjur.sdk.endpoint.AuthenticationApi;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,18 +33,20 @@ import org.junit.Test;
 public class AuthenticationApiTest extends ConfiguredTest {
 
     private AuthenticationApi api;
+    private AuthenticationApi badAuthApi;
 
-    @Override
+
+    /**
+     * Set up Authentication API clients to test.
+     */
     @Before
-    public void setUp() {
-        client = Configuration.getDefaultApiClient();
-        login = System.getenv("CONJUR_AUTHN_LOGIN");
-        account = System.getenv("CONJUR_ACCOUNT");
-
+    public void setUpClients() {
         api = new AuthenticationApi();
         basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         basicAuth.setUsername(login);
         basicAuth.setPassword(apiKey());
+
+        badAuthApi = new AuthenticationApi(nonAuthClient);
     }
 
     /**
@@ -72,13 +75,58 @@ public class AuthenticationApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void changePasswordTest() throws ApiException {
+    public void changePasswordTest204() throws ApiException {
         String newPassword = "@Sup3rS3cr3t@";
-        api.changePassword(account, newPassword);
+        ApiResponse response = api.changePasswordWithHttpInfo(account, newPassword);
+        Assert.assertEquals(response.getStatusCode(), 204);
 
         basicAuth.setPassword(newPassword);
-        ApiResponse<String> response = api.getAPIKeyWithHttpInfo(account);
+        response = api.getAPIKeyWithHttpInfo(account);
         Assert.assertEquals(response.getStatusCode(), 200);
+    }
+
+    /**
+     * Test 400 response when changing a user's password.
+     */
+    @Test
+    public void changePasswordTest400() {
+        String newPassword = "@Sup3rS3cre3t@";
+
+        try {
+            api.changePassword("\0", newPassword);
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when changing a user's password.
+     */
+    @Test
+    public void changePasswordTest401() {
+        String newPassword = "@Sup3rS3cre3t@";
+        String invalidPassword = "SomethingInvalid";
+
+        // change password with bad credentials
+        try {
+            badAuthApi.changePassword(account, newPassword);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when changing a user's password.
+     */
+    @Test
+    public void changePasswordTest422() {
+        String invalidPassword = "SomethingInvalid";
+
+        try {
+            api.changePassword(account, invalidPassword);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
     }
 
     /**
@@ -89,10 +137,51 @@ public class AuthenticationApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void getApiKeyTest() throws ApiException {
+    public void getApiKeyTest200() throws ApiException {
         String response = api.getAPIKey(account);
 
         Assert.assertEquals(response, apiKey());
+    }
+
+    /**
+     * Test 400 response when getting a user's API key.
+     */
+    @Test
+    public void getApiKeyTest400() {
+        try {
+            api.getAPIKey("\0");
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when getting a user's API key.
+     */
+    @Test
+    public void getApiKeyTest401() {
+        try {
+            badAuthApi.getAPIKey(account);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when getting a user's API key.
+     */
+    @Test
+    public void getApiKeyTest422() {
+        ApiClient client = api.getApiClient();
+        client.setBasePath("http://conjur");
+
+        try {
+            api.getAPIKey(account);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
+
+        client.setBasePath("https://conjur-https");
     }
 
     /**
@@ -102,7 +191,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
      *          if the Api call fails
      */
     @Test
-    public void getAccessToken() throws ApiException {
+    public void getAccessTokenTest200() throws ApiException {
         String response = api.getAccessToken(account, login, apiKey());
 
         String[] keys = {
@@ -117,6 +206,30 @@ public class AuthenticationApiTest extends ConfiguredTest {
     }
 
     /**
+     * Tests 400 response when getting a user's access token.
+     */
+    @Test
+    public void getAccessTokenTest400() {
+        try {
+            api.getAccessToken(account, "\0", apiKey());
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Tests 401 response when getting a user's access token.
+     */
+    @Test
+    public void getAccessTokenTest401() { 
+        try {
+            badAuthApi.getAccessToken(account, login, apiKey());
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
      * Tests rotating the current role's api key.
      *
      * @throws ApiException
@@ -124,8 +237,59 @@ public class AuthenticationApiTest extends ConfiguredTest {
      */
     @Ignore("Causes issues with other tests - Java doesn't allow setting Environment variables")
     @Test
-    public void rotateApiKeyTest() throws ApiException {
+    public void rotateApiKeyTest200Self() throws ApiException {
         ApiResponse<String> response = api.rotateApiKeyWithHttpInfo(account);
         Assert.assertEquals(200, response.getStatusCode());
+    }
+
+    /**
+     * Test rotating another role's api key.
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void rotateApiKeyTest200Other() throws ApiException {
+        String role = "user:alice";
+        String requestId = null;
+
+        ApiResponse response = api.rotateApiKeyWithHttpInfo(account, role, requestId);
+        Assert.assertEquals(200, response.getStatusCode());
+    }
+
+    /**
+     * Test 400 response when rotating the current role's api key.
+     */
+    @Test
+    public void rotateApiKeyTest400() {
+        try {
+            api.rotateApiKey("\0");
+        } catch (ApiException e) {
+            Assert.assertEquals(400, e.getCode());
+        }
+    }
+
+    /**
+     * Test 401 response when rotating the current role's api key.
+     */
+    @Test
+    public void rotateApiKeyTest401() {
+        try {
+            badAuthApi.rotateApiKey(account);
+        } catch (ApiException e) {
+            Assert.assertEquals(401, e.getCode());
+        }
+    }
+
+    /**
+     * Test 422 response when rotating the current role's api key.
+     */
+    @Test
+    public void rotateApiKeyTest422() {
+        try {
+            api.rotateApiKey(account, "\0", null);
+        } catch (ApiException e) {
+            Assert.assertEquals(422, e.getCode());
+        }
     }
 }
