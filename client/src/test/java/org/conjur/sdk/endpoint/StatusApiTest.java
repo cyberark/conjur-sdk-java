@@ -33,7 +33,7 @@ import org.junit.*;
  */
 public class StatusApiTest extends ConfiguredTest {
 
-    private final StatusApi api = new StatusApi();
+    private StatusApi api;
     private StatusApi badAuthApi;
 
     @BeforeClass
@@ -44,6 +44,7 @@ public class StatusApiTest extends ConfiguredTest {
     @Before
     public void setUpApis() throws ApiException, IOException {
         badAuthApi = new StatusApi(nonAuthClient);
+        api = new StatusApi();
     }
 
     /**
