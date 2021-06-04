@@ -85,7 +85,7 @@
                             <value>conf/log4j.properties</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Xms512m -Xmx1500m</argLine>
+                    <argLine>@{argLine} -Xms512m -Xmx1500m</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -186,6 +186,54 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <configuration>
+                    <excludes>
+                        <exclude>org/conjur/sdk/model/**/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                <execution>
+                    <id>coverage-initialize</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>coverage-report</id>
+                    <phase>post-unit-test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>coverage-check</id>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                    <configuration>
+                    <rules>
+                        <rule>
+                            <element>CLASS</element>
+                            <excludes>
+                                <exclude>org.conjur.sdk.model.*</exclude>
+                            </excludes>
+                            <limits>
+                                <limit>
+                                    <counter>LINE</counter>
+                                    <value>COVEREDRATIO</value>
+                                    <minimum>10%</minimum>
+                                </limit>
+                            </limits>
+                        </rule>
+                    </rules>
+                    </configuration>
+                </execution>
+              </executions>
             </plugin>
         </plugins>
     </build>
