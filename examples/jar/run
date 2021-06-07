@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Ensure we start in the root repo directory
+cd "$(dirname "$0")/../.." || return
+./bin/start_conjur
+./bin/build
+source bin/util
+
+rm ./examples/jar/*.jar
+cp client/target/*jar-with-dependencies.jar examples/jar/
+
+cd examples/jar || return
+
+classpath="$(find conjur-sdk-java-*-jar-with-dependencies.jar | tr '\n' ':')"
+
+docker run --rm --network conjur-sdk-java \
+  -v "${PWD}:/client" \
+  -e CONJUR_APPLIANCE_URL=http://conjur \
+  -e CONJUR_ACCOUNT=dev \
+  -e CONJUR_AUTHN_LOGIN=admin \
+  -e CONJUR_AUTO_UPDATE_TOKEN=true \
+  -e CONJUR_AUTHN_API_KEY="$(get_conjur_admin_api_key)" \
+  -w /client \
+  openjdk:16 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
