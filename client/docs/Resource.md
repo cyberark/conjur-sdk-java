@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 **policy** | **String** |  |  [optional]
 **policyVersions** | [**List&lt;PolicyVersion&gt;**](PolicyVersion.md) |  |  [optional]
 **restrictedTo** | **List&lt;String&gt;** |  |  [optional]
-**secrets** | **List&lt;String&gt;** |  |  [optional]
+**secrets** | [**List&lt;ResourceSecrets&gt;**](ResourceSecrets.md) |  |  [optional]
 
 
 

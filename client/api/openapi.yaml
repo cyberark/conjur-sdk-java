@@ -3442,7 +3442,7 @@ components:
           type: array
         secrets:
           items:
-            type: string
+            $ref: '#/components/schemas/Resource_secrets'
           type: array
       type: object
     PolicyVersion:
@@ -3547,6 +3547,12 @@ components:
           type: string
         role:
           type: string
+    Resource_secrets:
+      properties:
+        expires_at:
+          type: string
+        version:
+          type: number
   securitySchemes:
     basicAuth:
       description: |
