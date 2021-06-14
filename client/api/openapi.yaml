@@ -177,6 +177,7 @@ paths:
             has not been set
         "500":
           description: Malfromed request, rejected by the server
+      security: []
       summary: Gets a short-lived access token for applications running in Azure.
       tags:
       - authentication
@@ -248,6 +249,7 @@ paths:
           description: Authentication information is missing or invalid
         "500":
           description: Malfromed request, rejected by the server
+      security: []
       summary: |
         Gets a short-lived access token for applications running in
         Google Cloud Platform.
@@ -425,6 +427,7 @@ paths:
             has not been set
         "500":
           description: Malfromed request, rejected by the server
+      security: []
       summary: Get a short-lived access token for applications running in AWS.
       tags:
       - authentication
@@ -785,6 +788,7 @@ paths:
             has not been set
         "500":
           description: Malfromed request, rejected by the server
+      security: []
       summary: |
         Gets a short-lived access token for users and hosts using their
         LDAP identity to access the Conjur API.
@@ -856,6 +860,7 @@ paths:
           description: Authentication information is missing or invalid
         "502":
           description: Error connecting conjur to the OIDC provider
+      security: []
       summary: |
         Gets a short-lived access token for applications using OpenID
         Connect (OIDC) to access the Conjur API.
@@ -1211,6 +1216,7 @@ paths:
             has not been set
         "500":
           description: Malfromed request, rejected by the server
+      security: []
       summary: |
         Gets a short-lived access token, which is required in the header
         of most subsequent API requests.
