@@ -11,6 +11,7 @@ rebuild_conjur=true
 major_java_version=16
 install=""
 test_case=""
+coverage=false
 
 if [ "$(tty)" == "not a tty" ]; then
   copy_prefix="sudo"
@@ -66,6 +67,12 @@ run_java_tests(){
     bin/refresh_client -l java
   fi
 
+  maven_command="mvn test $install"
+
+  if [ "$coverage" = "true" ]; then
+    maven_command+=" && mvn jacoco:report"
+  fi
+
   docker run --rm --network conjur-sdk-java \
     -v ${PWD}/client:/client \
     -v ${PWD}/test/config:/config \
@@ -78,7 +85,7 @@ run_java_tests(){
     -e CONJUR_AUTO_UPDATE_TOKEN=true \
     --env-file .env \
     -w /client \
-    maven:3-openjdk-$major_java_version bash -c "mvn test $test_case $install"
+    maven:3-openjdk-$major_java_version bash -c "$maven_command"
 }
 
 while test $# -gt 0
@@ -109,6 +116,9 @@ do
     -t|--test)
       test_case="-Dtest=$1"
       shift
+      ;;
+    -c|--coverage)
+      coverage=true
       ;;
     *)
       break
