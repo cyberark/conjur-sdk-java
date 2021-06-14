@@ -11,7 +11,7 @@
     <scm>
         <connection>scm:git:git@github.com:openapitools/openapi-generator.git</connection>
         <developerConnection>scm:git:git@github.com:openapitools/openapi-generator.git</developerConnection>
-        <url>https://github.com/cyberark/conjur-openapi-spec</url>
+        <url>https://github.com/cyberark/conjur-sdk-java</url>
     </scm>
 
     <licenses>
@@ -259,6 +259,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

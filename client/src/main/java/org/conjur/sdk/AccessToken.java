@@ -41,20 +41,35 @@ public class AccessToken {
     }
 
     public String getHeaderValue() {
+        if (encodedToken == null) {
+            throw new NullPointerException("AccessToken must be initialized properly before use.");
+        }
         return String.format("token=\"%s\"", encodedToken);
     }
 
-    private long getExpiry() {
-        String payloadJSON = new String(decoder.decode(payload));
+    public long getExpiry() {
+        String payloadJSON = new String(decoder.decode(getPayload()));
         Payload payload = gson.fromJson(payloadJSON, Payload.class);
         return payload.getExpiry();
     }
 
     public boolean needsRefresh() {
-        return payload == null || (getExpiry() - 10) <= ((new Date()).getTime() / 1000);
+        return getPayload() == null || (getExpiry() - 10) <= ((new Date()).getTime() / 1000);
     }
 
     public String toString() {
         return String.format("{\n\tprotected: %s\n\tpayload: %s\n\tsignature: %s\n}", protect, payload, signature);
+    }
+
+    public String getProtected() {
+        return this.protect;
+    }
+
+    public String getPayload() {
+        return this.payload;
+    }
+
+    public String getSignature() {
+        return this.signature;
     }
 }
