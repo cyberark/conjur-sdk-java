@@ -14,6 +14,7 @@
 package org.conjur.sdk.endpoint;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -417,6 +418,23 @@ public class SecretsApiTest extends ConfiguredTest {
             aliceApi.getSecrets("\0");
         } catch (ApiException e) {
             Assert.assertEquals(422, e.getCode());
+        }
+    }
+
+    @Test
+    public void createBinarySecretTest() throws ApiException {
+        byte[] byteData = new byte[]{1, 126, 10, 35};
+        // Use this charset so we dont lose any data in the transition from bytes to string
+        String testData = new String(byteData, StandardCharsets.ISO_8859_1);
+
+        api.createSecret(account, "variable", "testSecret", null, null, testData);
+
+        String result = api.getSecret(account, "variable", "testSecret");
+        Assert.assertEquals(testData, result);
+
+        byte[] resultBytes = result.getBytes();
+        for (int i = 0; i < resultBytes.length; i++) {
+            Assert.assertEquals(byteData[i], resultBytes[i]);
         }
     }
 }
