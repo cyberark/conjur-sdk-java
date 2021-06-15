@@ -32,7 +32,7 @@ public class RoleTest extends ConfiguredTest {
     );
 
     protected static final String BOB_ID = String.format(
-        "%s:user:bob", System.getenv("CONJUR_ACCOUNT"));
+        "%s:user:bob", System.getenv("ACCOUNT"));
 
     /**
      * Setup roles to test by loading new policy.
@@ -44,7 +44,7 @@ public class RoleTest extends ConfiguredTest {
     public static void setUpClass() throws ApiException {
         ConfiguredTest.setUpClass();
         PoliciesApi api = new PoliciesApi();
-        api.replacePolicy(System.getenv("CONJUR_ACCOUNT"), "root", ROLES_POLICY);
+        api.replacePolicy(System.getenv("ACCOUNT"), "root", ROLES_POLICY);
     }
 
     /**

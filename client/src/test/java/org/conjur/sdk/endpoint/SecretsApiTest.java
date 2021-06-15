@@ -317,7 +317,7 @@ public class SecretsApiTest extends ConfiguredTest {
             Assert.assertEquals(422, e.getCode());
         }
 
-        client.setBasePath(System.getenv("CONJUR_APPLIANCE_URL"));
+        client = client.setBasePath(System.getenv("APPLIANCE_URL"));
     }
 
     /**

@@ -17,3 +17,6 @@ jobs:
 
       - name: run integration test script
         run: ./bin/test_integration
+
+      - name: run integration tests without env vars
+        run: ./bin/test_integration -e

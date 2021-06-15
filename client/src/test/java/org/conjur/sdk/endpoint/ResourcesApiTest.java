@@ -92,16 +92,9 @@ public class ResourcesApiTest extends ConfiguredTest {
         Boolean check = true;
         String role = null;
         String requestId = null;
-
         ApiResponse<Resource> response = api.showResourceWithHttpInfo(
-            account,
-            kind,
-            identifier,
-            permittedRoles,
-            privilege,
-            check,
-            role,
-            requestId
+            account, kind, identifier, permittedRoles,
+            privilege, check, role, requestId
         );
         Assert.assertEquals(204, response.getStatusCode());
         Assert.assertNull(response.getData());

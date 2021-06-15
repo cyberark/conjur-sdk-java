@@ -42,7 +42,7 @@ public class CertificateAuthorityApiTest extends ConfiguredTest {
     private CertificateAuthorityApi badAuthCaApi;
     private SecretsApi secretsApi;
 
-    private final String account = System.getenv("CONJUR_ACCOUNT");
+    private final String account = System.getenv("ACCOUNT");
 
     // Conjur entity IDs
     private static final String CA_SERVICE_ID

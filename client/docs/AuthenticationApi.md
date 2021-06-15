@@ -340,7 +340,6 @@ A client can obtain an access token by presenting a valid login name and API key
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -348,18 +347,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String account = "account_example"; // String | Organization account name
@@ -397,7 +384,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 
@@ -427,7 +414,6 @@ The access token is used to communicate to the REST API that the bearer of the t
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -435,18 +421,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
@@ -486,7 +460,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 
@@ -516,7 +490,6 @@ The access token is used to communicate to the REST API that the bearer of the t
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -524,18 +497,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
@@ -575,7 +536,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 
@@ -605,7 +566,6 @@ Use the GCP Authenticator API to send an authentication request from a Google Cl
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -613,18 +573,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String account = dev; // String | Organization account name
@@ -660,7 +608,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 
@@ -765,7 +713,6 @@ The access token is used to communicate to the REST API that the bearer of the t
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -773,18 +720,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
@@ -824,7 +759,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 
@@ -854,7 +789,6 @@ Use the OIDC Authenticator to leverage the identity layer provided by OIDC to au
 import org.conjur.sdk.ApiClient;
 import org.conjur.sdk.ApiException;
 import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
 import org.conjur.sdk.models.*;
 import org.conjur.sdk.endpoint.AuthenticationApi;
 
@@ -862,18 +796,6 @@ public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost");
-    
-    // Configure HTTP basic authorization: basicAuth
-    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-    basicAuth.setUsername("YOUR USERNAME");
-    basicAuth.setPassword("YOUR PASSWORD");
-
-    // Configure API key authorization: conjurAuth
-    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
-    conjurAuth.setApiKey("YOUR API KEY");
-    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-    //conjurAuth.setApiKeyPrefix("Token");
-
 
     AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
     String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
@@ -909,7 +831,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+No authorization required
 
 ### HTTP request headers
 

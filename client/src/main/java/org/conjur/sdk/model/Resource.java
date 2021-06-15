@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.conjur.sdk.model.PolicyVersion;
 import org.conjur.sdk.model.ResourcePermissions;
+import org.conjur.sdk.model.ResourceSecrets;
 
 /**
  * Resource
@@ -67,7 +68,7 @@ public class Resource {
 
   public static final String SERIALIZED_NAME_SECRETS = "secrets";
   @SerializedName(SERIALIZED_NAME_SECRETS)
-  private List<String> secrets = null;
+  private List<ResourceSecrets> secrets = null;
 
 
   public Resource annotations(List<String> annotations) {
@@ -286,15 +287,15 @@ public class Resource {
   }
 
 
-  public Resource secrets(List<String> secrets) {
+  public Resource secrets(List<ResourceSecrets> secrets) {
     
     this.secrets = secrets;
     return this;
   }
 
-  public Resource addSecretsItem(String secretsItem) {
+  public Resource addSecretsItem(ResourceSecrets secretsItem) {
     if (this.secrets == null) {
-      this.secrets = new ArrayList<String>();
+      this.secrets = new ArrayList<ResourceSecrets>();
     }
     this.secrets.add(secretsItem);
     return this;
@@ -307,12 +308,12 @@ public class Resource {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public List<String> getSecrets() {
+  public List<ResourceSecrets> getSecrets() {
     return secrets;
   }
 
 
-  public void setSecrets(List<String> secrets) {
+  public void setSecrets(List<ResourceSecrets> secrets) {
     this.secrets = secrets;
   }
 
