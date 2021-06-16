@@ -5,6 +5,10 @@ set -e
 cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 source bin/util
 
-./bin/test_integration $@ --jar
+pushd client
+
+mvn clean package -DskipTests=true
+
+popd
 
 announce "Output available in ./client/target"

@@ -1,0 +1,19 @@
+name: Run Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    name: Fat Jar File Example
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v2
+
+      - name: run example script
+        run: ./examples/jar/run

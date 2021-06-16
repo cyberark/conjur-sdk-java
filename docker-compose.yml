@@ -20,6 +20,8 @@ services:
       LDAP_FILTER: (uid=%s)
     volumes:
       - ./test/config:/policy:ro
+    ports:
+      - "8000:80"
     depends_on:
       - pg
       - ldap-server
@@ -36,6 +38,8 @@ services:
       - ./config/https/conjur.crt:/cert/tls.crt:ro
       - ./config/https/conjur.key:/cert/tls.key:ro
       - ./config/https/ca.crt:/ca/tls.crt:ro
+    ports:
+      - "8443:443"
     depends_on:
       - conjur
 
@@ -52,8 +56,6 @@ services:
       LDAP_TLS_KEY_FILENAME: "ldap-server.key.pem"
       LDAP_TLS_DH_PARAM_FILENAME: 'dhparam.pem'
       LDAP_TLS_VERIFY_CLIENT: try
-    ports:
-      - "389:389"
     volumes:
       - ./test/config/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
       - ./test/config/ldap/certs:/container/service/slapd/assets/certs:ro
@@ -69,8 +71,6 @@ services:
       - KEYCLOAK_CLIENT_SECRET=1234
       - KEYCLOAK_SCOPE=openid
       - KEYCLOAK_LOGLEVEL=ALL
-    ports:
-      - "7777:8080"
     volumes:
       - ./test/config/oidc:/scripts
       - ./test/config/oidc/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
