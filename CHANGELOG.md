@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [4.0.0] - 6/17/21
 ### Changed
+- The package name from `org.conjur.sdk` to `com.cyberark.conjur.sdk`
 - The main package with endpoint classes from `org.conjur.sdk.api` to `org.conjur.sdk.endpoint`
   [cyberark/conjur-sdk-java#28](https://github.com/cyberark/conjur-sdk-java/pull/28)
 

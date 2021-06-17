@@ -433,6 +433,80 @@ paths:
       - authentication
       x-contentType: text/plain
       x-accepts: text/plain
+  /authn-jwt/{service_id}/{account}/authenticate:
+    parameters:
+    - description: |
+        Add an ID to the request being made so it can be tracked in Conjur.
+        If not provided the server will automatically generate one.
+      example: test-id
+      in: header
+      name: X-Request-Id
+      required: false
+      schema:
+        pattern: ^[a-zA-Z\d-]{1,255}$
+        type: string
+    post:
+      description: |
+        Use the JWT Authenticator to leverage the identity layer
+        provided by JWT to authenticate with Conjur.
+      operationId: getAccessTokenViaJWT
+      parameters:
+      - description: Organization account name
+        in: path
+        name: account
+        required: true
+        schema:
+          $ref: '#/components/schemas/AccountName'
+      - description: URL-Encoded authenticator service ID
+        example: prod%2fgke
+        in: path
+        name: service_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          Add an ID to the request being made so it can be tracked in Conjur.
+          If not provided the server will automatically generate one.
+        example: test-id
+        in: header
+        name: X-Request-Id
+        required: false
+        schema:
+          pattern: ^[a-zA-Z\d-]{1,255}$
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/JWTToken'
+        description: ID token
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: The response is an access token for conjur
+        "400":
+          description: The server cannot process the request due to malformed request
+            syntax
+        "401":
+          description: Authentication information is missing or invalid
+        "404":
+          description: The requested resource does not exist, the authenticated user
+            lacks the required privileges to enumerate this resource, or its value
+            has not been set
+        "500":
+          description: Malfromed request, rejected by the server
+      security: []
+      summary: |
+        Gets a short-lived access token for applications using JSON Web Token (JWT)
+        to access the Conjur API.
+      tags:
+      - authentication
+      x-contentType: application/x-www-form-urlencoded
+      x-accepts: text/plain
   /authn-k8s/{service_id}/inject_client_cert:
     parameters:
     - description: |
@@ -3231,6 +3305,13 @@ components:
     AWSSignatureHeader:
       description: AWS Signature Version 4 header
       type: string
+    JWTToken:
+      example:
+        jwt: eyJhbGciOiJSUzI1NiIs......uTonCA
+      properties:
+        jwt:
+          type: string
+      type: object
     OIDCToken:
       description: OpenID Connect ID token
       example:
@@ -3544,6 +3625,7 @@ components:
       - authn-k8s
       - authn-gcp
       - authn-azure
+      - authn-jwt
       type: string
     Resource_permissions:
       properties:

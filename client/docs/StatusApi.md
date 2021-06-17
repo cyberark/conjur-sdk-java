@@ -21,12 +21,12 @@ Response contains three members: installed, configured, and enabled.  installed:
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.StatusApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.StatusApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -96,12 +96,12 @@ Once the status webservice has been properly configured and the relevant user gr
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.StatusApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.StatusApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -172,12 +172,12 @@ Once the status webservice has been properly configured and the relevant user gr
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.StatusApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.StatusApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -253,12 +253,12 @@ WhoAmI provides information about the client making an API request. It can be us
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.StatusApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.StatusApi;
 
 public class Example {
   public static void main(String[] args) {

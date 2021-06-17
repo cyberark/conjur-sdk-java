@@ -18,12 +18,12 @@ Shows all public keys for a resource as newline delimited string for compatibili
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.PublicKeysApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.PublicKeysApi;
 
 public class Example {
   public static void main(String[] args) {

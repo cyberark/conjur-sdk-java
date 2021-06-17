@@ -1,9 +1,9 @@
 package main;
 
-import org.conjur.sdk.*;
-import org.conjur.sdk.endpoint.*;
-import org.conjur.sdk.model.*;
-import org.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.*;
+import com.cyberark.conjur.sdk.endpoint.*;
+import com.cyberark.conjur.sdk.model.*;
+import com.cyberark.conjur.sdk.auth.*;
 
 import com.google.gson.internal.LinkedTreeMap;
 

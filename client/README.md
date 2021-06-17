@@ -2,7 +2,6 @@
 
 Conjur
 - API version: 5.1.1
-  - Build date: 2021-05-04T13:47:01.391Z[GMT]
 
 This is an API definition for CyberArk Conjur OSS. You can find out more at [Conjur.org](https://www.conjur.org/).
 
@@ -73,12 +72,12 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```java
 
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -122,6 +121,7 @@ Class | Method | HTTP request | Description
 *AuthenticationApi* | [**getAccessTokenViaAWS**](docs/AuthenticationApi.md#getAccessTokenViaAWS) | **POST** /authn-iam/{service_id}/{account}/{login}/authenticate | Get a short-lived access token for applications running in AWS.
 *AuthenticationApi* | [**getAccessTokenViaAzure**](docs/AuthenticationApi.md#getAccessTokenViaAzure) | **POST** /authn-azure/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Azure.
 *AuthenticationApi* | [**getAccessTokenViaGCP**](docs/AuthenticationApi.md#getAccessTokenViaGCP) | **POST** /authn-gcp/{account}/authenticate | Gets a short-lived access token for applications running in Google Cloud Platform. 
+*AuthenticationApi* | [**getAccessTokenViaJWT**](docs/AuthenticationApi.md#getAccessTokenViaJWT) | **POST** /authn-jwt/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. 
 *AuthenticationApi* | [**getAccessTokenViaKubernetes**](docs/AuthenticationApi.md#getAccessTokenViaKubernetes) | **POST** /authn-k8s/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Kubernetes.
 *AuthenticationApi* | [**getAccessTokenViaLDAP**](docs/AuthenticationApi.md#getAccessTokenViaLDAP) | **POST** /authn-ldap/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
 *AuthenticationApi* | [**getAccessTokenViaOIDC**](docs/AuthenticationApi.md#getAccessTokenViaOIDC) | **POST** /authn-oidc/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
@@ -148,9 +148,6 @@ Class | Method | HTTP request | Description
 *StatusApi* | [**getAuthenticators**](docs/StatusApi.md#getAuthenticators) | **GET** /authenticators | Details about which authenticators are on the Conjur Server
 *StatusApi* | [**getGCPAuthenticatorStatus**](docs/StatusApi.md#getGCPAuthenticatorStatus) | **GET** /authn-gcp/{account}/status | Details whether an authentication service has been configured properly
 *StatusApi* | [**getServiceAuthenticatorStatus**](docs/StatusApi.md#getServiceAuthenticatorStatus) | **GET** /{authenticator}/{service_id}/{account}/status | Details whether an authentication service has been configured properly
-*StatusApi* | [**health**](docs/StatusApi.md#health) | **GET** /health | Health info about conjur
-*StatusApi* | [**info**](docs/StatusApi.md#info) | **GET** /info | Basic information about the DAP server
-*StatusApi* | [**remoteHealth**](docs/StatusApi.md#remoteHealth) | **GET** /remote_health/{remote} | Health info about a given DAP server
 *StatusApi* | [**whoAmI**](docs/StatusApi.md#whoAmI) | **GET** /whoami | Provides information about the client making an API request.
 
 
@@ -166,13 +163,13 @@ Class | Method | HTTP request | Description
  - [CsrBody](docs/CsrBody.md)
  - [EnableAuthenticatorSetting](docs/EnableAuthenticatorSetting.md)
  - [GoogleIdentityToken](docs/GoogleIdentityToken.md)
- - [Info](docs/Info.md)
- - [InfoAuthenticators](docs/InfoAuthenticators.md)
+ - [JWTToken](docs/JWTToken.md)
  - [LoadedPolicy](docs/LoadedPolicy.md)
  - [OIDCToken](docs/OIDCToken.md)
  - [PolicyVersion](docs/PolicyVersion.md)
  - [Resource](docs/Resource.md)
  - [ResourcePermissions](docs/ResourcePermissions.md)
+ - [ResourceSecrets](docs/ResourceSecrets.md)
  - [ServiceAuthenticators](docs/ServiceAuthenticators.md)
  - [WhoAmI](docs/WhoAmI.md)
 

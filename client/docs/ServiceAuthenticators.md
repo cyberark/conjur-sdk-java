@@ -17,5 +17,7 @@
 
 * `AZURE` (value: `"authn-azure"`)
 
+* `JWT` (value: `"authn-jwt"`)
+
 
 

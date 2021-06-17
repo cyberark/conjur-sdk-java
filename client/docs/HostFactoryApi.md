@@ -20,12 +20,12 @@ Creates a Host using the Host Factory and returns a JSON description of it.  Req
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.HostFactoryApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.HostFactoryApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -95,12 +95,12 @@ Creates one or more tokens which can be used to bootstrap host identity. Respond
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.HostFactoryApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.HostFactoryApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -176,12 +176,12 @@ Revokes a token, immediately disabling it.  ##### Permissions required  &#x60;up
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.HostFactoryApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.HostFactoryApi;
 
 public class Example {
   public static void main(String[] args) {

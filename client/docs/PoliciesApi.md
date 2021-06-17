@@ -20,12 +20,12 @@ Adds data to the existing Conjur policy. Deletions are not allowed. Any policy o
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.PoliciesApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.PoliciesApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -101,12 +101,12 @@ Loads or replaces a Conjur policy document.  **Any policy data which already exi
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.PoliciesApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.PoliciesApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -182,12 +182,12 @@ Modifies an existing Conjur policy. Data may be explicitly deleted using the &#x
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.PoliciesApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.PoliciesApi;
 
 public class Example {
   public static void main(String[] args) {
