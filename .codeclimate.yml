@@ -120,37 +120,3 @@ plugins:
     enabled: true
   sonar-python:
     enabled: true
-
-# ---------------
-# Configuration Required Language specific - these will error and abort the
-# codeclimate run if they are turned on and certain files or configuration are
-# missing. Should be commented out unless the project already includes the
-# necessary files that the linter looks at
-
-  # Ruby - requires presence of Gemfile and Gemfile.lock
-  # bundler-audit:
-  #   enabled: true
-
-  # Rails - requires detecting a Rails application
-  # brakeman:
-  #   enabled: true
-
-  # Chef - requires detecting a cookbook
-  # foodcritic:
-  #   enabled: true
-
-  # Java - might require Java code? Errored when run without
-  # checkstyle:
-  #   enabled: true
-
-  # JavaScript - requires an eslintrc to be created and added to project
-  # eslint:
-  #   enabled: true
-  #   channel: "eslint-6"
-
-# ---------------
-# List any files/folders to exclude from checking. Wildcards accepted. Leave
-# commented if no files to exclude as an empty array will error
-exclude_patterns:
-  - ".gitignore"
-  - "client/src/main/**/*"
