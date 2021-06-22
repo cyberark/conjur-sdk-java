@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**getAccessTokenViaAWS**](AuthenticationApi.md#getAccessTokenViaAWS) | **POST** /authn-iam/{service_id}/{account}/{login}/authenticate | Get a short-lived access token for applications running in AWS.
 [**getAccessTokenViaAzure**](AuthenticationApi.md#getAccessTokenViaAzure) | **POST** /authn-azure/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Azure.
 [**getAccessTokenViaGCP**](AuthenticationApi.md#getAccessTokenViaGCP) | **POST** /authn-gcp/{account}/authenticate | Gets a short-lived access token for applications running in Google Cloud Platform. 
+[**getAccessTokenViaJWT**](AuthenticationApi.md#getAccessTokenViaJWT) | **POST** /authn-jwt/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. 
 [**getAccessTokenViaKubernetes**](AuthenticationApi.md#getAccessTokenViaKubernetes) | **POST** /authn-k8s/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Kubernetes.
 [**getAccessTokenViaLDAP**](AuthenticationApi.md#getAccessTokenViaLDAP) | **POST** /authn-ldap/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
 [**getAccessTokenViaOIDC**](AuthenticationApi.md#getAccessTokenViaOIDC) | **POST** /authn-oidc/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
@@ -30,12 +31,12 @@ You must provide the login name and current password or API key of the user whos
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -105,12 +106,12 @@ Allows you to either enable or disable a given authenticator service instance.  
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -146,7 +147,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authenticator** | [**ServiceAuthenticators**](.md)| The authenticator to update | [enum: authn-iam, authn-oidc, authn-ldap, authn-k8s, authn-gcp, authn-azure]
+ **authenticator** | [**ServiceAuthenticators**](.md)| The authenticator to update | [enum: authn-iam, authn-oidc, authn-ldap, authn-k8s, authn-gcp, authn-azure, authn-jwt]
  **serviceId** | **String**| URL-Encoded authenticator service ID |
  **account** | **String**| Organization account name |
  **xRequestId** | **String**| Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  | [optional]
@@ -185,12 +186,12 @@ Passwords are stored in the Conjur database using &#x60;bcrypt&#x60; with a work
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -260,12 +261,12 @@ Exchange your LDAP credentials for a Conjur API key. Once the API key is obtaine
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -337,11 +338,11 @@ A client can obtain an access token by presenting a valid login name and API key
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -411,11 +412,11 @@ The access token is used to communicate to the REST API that the bearer of the t
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -487,11 +488,11 @@ The access token is used to communicate to the REST API that the bearer of the t
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -563,11 +564,11 @@ Use the GCP Authenticator API to send an authentication request from a Google Cl
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -623,6 +624,78 @@ No authorization required
 **401** | Authentication information is missing or invalid |  -  |
 **500** | Malfromed request, rejected by the server |  -  |
 
+<a name="getAccessTokenViaJWT"></a>
+# **getAccessTokenViaJWT**
+> String getAccessTokenViaJWT(account, serviceId, xRequestId, jwt)
+
+Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. 
+
+Use the JWT Authenticator to leverage the identity layer provided by JWT to authenticate with Conjur. 
+
+### Example
+```java
+// Import classes:
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost");
+
+    AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
+    String account = "account_example"; // String | Organization account name
+    String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
+    String xRequestId = test-id; // String | Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one. 
+    String jwt = "jwt_example"; // String | 
+    try {
+      String result = apiInstance.getAccessTokenViaJWT(account, serviceId, xRequestId, jwt);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AuthenticationApi#getAccessTokenViaJWT");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **account** | **String**| Organization account name |
+ **serviceId** | **String**| URL-Encoded authenticator service ID |
+ **xRequestId** | **String**| Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  | [optional]
+ **jwt** | **String**|  | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/x-www-form-urlencoded
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | The response is an access token for conjur |  -  |
+**400** | The server cannot process the request due to malformed request syntax |  -  |
+**401** | Authentication information is missing or invalid |  -  |
+**404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
+**500** | Malfromed request, rejected by the server |  -  |
+
 <a name="getAccessTokenViaKubernetes"></a>
 # **getAccessTokenViaKubernetes**
 > String getAccessTokenViaKubernetes(serviceId, account, login, acceptEncoding, xRequestId)
@@ -634,12 +707,12 @@ The access token is used to communicate to the REST API that the bearer of the t
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -710,11 +783,11 @@ The access token is used to communicate to the REST API that the bearer of the t
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -786,11 +859,11 @@ Use the OIDC Authenticator to leverage the identity layer provided by OIDC to au
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -857,12 +930,12 @@ This request sends a Certificate Signing Request to Conjur, which uses the Kuber
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -940,12 +1013,12 @@ Any role can rotate its own API key. The name and password (for users) or curren
 ### Example
 ```java
 // Import classes:
-import org.conjur.sdk.ApiClient;
-import org.conjur.sdk.ApiException;
-import org.conjur.sdk.Configuration;
-import org.conjur.sdk.auth.*;
-import org.conjur.sdk.models.*;
-import org.conjur.sdk.endpoint.AuthenticationApi;
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
 
 public class Example {
   public static void main(String[] args) {

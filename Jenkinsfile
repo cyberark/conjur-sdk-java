@@ -38,6 +38,26 @@ pipeline {
                 }
             }
         }
+
+        stage("Deploy snapshot") {
+            when {
+                branch 'main'
+            }
+
+            steps {
+                sh 'summon ./bin/deploy-snapshot'
+            }
+        }
+
+        stage("Deploy release") {
+            when {
+                buildingTag()
+            }
+
+            steps {
+                sh 'summon ./bin/deploy-release'
+            }
+        }
     }
 
     post {

@@ -1,7 +1,7 @@
-apiPackage: org.conjur.sdk.endpoint
-modelPackage: org.conjur.sdk.model
+apiPackage: com.cyberark.conjur.sdk.endpoint
+modelPackage: com.cyberark.conjur.sdk.model
 scmUrl: https://github.com/cyberark/conjur-sdk-java
-invokerPackage: org.conjur.sdk
+invokerPackage: com.cyberark.conjur.sdk
 artifactId: conjur-sdk-java
 artifactDescription: Java Conjur SDK
 hideGenerationTimestamp: true
