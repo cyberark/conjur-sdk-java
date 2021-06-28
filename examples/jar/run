@@ -15,10 +15,12 @@ classpath="$(find conjur-sdk-java-*-jar-with-dependencies.jar | tr '\n' ':')"
 
 docker run --rm --network conjur-sdk-java \
   -v "${PWD}:/client" \
-  -e CONJUR_APPLIANCE_URL=http://conjur \
+  -v "${PWD}/../../config/https/ca.crt:/ca.crt" \
+  -e CONJUR_APPLIANCE_URL=https://conjur-https \
   -e CONJUR_ACCOUNT=dev \
   -e CONJUR_AUTHN_LOGIN=admin \
   -e CONJUR_AUTO_UPDATE_TOKEN=true \
+  -e CONJUR_CERT_FILE=/ca.crt \
   -e CONJUR_AUTHN_API_KEY="$(get_conjur_admin_api_key)" \
   -w /client \
   openjdk:16 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"

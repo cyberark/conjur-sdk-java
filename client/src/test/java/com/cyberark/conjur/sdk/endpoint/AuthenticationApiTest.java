@@ -170,6 +170,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
     /**
      * Test 422 response when getting a user's API key.
      */
+    @Ignore("Depricated because we force usage of https now")
     @Test
     public void getApiKeyTest422() {
         ApiClient client = api.getApiClient();

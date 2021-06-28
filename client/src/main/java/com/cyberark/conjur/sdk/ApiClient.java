@@ -158,7 +158,11 @@ public class ApiClient {
 
         ((ApiKeyAuth)this.getAuthentication(conjurAuthenticator)).setApiKeyPrefix("Token");
         if (certFile != null)
-            setSslCaCert(getCertInputStream());
+            setSslCaCert(getCertInputStream());   
+    }
+
+    private boolean validBasePath() {
+        return basePath.substring(0, 5).equals("https");
     }
 
     private void initHttpClient() {
@@ -1092,6 +1096,8 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
+        if (!validBasePath())
+            throw new ApiException("Must use HTTPS in 'basePath' for Conjur");
         Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback);
 
         return httpClient.newCall(request);

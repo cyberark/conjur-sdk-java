@@ -308,6 +308,7 @@ public class SecretsApiTest extends ConfiguredTest {
      * @throws ApiException
      *          if the Api call fails
      */
+    @Ignore("Depricated because we now force https")
     @Test
     public void getSecretTest422() throws ApiException {
         client.setBasePath(System.getenv("CONJUR_HTTP_APPLIANCE_URL"));

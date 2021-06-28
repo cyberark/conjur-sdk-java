@@ -320,6 +320,7 @@ public class CertificateAuthorityApiTest extends ConfiguredTest {
     /**
      * Sign request responds with 422 status when receiving a bad request.
      */
+    @Ignore("Depricated because we now force https")
     @Test
     public void signTest422() {
         String serviceId = "\0";
