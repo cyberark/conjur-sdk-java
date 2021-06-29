@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The package name from `org.conjur.sdk` to `com.cyberark.conjur.sdk`
 - The main package with endpoint classes from `org.conjur.sdk.api` to `org.conjur.sdk.endpoint`
   [cyberark/conjur-sdk-java#28](https://github.com/cyberark/conjur-sdk-java/pull/28)
+- Changed logging level in Okhttp3 so header values arent printed and secrets cannot be leaked.
+  [cyberark/conjur-sdk-java#54](https://github.com/cyberark/conjur-sdk-java/pull/54)
 
 ### Added
 - Automatic authentication for client based on environment variables. Users will not have to manually
