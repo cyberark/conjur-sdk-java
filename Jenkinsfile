@@ -20,6 +20,7 @@ pipeline {
 
             post {
                 always {
+                    archiveArtifacts artifacts: 'client/target/dependency-check-report.html', fingerprint: true
                     junit 'client/target/surefire-reports/*.xml'
                     sh """
                     if [[ -x cc-test-reporter ]]; then
