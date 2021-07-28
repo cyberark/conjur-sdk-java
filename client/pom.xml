@@ -180,6 +180,24 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Example configurations for owasp dependency scanner: https://jeremylong.github.io/DependencyCheck/dependency-check-maven/
+                Includes examples of passing false positive results-->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>6.2.2</version>
+                <configuration>
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -202,29 +220,6 @@
                     <goals>
                         <goal>report</goal>
                     </goals>
-                </execution>
-                <execution>
-                    <id>coverage-check</id>
-                    <goals>
-                        <goal>check</goal>
-                    </goals>
-                    <configuration>
-                    <rules>
-                        <rule>
-                            <element>CLASS</element>
-                            <excludes>
-                                <exclude>com.cyberark.conjur.sdk.model.*</exclude>
-                            </excludes>
-                            <limits>
-                                <limit>
-                                    <counter>LINE</counter>
-                                    <value>COVEREDRATIO</value>
-                                    <minimum>10%</minimum>
-                                </limit>
-                            </limits>
-                        </rule>
-                    </rules>
-                    </configuration>
                 </execution>
                 </executions>
             </plugin>
@@ -253,8 +248,83 @@
     </build>
 
     <profiles>
+        <!-- Profile for activating Artifactory as our deployment goal -->
         <profile>
-            <id>sign-artifacts</id>
+            <id>artifactory</id>
+            <distributionManagement>
+                <repository>
+                    <id>conjurinc-releases</id>
+                    <name>conjurinc-releases</name>
+                    <url>https://conjurinc.artifactoryonline.com/conjurinc/libs-release-local</url>
+                </repository>
+                <snapshotRepository>
+                    <id>conjurinc-snapshots</id>
+                    <name>conjurinc-snapshots</name>
+                    <url>https://conjurinc.artifactoryonline.com/conjurinc/libs-snapshot-local</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <!-- Profile for deploying and releasing to Maven Central through OSSRH -->
+        <profile>
+            <id>ossrh</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for signing releases -->
+        <profile>
+            <id>sign</id>
             <build>
                 <plugins>
                     <plugin>
@@ -268,6 +338,15 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <!-- This is necessary for gpg to not try to use the pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                        <arg>--passphrase-file</arg>
+                                        <arg>/gpg_password</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

@@ -70,7 +70,7 @@ run_java_tests(){
     bin/refresh_client -l java
   fi
 
-  maven_command="mvn test $install"
+  maven_command="mvn verify $install"
 
   if [ "$coverage" = "true" ]; then
     maven_command+=" && mvn jacoco:report"
