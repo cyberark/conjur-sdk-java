@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openapitools</groupId>
+    <groupId>com.cyberark</groupId>
     <artifactId>conjur-sdk-java</artifactId>
     <packaging>jar</packaging>
     <name>conjur-sdk-java</name>
-    <version>5.1.1</version>
+    <version>4.0.0</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>Java Conjur SDK</description>
     <scm>
