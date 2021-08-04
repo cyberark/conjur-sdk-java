@@ -5,10 +5,10 @@ Find [more from CyberArk](https://github.com/cyberark).
 
 ## Certification level
 
-![](https://img.shields.io/badge/Certification%20Level-Community-28A745?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
+![](https://img.shields.io/badge/Certification%20Level-Trusted-28A745?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
 
-This repo is a **Community** level project. It's a community contributed project that **is not reviewed or supported
-by CyberArk**. For more detailed information on our certification levels, see [our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#community).
+This repo is a **Trusted** level project. It's a community contributed project that **has been reviewed and tested by CyberArk
+and is trusted to use with Conjur Open Source**. For more detailed information on our certification levels, see [our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#trusted).
 
 ## Requirements
 
