@@ -5,7 +5,9 @@
     <artifactId>conjur-sdk-java</artifactId>
     <packaging>jar</packaging>
     <name>conjur-sdk-java</name>
-    <version>4.0.0</version>
+    <!-- Only bump version number,
+    SNAPSHOT is automatically removed during release deployments -->
+    <version>4.0.0-SNAPSHOT</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>Java Conjur SDK</description>
     <scm>
