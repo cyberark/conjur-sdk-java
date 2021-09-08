@@ -1,6 +1,6 @@
 /*
  * Conjur
- * This is an API definition for CyberArk Conjur OSS. You can find out more at [Conjur.org](https://www.conjur.org/).
+ * This is an API definition for CyberArk Conjur Open Source. You can find out more at [Conjur.org](https://www.conjur.org/).
  *
  * The version of the OpenAPI document: 5.1.1
  * Contact: conj_maintainers@cyberark.com

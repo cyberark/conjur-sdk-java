@@ -917,7 +917,6 @@ No authorization required
 **200** | The response is an access token for conjur |  -  |
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
-**502** | Error connecting conjur to the OIDC provider |  -  |
 
 <a name="k8sInjectClientCert"></a>
 # **k8sInjectClientCert**

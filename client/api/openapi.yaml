@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   contact:
     email: conj_maintainers@cyberark.com
-  description: This is an API definition for CyberArk Conjur OSS. You can find out
-    more at [Conjur.org](https://www.conjur.org/).
+  description: This is an API definition for CyberArk Conjur Open Source. You can
+    find out more at [Conjur.org](https://www.conjur.org/).
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -932,8 +932,6 @@ paths:
             syntax
         "401":
           description: Authentication information is missing or invalid
-        "502":
-          description: Error connecting conjur to the OIDC provider
       security: []
       summary: |
         Gets a short-lived access token for applications using OpenID

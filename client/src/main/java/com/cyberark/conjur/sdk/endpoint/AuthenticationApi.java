@@ -1,6 +1,6 @@
 /*
  * Conjur
- * This is an API definition for CyberArk Conjur OSS. You can find out more at [Conjur.org](https://www.conjur.org/).
+ * This is an API definition for CyberArk Conjur Open Source. You can find out more at [Conjur.org](https://www.conjur.org/).
  *
  * The version of the OpenAPI document: 5.1.1
  * Contact: conj_maintainers@cyberark.com
@@ -2303,7 +2303,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call getAccessTokenViaOIDCCall(String serviceId, String account, String xRequestId, String idToken, final ApiCallback _callback) throws ApiException {
@@ -2379,7 +2378,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
      */
     public String getAccessTokenViaOIDC(String serviceId, String account, String xRequestId, String idToken) throws ApiException {
@@ -2401,7 +2399,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
     */
     public String getAccessTokenViaOIDC(String serviceId, String account) throws ApiException {
@@ -2424,7 +2421,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
      */
     public ApiResponse<String> getAccessTokenViaOIDCWithHttpInfo(String serviceId, String account, String xRequestId, String idToken) throws ApiException {
@@ -2446,7 +2442,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
      */
     public ApiResponse<String> getAccessTokenViaOIDCWithHttpInfo(String serviceId, String account) throws ApiException {
@@ -2471,7 +2466,6 @@ public class AuthenticationApi {
         <tr><td> 200 </td><td> The response is an access token for conjur </td><td>  -  </td></tr>
         <tr><td> 400 </td><td> The server cannot process the request due to malformed request syntax </td><td>  -  </td></tr>
         <tr><td> 401 </td><td> Authentication information is missing or invalid </td><td>  -  </td></tr>
-        <tr><td> 502 </td><td> Error connecting conjur to the OIDC provider </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call getAccessTokenViaOIDCAsync(String serviceId, String account, String xRequestId, String idToken, final ApiCallback<String> _callback) throws ApiException {
