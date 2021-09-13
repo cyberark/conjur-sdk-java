@@ -89,7 +89,7 @@ public class ApiClient {
     private String certFile = System.getenv().getOrDefault("CONJUR_CERT_FILE", null);
     private String sslCert = System.getenv().getOrDefault("CONJUR_SSL_CERTIFICATE", null);
     private String apiKey = System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
-    private boolean autoUpdateAccessToken = System.getenv().getOrDefault("CONJUR_AUTO_UPDATE_TOKEN", "false").toLowerCase().equals("true");
+    private boolean autoUpdateAccessToken = System.getenv().getOrDefault("CONJUR_AUTO_UPDATE_TOKEN", "true").toLowerCase().equals("true");
 
     public String getAccount() {
         return account;
