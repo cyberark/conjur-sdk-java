@@ -80,7 +80,8 @@ public class StatusApiTest extends ConfiguredTest {
         ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(
             authenticator,
             serviceId,
-            account
+            account,
+            "test-request"
         );
 
         Assert.assertEquals("ok", response.getData().getStatus());
