@@ -1303,6 +1303,8 @@ public class ApiClient {
             accessToken = response.getData();
         } catch (ApiException e) {
             System.out.println("Failed to automatically update AccessToken");
+            System.out.println(e.getCode() + ": " + e.getMessage());
+            System.out.println(e.getResponseBody());
             return null;
         }
         return AccessToken.fromEncodedToken(accessToken);
