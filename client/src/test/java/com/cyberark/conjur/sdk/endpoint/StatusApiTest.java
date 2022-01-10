@@ -36,13 +36,28 @@ public class StatusApiTest extends ConfiguredTest {
     private StatusApi api;
     private StatusApi badAuthApi;
 
+    /**
+     * Load a Conjur policy which declares the OIDC authenticator and sets required
+     * variables in Conjur.
+     *
+     * @throws ApiException
+     *          if an API call fails
+     * @throws IOException
+     *          if the policy file cannot be read
+     */
     @BeforeClass
     public static void setUpWebservice() throws ApiException, IOException {
         ConfiguredTest.setupOidcWebservice();
     }
 
+    /**
+     * Creates two api objects we can use for testing.
+     *
+     * @throws ApiException
+     *          if the API call fails
+     */
     @Before
-    public void setUpApis() throws ApiException, IOException {
+    public void setUpApis() throws ApiException {
         badAuthApi = new StatusApi(nonAuthClient);
         api = new StatusApi();
     }
@@ -80,7 +95,8 @@ public class StatusApiTest extends ConfiguredTest {
         ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(
             authenticator,
             serviceId,
-            account
+            account,
+            "test-request"
         );
 
         Assert.assertEquals("ok", response.getData().getStatus());
