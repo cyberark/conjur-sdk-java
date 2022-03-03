@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**changePassword**](AuthenticationApi.md#changePassword) | **PUT** /authn/{account}/password | Changes a user’s password.
+[**enableAuthenticator**](AuthenticationApi.md#enableAuthenticator) | **PATCH** /{authenticator}/{account} | Enables or disables authenticator defined without service_id.
 [**enableAuthenticatorInstance**](AuthenticationApi.md#enableAuthenticatorInstance) | **PATCH** /{authenticator}/{service_id}/{account} | Enables or disables authenticator service instances.
 [**getAPIKey**](AuthenticationApi.md#getAPIKey) | **GET** /authn/{account}/login | Gets the API key of a user given the username and password via HTTP Basic Authentication. 
 [**getAPIKeyViaLDAP**](AuthenticationApi.md#getAPIKeyViaLDAP) | **GET** /authn-ldap/{service_id}/{account}/login | Gets the Conjur API key of a user given the LDAP username and password via HTTP Basic Authentication. 
@@ -13,6 +14,7 @@ Method | HTTP request | Description
 [**getAccessTokenViaAzure**](AuthenticationApi.md#getAccessTokenViaAzure) | **POST** /authn-azure/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Azure.
 [**getAccessTokenViaGCP**](AuthenticationApi.md#getAccessTokenViaGCP) | **POST** /authn-gcp/{account}/authenticate | Gets a short-lived access token for applications running in Google Cloud Platform. 
 [**getAccessTokenViaJWT**](AuthenticationApi.md#getAccessTokenViaJWT) | **POST** /authn-jwt/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. 
+[**getAccessTokenViaJWTWithId**](AuthenticationApi.md#getAccessTokenViaJWTWithId) | **POST** /authn-jwt/{service_id}/{account}/{id}/authenticate | Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. Covers the case of use of optional URL parameter \&quot;ID\&quot; 
 [**getAccessTokenViaKubernetes**](AuthenticationApi.md#getAccessTokenViaKubernetes) | **POST** /authn-k8s/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for applications running in Kubernetes.
 [**getAccessTokenViaLDAP**](AuthenticationApi.md#getAccessTokenViaLDAP) | **POST** /authn-ldap/{service_id}/{account}/{login}/authenticate | Gets a short-lived access token for users and hosts using their LDAP identity to access the Conjur API. 
 [**getAccessTokenViaOIDC**](AuthenticationApi.md#getAccessTokenViaOIDC) | **POST** /authn-oidc/{service_id}/{account}/authenticate | Gets a short-lived access token for applications using OpenID Connect (OIDC) to access the Conjur API. 
@@ -93,6 +95,90 @@ null (empty response body)
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
 **422** | A request parameter was either missing or invalid. |  -  |
+**500** | Malfromed request, rejected by the server |  -  |
+
+<a name="enableAuthenticator"></a>
+# **enableAuthenticator**
+> enableAuthenticator(authenticator, account, xRequestId, enabled)
+
+Enables or disables authenticator defined without service_id.
+
+Allows you to either enable or disable a given authenticator that does not have service_id (For example: authn-gcp).  When you enable or disable an authenticator via this endpoint, the status of the authenticator is stored in the Conjur database. The enablement status of the authenticator service may be overridden by setting the &#x60;CONJUR_AUTHENTICATORS&#x60; environment variable on the Conjur server; in the case where this environment variable is set, the database record of whether the authenticator service is enabled will be ignored.  **This endpoint is part of an early implementation of support for enabling Conjur authenticators via the API, and is currently available at the Community (or early alpha) level. This endpoint is still subject to breaking changes in the future.** 
+
+### Example
+```java
+// Import classes:
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.auth.*;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost");
+    
+    // Configure HTTP basic authorization: basicAuth
+    HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
+    basicAuth.setUsername("YOUR USERNAME");
+    basicAuth.setPassword("YOUR PASSWORD");
+
+    // Configure API key authorization: conjurAuth
+    ApiKeyAuth conjurAuth = (ApiKeyAuth) defaultClient.getAuthentication("conjurAuth");
+    conjurAuth.setApiKey("YOUR API KEY");
+    // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+    //conjurAuth.setApiKeyPrefix("Token");
+
+
+    AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
+    ServiceAuthenticators authenticator = authn-gcp; // ServiceAuthenticators | The authenticator to update
+    String account = dev; // String | Organization account name
+    String xRequestId = test-id; // String | Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one. 
+    Boolean enabled = true; // Boolean | 
+    try {
+      apiInstance.enableAuthenticator(authenticator, account, xRequestId, enabled);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AuthenticationApi#enableAuthenticator");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **authenticator** | [**ServiceAuthenticators**](.md)| The authenticator to update | [enum: authn-iam, authn-oidc, authn-ldap, authn-k8s, authn-gcp, authn-azure, authn-jwt]
+ **account** | **String**| Organization account name |
+ **xRequestId** | **String**| Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  | [optional]
+ **enabled** | **Boolean**|  | [optional]
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth), [conjurAuth](../README.md#conjurAuth), [conjurKubernetesMutualTls](../README.md#conjurKubernetesMutualTls)
+
+### HTTP request headers
+
+ - **Content-Type**: application/x-www-form-urlencoded
+ - **Accept**: Not defined
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**204** | The config was updated properly |  -  |
+**400** | The server cannot process the request due to malformed request syntax |  -  |
+**401** | Authentication information is missing or invalid |  -  |
+**404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 **500** | Malfromed request, rejected by the server |  -  |
 
 <a name="enableAuthenticatorInstance"></a>
@@ -696,6 +782,80 @@ No authorization required
 **404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 **500** | Malfromed request, rejected by the server |  -  |
 
+<a name="getAccessTokenViaJWTWithId"></a>
+# **getAccessTokenViaJWTWithId**
+> String getAccessTokenViaJWTWithId(account, id, serviceId, xRequestId, jwt)
+
+Gets a short-lived access token for applications using JSON Web Token (JWT) to access the Conjur API. Covers the case of use of optional URL parameter \&quot;ID\&quot; 
+
+Use the JWT Authenticator to leverage the identity layer provided by JWT to authenticate with Conjur. 
+
+### Example
+```java
+// Import classes:
+import com.cyberark.conjur.sdk.ApiClient;
+import com.cyberark.conjur.sdk.ApiException;
+import com.cyberark.conjur.sdk.Configuration;
+import com.cyberark.conjur.sdk.models.*;
+import com.cyberark.conjur.sdk.endpoint.AuthenticationApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost");
+
+    AuthenticationApi apiInstance = new AuthenticationApi(defaultClient);
+    String account = "account_example"; // String | Organization account name
+    String id = "id_example"; // String | Organization user id
+    String serviceId = prod%2fgke; // String | URL-Encoded authenticator service ID
+    String xRequestId = test-id; // String | Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one. 
+    String jwt = "jwt_example"; // String | 
+    try {
+      String result = apiInstance.getAccessTokenViaJWTWithId(account, id, serviceId, xRequestId, jwt);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AuthenticationApi#getAccessTokenViaJWTWithId");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **account** | **String**| Organization account name |
+ **id** | **String**| Organization user id |
+ **serviceId** | **String**| URL-Encoded authenticator service ID |
+ **xRequestId** | **String**| Add an ID to the request being made so it can be tracked in Conjur. If not provided the server will automatically generate one.  | [optional]
+ **jwt** | **String**|  | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/x-www-form-urlencoded
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | The response is an access token for conjur |  -  |
+**400** | The server cannot process the request due to malformed request syntax |  -  |
+**401** | Authentication information is missing or invalid |  -  |
+**404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
+**500** | Malfromed request, rejected by the server |  -  |
+
 <a name="getAccessTokenViaKubernetes"></a>
 # **getAccessTokenViaKubernetes**
 > String getAccessTokenViaKubernetes(serviceId, account, login, acceptEncoding, xRequestId)
@@ -917,7 +1077,7 @@ No authorization required
 **200** | The response is an access token for conjur |  -  |
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
-**502** | Error connecting conjur to the OIDC provider |  -  |
+**404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 
 <a name="k8sInjectClientCert"></a>
 # **k8sInjectClientCert**
