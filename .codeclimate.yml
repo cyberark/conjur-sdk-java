@@ -141,3 +141,5 @@ checks:
     enabled: false
   identical-code:
     enabled: false
+  squid:S1192:
+        enabled: false
