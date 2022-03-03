@@ -80,14 +80,6 @@ plugins:
   codenarc:
     enabled: true
 
-  # Java
-  pmd:
-    enabled: true
-  sonar-java:
-    enabled: true
-    config:
-      sonar.java.source: "8"
-
   # Node.js
   nodesecurity:
     enabled: true
@@ -120,6 +112,20 @@ plugins:
     enabled: true
   sonar-python:
     enabled: true
+  
+  # Java
+  pmd:
+    enabled: true
+  sonar-java:
+    enabled: true
+    config:
+      sonar.java.source: "8"
+    checks:
+      squid:S1604:
+        enabled: false
+      squid:S1192:
+        enabled: false
+
 checks:
   argument-count:
     enabled: false
@@ -141,3 +147,4 @@ checks:
     enabled: false
   identical-code:
     enabled: false
+    

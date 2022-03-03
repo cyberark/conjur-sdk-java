@@ -28,6 +28,10 @@ if is_rails; then
   include rails.yml
 fi
 
+if is_java; then
+  include java.yml
+fi
+
 if is_generated; then
   include generated.yml
 fi
