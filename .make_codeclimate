@@ -27,3 +27,5 @@ fi
 if is_rails; then
   include rails.yml
 fi
+
+include java.yml
