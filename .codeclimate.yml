@@ -87,6 +87,9 @@ plugins:
     enabled: true
     config:
       sonar.java.source: "7"
+    checks:
+      squid:S1192:
+        enabled: false
 
   # Node.js
   nodesecurity:
