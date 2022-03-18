@@ -43,10 +43,15 @@ public class ResourcesApiTest extends ConfiguredTest {
     private String ldapPolicy = String.format("%s:policy:conjur/authn-ldap/test", account);
     private String ldapWebservice = String.format("%s:webservice:conjur/authn-ldap/test", account);
     private String ldapGroup = String.format("%s:group:conjur/authn-ldap/test/users", account);
+    private String gcpPolicy = String.format("%s:policy:conjur/authn-gcp", account);
+    private String gcpGroup = String.format("%s:group:conjur/authn-gcp/users", account);
+    private String gcpWebservice = String.format("%s:webservice:conjur/authn-gcp", account);
+
     private final String[] resourceIds = {
         rootPolicy, onePassword, testSecret,
         alice, aliceKey, bob,
-        ldapPolicy, ldapWebservice, ldapGroup
+        ldapPolicy, ldapWebservice, ldapGroup,
+        gcpPolicy, gcpWebservice, gcpGroup,
     };
 
     /**

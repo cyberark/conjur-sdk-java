@@ -2,11 +2,20 @@ package com.cyberark.conjur.sdk.endpoint;
 
 import com.cyberark.conjur.sdk.*;
 import com.cyberark.conjur.sdk.auth.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.junit.*;
+
 
 /**
  * Configured Test Superclass.
@@ -111,6 +120,40 @@ public class ConfiguredTest {
         } catch (IOException e) {
             Assert.fail("Failed to read OIDC webservice policy file");
         }
+    }
+    
+    /**
+     * Get the access token via an OIDC call to keycloak.
+     *
+     * @return OIDC Access token
+     * @throws IOException when the API call fails
+     */
+    public String getOidcIdToken() throws IOException {
+        String grantType = "password";
+        String username = "bob";
+        String password = "bob";
+        String scope = "openId";
+        String clientUser = "conjurClient";
+        String clientPw = "1234";
+        String authHeader = "Basic " 
+                + new String(Base64.getEncoder().encode((clientUser + ":" + clientPw).getBytes()));
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType,
+                "grant_type=" + grantType 
+                + "&username=" + username 
+                + "&password=" + password 
+                + "&scope=" + scope);
+        Request request = new Request.Builder()
+                .url("http://oidc-keycloak:8080/auth/realms/master/protocol/openid-connect/token")
+                .method("POST", body)
+                .addHeader("Authorization", authHeader)
+                .build();
+        Response response = client.newCall(request).execute();
+        JsonObject respJson = new Gson().fromJson(response.body().string(), JsonObject.class);
+        return respJson.get("access_token").getAsString();
+
     }
 
     /**

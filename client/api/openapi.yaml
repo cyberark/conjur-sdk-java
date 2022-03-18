@@ -2,13 +2,13 @@ openapi: 3.0.0
 info:
   contact:
     email: conj_maintainers@cyberark.com
-  description: This is an API definition for CyberArk Conjur OSS. You can find out
-    more at [Conjur.org](https://www.conjur.org/).
+  description: This is an API definition for CyberArk Conjur Open Source. You can
+    find out more at [Conjur.org](https://www.conjur.org/).
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Conjur
-  version: 5.1.1
+  version: 5.3.0
 externalDocs:
   description: Find out more about Conjur
   url: https://conjur.org
@@ -507,6 +507,86 @@ paths:
       - authentication
       x-contentType: application/x-www-form-urlencoded
       x-accepts: text/plain
+  /authn-jwt/{service_id}/{account}/{id}/authenticate:
+    parameters:
+    - description: |
+        Add an ID to the request being made so it can be tracked in Conjur.
+        If not provided the server will automatically generate one.
+      example: test-id
+      in: header
+      name: X-Request-Id
+      required: false
+      schema:
+        pattern: ^[a-zA-Z\d-]{1,255}$
+        type: string
+    post:
+      description: |
+        Use the JWT Authenticator to leverage the identity layer
+        provided by JWT to authenticate with Conjur.
+      operationId: getAccessTokenViaJWTWithId
+      parameters:
+      - description: Organization account name
+        in: path
+        name: account
+        required: true
+        schema:
+          $ref: '#/components/schemas/AccountName'
+      - description: Organization user id
+        in: path
+        name: id
+        required: true
+        schema:
+          $ref: '#/components/schemas/UserId'
+      - description: URL-Encoded authenticator service ID
+        example: prod%2fgke
+        in: path
+        name: service_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          Add an ID to the request being made so it can be tracked in Conjur.
+          If not provided the server will automatically generate one.
+        example: test-id
+        in: header
+        name: X-Request-Id
+        required: false
+        schema:
+          pattern: ^[a-zA-Z\d-]{1,255}$
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/JWTToken'
+        description: ID token
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: The response is an access token for conjur
+        "400":
+          description: The server cannot process the request due to malformed request
+            syntax
+        "401":
+          description: Authentication information is missing or invalid
+        "404":
+          description: The requested resource does not exist, the authenticated user
+            lacks the required privileges to enumerate this resource, or its value
+            has not been set
+        "500":
+          description: Malfromed request, rejected by the server
+      security: []
+      summary: |
+        Gets a short-lived access token for applications using JSON Web Token (JWT)
+        to access the Conjur API. Covers the case of use of optional URL parameter "ID"
+      tags:
+      - authentication
+      x-contentType: application/x-www-form-urlencoded
+      x-accepts: text/plain
   /authn-k8s/{service_id}/inject_client_cert:
     parameters:
     - description: |
@@ -932,8 +1012,10 @@ paths:
             syntax
         "401":
           description: Authentication information is missing or invalid
-        "502":
-          description: Error connecting conjur to the OIDC provider
+        "404":
+          description: The requested resource does not exist, the authenticated user
+            lacks the required privileges to enumerate this resource, or its value
+            has not been set
       security: []
       summary: |
         Gets a short-lived access token for applications using OpenID
@@ -2916,6 +2998,88 @@ paths:
       schema:
         pattern: ^[a-zA-Z\d-]{1,255}$
         type: string
+  /{authenticator}/{account}:
+    parameters:
+    - description: |
+        Add an ID to the request being made so it can be tracked in Conjur.
+        If not provided the server will automatically generate one.
+      example: test-id
+      in: header
+      name: X-Request-Id
+      required: false
+      schema:
+        pattern: ^[a-zA-Z\d-]{1,255}$
+        type: string
+    patch:
+      description: |
+        Allows you to either enable or disable a given authenticator that does not have service_id (For example: authn-gcp).
+
+        When you enable or disable an authenticator via this
+        endpoint, the status of the authenticator is stored
+        in the Conjur database. The enablement status of the authenticator
+        service may be overridden by setting the `CONJUR_AUTHENTICATORS`
+        environment variable on the Conjur server; in the case where this
+        environment variable is set, the database record of whether the
+        authenticator service is enabled will be ignored.
+
+        **This endpoint is part of an early implementation of support for enabling Conjur
+        authenticators via the API, and is currently available at the Community
+        (or early alpha) level. This endpoint is still subject to breaking
+        changes in the future.**
+      operationId: enableAuthenticator
+      parameters:
+      - description: The authenticator to update
+        example: authn-gcp
+        in: path
+        name: authenticator
+        required: true
+        schema:
+          $ref: '#/components/schemas/ServiceAuthenticators'
+      - description: Organization account name
+        example: dev
+        in: path
+        name: account
+        required: true
+        schema:
+          type: string
+      - description: |
+          Add an ID to the request being made so it can be tracked in Conjur.
+          If not provided the server will automatically generate one.
+        example: test-id
+        in: header
+        name: X-Request-Id
+        required: false
+        schema:
+          pattern: ^[a-zA-Z\d-]{1,255}$
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnableAuthenticatorSetting'
+        description: |
+          Contains either `enabled=true` or `enabled=false` to
+          enable or disable an authenticator
+        required: true
+      responses:
+        "204":
+          description: The config was updated properly
+        "400":
+          description: The server cannot process the request due to malformed request
+            syntax
+        "401":
+          description: Authentication information is missing or invalid
+        "404":
+          description: The requested resource does not exist, the authenticated user
+            lacks the required privileges to enumerate this resource, or its value
+            has not been set
+        "500":
+          description: Malfromed request, rejected by the server
+      summary: Enables or disables authenticator defined without service_id.
+      tags:
+      - authentication
+      x-contentType: application/x-www-form-urlencoded
+      x-accepts: application/json
   /{authenticator}/{service_id}/{account}:
     parameters:
     - description: |
@@ -3155,19 +3319,10 @@ components:
       example: default
       minLength: 1
       type: string
-    CheckPrivilege:
-      description: Checks whether a role has a privilege on a resource.
-      example: true
-      type: boolean
     Count:
       description: Return only the count of results
       example: true
       type: boolean
-    Identifier:
-      description: Long identifying string for a specific resource in Conjur
-      example: dev:user:admin
-      pattern: \w+:\w+:\w+
-      type: string
     Kind:
       example: variable
       minLength: 1
@@ -3180,14 +3335,6 @@ components:
       description: Skips this many items before returning the rest
       example: 20
       type: integer
-    PermittedRoles:
-      example: true
-      type: boolean
-    PrivilegeLevel:
-      description: Denotes a type of permission allowed on a resource
-      example: execute
-      minLength: 1
-      type: string
     ResourceID:
       description: |
         Resource identifier. Requires to be encoded when in path.
@@ -3312,6 +3459,11 @@ components:
         jwt:
           type: string
       type: object
+    UserId:
+      description: Represents the user/host identity
+      example: SomeUserID
+      minLength: 1
+      type: string
     OIDCToken:
       description: OpenID Connect ID token
       example:
@@ -3562,6 +3714,18 @@ components:
         version:
           type: number
       type: object
+    PermittedRoles:
+      example: true
+      type: boolean
+    PrivilegeLevel:
+      description: Denotes a type of permission allowed on a resource
+      example: execute
+      minLength: 1
+      type: string
+    CheckPrivilege:
+      description: Checks whether a role has a privilege on a resource.
+      example: true
+      type: boolean
     ResourceIDs:
       description: |
         Comma-delimited, URL-encoded resource identifiers.
