@@ -21,8 +21,6 @@ import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.JsonElement;
-import io.gsonfire.GsonFireBuilder;
-import io.gsonfire.TypeSelector;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -50,10 +48,9 @@ public class JSON {
     private LocalDateTypeAdapter localDateTypeAdapter = new LocalDateTypeAdapter();
     private ByteArrayAdapter byteArrayAdapter = new ByteArrayAdapter();
 
+    @SuppressWarnings("unchecked")
     public static GsonBuilder createGson() {
-        GsonFireBuilder fireBuilder = new GsonFireBuilder()
-        ;
-        GsonBuilder builder = fireBuilder.createGsonBuilder();
+        GsonBuilder builder = new GsonBuilder();
         return builder;
     }
 
@@ -110,6 +107,13 @@ public class JSON {
         return this;
     }
 
+    /**
+     * Configure the parser to be liberal in what it accepts.
+     *
+     * @param lenientOnJson Set it to true to ignore some syntax errors
+     * @return JSON
+     * @see <a href="https://www.javadoc.io/doc/com.google.code.gson/gson/2.8.5/com/google/gson/stream/JsonReader.html">https://www.javadoc.io/doc/com.google.code.gson/gson/2.8.5/com/google/gson/stream/JsonReader.html</a>
+     */
     public JSON setLenientOnJson(boolean lenientOnJson) {
         isLenientOnJson = lenientOnJson;
         return this;
@@ -138,7 +142,7 @@ public class JSON {
         try {
             if (isLenientOnJson) {
                 JsonReader jsonReader = new JsonReader(new StringReader(body));
-                // see https://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonReader.html#setLenient(boolean)
+                // see https://www.javadoc.io/doc/com.google.code.gson/gson/2.8.5/com/google/gson/stream/JsonReader.html
                 jsonReader.setLenient(true);
                 return gson.fromJson(jsonReader, returnType);
             } else {
@@ -159,7 +163,6 @@ public class JSON {
      * Gson TypeAdapter for Byte Array type
      */
     public class ByteArrayAdapter extends TypeAdapter<byte[]> {
-
         @Override
         public void write(JsonWriter out, byte[] value) throws IOException {
             if (value == null) {
@@ -187,9 +190,7 @@ public class JSON {
      * Gson TypeAdapter for JSR310 OffsetDateTime type
      */
     public static class OffsetDateTimeTypeAdapter extends TypeAdapter<OffsetDateTime> {
-
         private DateTimeFormatter formatter;
-
         public OffsetDateTimeTypeAdapter() {
             this(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         }
@@ -231,9 +232,7 @@ public class JSON {
      * Gson TypeAdapter for JSR310 LocalDate type
      */
     public class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
-
         private DateTimeFormatter formatter;
-
         public LocalDateTypeAdapter() {
             this(DateTimeFormatter.ISO_LOCAL_DATE);
         }
@@ -284,9 +283,7 @@ public class JSON {
      * (more efficient than SimpleDateFormat).
      */
     public static class SqlDateTypeAdapter extends TypeAdapter<java.sql.Date> {
-
         private DateFormat dateFormat;
-
         public SqlDateTypeAdapter() {}
 
         public SqlDateTypeAdapter(DateFormat dateFormat) {
@@ -337,9 +334,7 @@ public class JSON {
      * If the dateFormat is null, ISO8601Utils will be used.
      */
     public static class DateTypeAdapter extends TypeAdapter<Date> {
-
         private DateFormat dateFormat;
-
         public DateTypeAdapter() {}
 
         public DateTypeAdapter(DateFormat dateFormat) {

@@ -10,8 +10,6 @@ import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.JsonElement;
-import io.gsonfire.GsonFireBuilder;
-import io.gsonfire.TypeSelector;
 {{#joda}}
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -19,6 +17,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.ISODateTimeFormat;
 {{/joda}}
+{{#threetenbp}}
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
+{{/threetenbp}}
 
 {{#models.0}}
 import {{modelPackage}}.*;
@@ -31,9 +34,11 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
+{{#java8}}
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+{{/java8}}
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -56,27 +61,7 @@ public class JSON {
 
     @SuppressWarnings("unchecked")
     public static GsonBuilder createGson() {
-        GsonFireBuilder fireBuilder = new GsonFireBuilder()
-        {{#models}}
-        {{#model}}
-        {{#discriminator}}
-                .registerTypeSelector({{classname}}.class, new TypeSelector<{{classname}}>() {
-                    @Override
-                    public Class<? extends {{classname}}> getClassForElement(JsonElement readElement) {
-                        Map<String, Class> classByDiscriminatorValue = new HashMap<String, Class>();
-                        {{#mappedModels}}
-                        classByDiscriminatorValue.put("{{mappingName}}"{{^discriminatorCaseSensitive}}.toUpperCase(Locale.ROOT){{/discriminatorCaseSensitive}}, {{modelName}}.class);
-                        {{/mappedModels}}
-                        classByDiscriminatorValue.put("{{name}}"{{^discriminatorCaseSensitive}}.toUpperCase(Locale.ROOT){{/discriminatorCaseSensitive}}, {{classname}}.class);
-                        return getClassByDiscriminator(classByDiscriminatorValue,
-                                getDiscriminatorValue(readElement, "{{{propertyBaseName}}}"));
-                    }
-          })
-        {{/discriminator}}
-        {{/model}}
-        {{/models}}
-        ;
-        GsonBuilder builder = fireBuilder.createGsonBuilder();
+        GsonBuilder builder = new GsonBuilder();
         {{#disableHtmlEscaping}}
         builder.disableHtmlEscaping();
         {{/disableHtmlEscaping}}
