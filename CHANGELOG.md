@@ -6,7 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [4.0.0] - 6/17/21
+## [4.1.0] - 2022-04-01
+
+### Changed
+- Update OpenAPI spec to version 5.3.0 and add tests for JWT authenticator
+  [conjur-sdk-java#70](https://github.com/cyberark/conjur-sdk-java/pull/70)
+- Update project to reflect Trusted Level
+  [conjur-sdk-java#58](https://github.com/cyberark/conjur-sdk-java/pull/58)
+
+## [4.0.0] - 2021-06-17
 ### Changed
 - The package name from `org.conjur.sdk` to `com.cyberark.conjur.sdk`
 - The main package with endpoint classes from `org.conjur.sdk.api` to `org.conjur.sdk.endpoint`
@@ -29,4 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [Google's Java Style](https://google.github.io/styleguide/javaguide.html).
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
-[Unreleased]: https://github.com/cyberark/conjur-openapi-spec/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/cyberark/conjur-sdk-java/compare/v4.0.0...v4.1.0
+[4.0.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.0.0
