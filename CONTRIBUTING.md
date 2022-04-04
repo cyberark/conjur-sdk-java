@@ -69,6 +69,7 @@ version.
    - Remember to update the references at the bottom of the document.
 1. Update the [README](./README.md#requirements) Version chart to reflect compatability with the
    new release version.
+1. Update the `version` in the client/pom.xml and templates/libraries/okhttp-gson/pom.mustache files.
 1. Commit these changes (including the changes to NOTICES.txt, if there are any).
    `Bump version to x.y.z` is an acceptable commit message.
 1. Push your changes to a branch, and get the PR reviewed and merged.

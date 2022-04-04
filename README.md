@@ -22,7 +22,8 @@ its own version allows changes to be made to the client outside of updates to th
 
 | Java Client Version | [Conjur API Version](https://github.com/cyberark/conjur-openapi-spec/releases) |
 | :-----------------: | :----------------: |
-| 4.x.x               | 5.1.1              |
+| 4.0.x               | 5.1.1              |
+| 4.1.x               | 5.3.0              |
 
 ## Configuring the Client
 
