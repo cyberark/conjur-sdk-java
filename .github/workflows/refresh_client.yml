@@ -1,0 +1,35 @@
+name: Automate Client Refresh
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  client_refresh:
+    runs-on: ubuntu-latest
+    name: Create PR when Conjur OpenAPI description is updated
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Refresh Java client from OpenAPI description
+        run: |
+          ./bin/refresh_client
+
+      - name: Open PR for updated client
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Automated PR to update Java client
+          branch: openapi-update/auto-pr
+          commit-message: "[automated commit] Refresh Java client"
+          body: |+
+            This PR was opened because a change was detected in Conjur's
+            OpenAPI description:
+
+            https://github.com/cyberark/conjur-openapi-spec
+
+            Please verify that the changes look good.
+            Note: If the OpenAPI description has added new endpoints, then this
+            PR should be updated to include unit testing to maintain test
+            coverage.
+          team-reviewers: |
+            maintainers
