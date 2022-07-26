@@ -8,6 +8,15 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '30'))
     }
 
+    // "parameterizedCron" is defined by this native Jenkins plugin:
+    //     https://plugins.jenkins.io/parameterized-scheduler/
+    // "getDailyCronString" is defined by us (URL is wrapped):
+    //     https://github.com/conjurinc/jenkins-pipeline-library/blob/master/vars/
+    //     getDailyCronString.groovy
+    triggers {
+        parameterizedCron(getDailyCronString())
+    }
+
     stages {
         stage('Integration Tests') {
             steps {
