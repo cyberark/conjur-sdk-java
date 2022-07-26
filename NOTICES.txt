@@ -8,36 +8,36 @@ of the license associated with each component.
 
 Section 1: Apache-2.0
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/3.8.1
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin/3.0.0-M1
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/3.0.0-M4
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/3.10.1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin/3.0.0
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/3.0.0-M7
 >>> https://mvnrepository.com/artifact/org.apache.maven/maven-plugin-api/3.8.1
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin/2.2
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin/3.1.1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin/3.2.2
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin/3.4.0
 >>> https://mvnrepository.com/artifact/org.apache.maven/maven-plugin-api/2.2.1
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin/3.1.1
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin/1.5
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin/3.4.2
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin/3.0.1
 >>> https://commons.apache.org/proper/commons-lang/
 >>> https://mvnrepository.com/artifact/org.scalatestplus/junit-4-13_3/3.2.9.0
 >>> https://mvnrepository.com/artifact/io.swagger/swagger-annotations/1.5.24
 >>> https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305/3.0.2
->>> https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/3.14.7
->>> https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor/3.14.7
+>>> https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.10.0
+>>> https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor/4.10.0
 >>> https://mvnrepository.com/artifact/io.gsonfire/gson-fire/1.8.4
 >>> https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.6
 
 Section 2: BSD-3-Clause
 
->>> https://mvnrepository.com/artifact/org.threeten/threetenbp/1.4.3
+>>> https://mvnrepository.com/artifact/org.threeten/threetenbp/1.6.0
 
 Section 3: MIT
 
->>> https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin/1.1
->>> https://mvnrepository.com/artifact/org.mockito/mockito-core/3.11.1
+>>> https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin/3.3.0
+>>> https://mvnrepository.com/artifact/org.mockito/mockito-core/4.6.1
 
 Section 4: EPL
 
->>> https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin/0.8.7
+>>> https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin/0.8.8
 
 APPENDIX: Standard License Files and Templates
 
@@ -50,7 +50,7 @@ APPENDIX: Standard License Files and Templates
 
 Apache-2.0 License is applicable to the following component(s).
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/3.8.1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/3.10.1
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -66,7 +66,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin/3.0.0-M1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin/3.0.0
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -82,7 +82,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/3.0.0-M4
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/3.0.0-M7
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -114,7 +114,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin/2.2
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin/3.2.2
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -130,7 +130,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin/3.1.1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin/3.4.0
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -162,7 +162,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin/3.1.1
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin/3.4.2
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -178,7 +178,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin/1.5
+>>> https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin/3.0.1
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -258,7 +258,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/3.14.7
+>>> https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.10.0
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -274,7 +274,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
->>> https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor/3.14.7
+>>> https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor/4.10.0
 
 Copyright <YEAR> <COPYRIGHT HOLDER>
 
@@ -327,7 +327,7 @@ limitations under the License.
 
 BSD-3-Clause License is applicable to the following component(s).
 
->>> https://mvnrepository.com/artifact/org.threeten/threetenbp/1.4.3
+>>> https://mvnrepository.com/artifact/org.threeten/threetenbp/1.6.0
 
 Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos.
 
@@ -363,7 +363,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 MIT License is applicable to the following component(s).
 
->>> https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin/1.1
+>>> https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin/3.3.0
 
 Copyright (c) 2008 Dan Tran dantran@gmail.com
 
@@ -388,7 +388,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
->>> https://mvnrepository.com/artifact/org.mockito/mockito-core/3.11.1
+>>> https://mvnrepository.com/artifact/org.mockito/mockito-core/4.6.1
 
 The MIT License
 
@@ -417,7 +417,7 @@ THE SOFTWARE.
 
 EPL License is applicable to the following component(s).
 
->>> https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin/0.8.7
+>>> https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin/0.8.8
 
 Eclipse Public License - v 2.0
 

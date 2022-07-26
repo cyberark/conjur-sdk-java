@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.1.0] - 2022-04-01
 
 ### Changed
+- Update okhttp3 to 4.9.2 to resolve 
+  [SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044](https://app.snyk.io/vuln/SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044)
+  and bump other dependencies to latest version
+  [conjur-sdk-java#74](https://github.com/cyberark/conjur-sdk-java/pull/74)
 - Update OpenAPI spec to version 5.3.0 and add tests for JWT authenticator
   [conjur-sdk-java#70](https://github.com/cyberark/conjur-sdk-java/pull/70)
 - Update project to reflect Trusted Level
