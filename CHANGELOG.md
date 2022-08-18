@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.1.0] - 2022-04-01
 
 ### Changed
+- Update config/java.yml to contain and set the license name and URL for the client
+  [ONYX-16679](https://ca-il-jira.il.cyber-ark.com:8443/browse/ONYX-16679)
 - Update okhttp3 to 4.9.2 to resolve 
   [SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044](https://app.snyk.io/vuln/SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044)
   and bump other dependencies to latest version

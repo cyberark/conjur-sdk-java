@@ -5,3 +5,5 @@ invokerPackage: com.cyberark.conjur.sdk
 artifactId: conjur-sdk-java
 artifactDescription: Java Conjur SDK
 hideGenerationTimestamp: true
+licenseName: Apache 2.0
+licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
