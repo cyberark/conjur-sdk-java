@@ -14,7 +14,7 @@ pipeline {
     //     https://github.com/conjurinc/jenkins-pipeline-library/blob/master/vars/
     //     getDailyCronString.groovy
     triggers {
-        parameterizedCron(getDailyCronString())
+        parameterizedCron(getDailyCronString("%NIGHTLY=true"))
     }
 
     stages {
