@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 
 source bin/util
 
-regen_client=true
+regen_client=false
 rebuild_conjur=true
 major_java_version=16
 install=""
@@ -53,7 +53,7 @@ print_help(){
   echo -e "\tThe --no-rebuild-conjur flag will prevent the conjur image from rebuilding"
   echo -e "\t\tWarning: this may cause some tests to fail"
   echo
-  echo -e "\tThe --no-regen-client flag will prevent the client from re-generating before tests run"
+  echo -e "\tThe --regen-client flag will re-generating the client before tests run"
   echo
   echo -e "\tThe -d flag will turn on debug mode for the integration test runs"
   echo
@@ -121,8 +121,8 @@ do
     --no-rebuild-conjur)
       rebuild_conjur=false
       ;;
-    --no-regen-client)
-      regen_client=false
+    --regen-client)
+      regen_client=true
       ;;
     -j|--java-version)
       major_java_version=$1
