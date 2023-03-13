@@ -5,10 +5,10 @@ set -e
 cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 source bin/util
 
-pushd client
-
-mvn clean package -DskipTests=true
-
-popd
+docker run --rm \
+  -v "${PWD}/client":/client \
+  -w /client \
+  maven:3-openjdk-16 \
+  mvn clean package -DskipTests=true
 
 announce "Output available in ./client/target"
