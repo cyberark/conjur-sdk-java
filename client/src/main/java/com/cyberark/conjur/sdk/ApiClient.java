@@ -45,6 +45,7 @@ import java.text.DateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
@@ -58,6 +59,7 @@ import com.cyberark.conjur.sdk.auth.ApiKeyAuth;
 
 public class ApiClient {
 
+    private static final Logger LOGGER = Logger.getLogger(ApiClient.class.getName());
     private String basePath = System.getenv().getOrDefault("CONJUR_APPLIANCE_URL", "http://localhost");
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
@@ -1302,7 +1304,9 @@ public class ApiClient {
             ApiResponse<String> response = execute(c, new TypeToken<String>(){}.getType());
             accessToken = response.getData();
         } catch (ApiException e) {
-            System.out.println("Failed to automatically update AccessToken");
+            LOGGER.severe("Status code: " + e.getCode());
+            LOGGER.severe("Reason: " + e.getResponseBody());
+            LOGGER.severe(e.getMessage());
             return null;
         }
         return AccessToken.fromEncodedToken(accessToken);
