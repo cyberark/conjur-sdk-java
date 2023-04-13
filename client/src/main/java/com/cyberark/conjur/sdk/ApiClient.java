@@ -1305,7 +1305,7 @@ public class ApiClient {
             accessToken = response.getData();
         } catch (ApiException e) {
 			LOGGER.log(java.util.logging.Level.SEVERE, "Error encountered while updating AccessToken. Error code: " + e.getCode() +  ", Error Message:" + e.getMessage() + ", Error Body:" + e.getResponseBody(), e);
-			return null;
+            return null;
         }
         return AccessToken.fromEncodedToken(accessToken);
     }
@@ -1460,3 +1460,4 @@ public class ApiClient {
         }
     }
 }
+
