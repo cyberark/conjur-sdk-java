@@ -1304,10 +1304,8 @@ public class ApiClient {
             ApiResponse<String> response = execute(c, new TypeToken<String>(){}.getType());
             accessToken = response.getData();
         } catch (ApiException e) {
-            LOGGER.severe("Status code: " + e.getCode());
-            LOGGER.severe("Reason: " + e.getResponseBody());
-            LOGGER.severe(e.getMessage());
-            return null;
+			LOGGER.log(java.util.logging.Level.SEVERE, "Error encountered while updating AccessToken. Error code: " + e.getCode() +  ", Error Message:" + e.getMessage() + ", Error Body:" + e.getResponseBody(), e);
+			return null;
         }
         return AccessToken.fromEncodedToken(accessToken);
     }
