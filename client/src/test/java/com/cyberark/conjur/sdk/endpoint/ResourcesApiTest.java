@@ -37,6 +37,7 @@ public class ResourcesApiTest extends ConfiguredTest {
     private String rootPolicy = String.format("%s:policy:root", account);
     private String onePassword = String.format("%s:variable:one/password", account);
     private String testSecret = String.format("%s:variable:testSecret", account);
+    private String admin = String.format("%s:user:admin", account);
     private String alice = String.format("%s:user:alice", account);
     private String aliceKey = String.format("%s:public_key:user/alice/laptop", account);
     private String bob = String.format("%s:user:bob", account);
@@ -49,7 +50,7 @@ public class ResourcesApiTest extends ConfiguredTest {
 
     private final String[] resourceIds = {
         rootPolicy, onePassword, testSecret,
-        alice, aliceKey, bob,
+        admin, alice, aliceKey, bob,
         ldapPolicy, ldapWebservice, ldapGroup,
         gcpPolicy, gcpWebservice, gcpGroup,
     };
