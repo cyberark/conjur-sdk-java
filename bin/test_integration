@@ -14,11 +14,18 @@ test_case=""
 coverage=false
 unset_environment=false
 
+trap cleanup EXIT
+
 if [ "$(tty)" == "not a tty" ]; then
   copy_prefix="sudo"
 else
   copy_prefix=""
 fi
+
+dump_conjur_logs() {
+  echo "Dumping Conjur logs..."
+  docker-compose logs conjur
+}
 
 cleanup() {
   echo "Cleaning up..."
@@ -158,3 +165,6 @@ setup_keycloak
 config/https/generate_csr
 
 run_java_tests
+if [[ "$?" -ne 0 ]]; then
+  dump_conjur_logs
+fi

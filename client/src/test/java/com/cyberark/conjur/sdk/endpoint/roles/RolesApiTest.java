@@ -70,13 +70,14 @@ public class RolesApiTest extends RoleTest {
     }
 
     /**
-     * Update or modify an existing role membership. Test case for 403 response code.
+     * Test case for 404 response code when the requesting user does not have
+     * permission to read the requested member.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void addMemberToRoleTest403() throws ApiException {
+    public void addMemberToRoleTest404a() throws ApiException {
         String member = BOB_ID;
         try {
             aliceApi.addMemberToRole(
@@ -87,18 +88,18 @@ public class RolesApiTest extends RoleTest {
                 member
             );
         } catch (ApiException e) {
-            Assert.assertEquals(403, e.getCode());
+            Assert.assertEquals(404, e.getCode());
         }
     }
 
     /**
-     * Update or modify an existing role membership. Test case for 404 response code.
+     * Test case for 404 response code when the requested member does not exist.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void addMemberToRoleTest404() throws ApiException {
+    public void addMemberToRoleTest404b() throws ApiException {
         try {
             api.addMemberToRole(
                 account,
@@ -161,13 +162,14 @@ public class RolesApiTest extends RoleTest {
     }
 
     /**
-     * Deletes an existing role membership. Test case for 403 response code.
+     * Deletes an existing role membership. Test case for 404 response code when
+     * the requesting user does not have permission to read the requested member.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void removeMemberFromRoleTest403() throws ApiException {
+    public void removeMemberFromRoleTest404a() throws ApiException {
         String kind = "group";
         String identifier = "userGroup";
         String members = "";
@@ -181,18 +183,19 @@ public class RolesApiTest extends RoleTest {
                 member
             );
         } catch (ApiException e) {
-            Assert.assertEquals(403, e.getCode());
+            Assert.assertEquals(404, e.getCode());
         }
     }
 
     /**
-     * Deletes an existing role membership. Test case for 404 response code.
+     * Deletes an existing role membership. Test case for 404 response code when
+     * the requested member does not exist.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void removeMemberFromRoleTest404() throws ApiException {
+    public void removeMemberFromRoleTest404b() throws ApiException {
         String kind = "group";
         String identifier = "userGroup";
         String members = "";
@@ -253,13 +256,14 @@ public class RolesApiTest extends RoleTest {
     }
 
     /**
-     * Get role information. Test case for 403 response code.
+     * Get role information. Test case for 404 response code when the requesting
+     * user does not have permission to read the requested role.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showRoleTest403() throws ApiException {
+    public void showRoleTest404a() throws ApiException {
         String kind = "user";
         String identifier = "admin";
 
@@ -270,18 +274,19 @@ public class RolesApiTest extends RoleTest {
                 identifier
             );
         } catch (ApiException e) {
-            Assert.assertEquals(403, e.getCode());
+            Assert.assertEquals(404, e.getCode());
         }
     }
 
     /**
-     * Get role information. Test case for 404 response code.
+     * Get role information. Test case for 404 response code when the requested
+     * role does not exist.
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void showRoleTest404() throws ApiException {
+    public void showRoleTest404b() throws ApiException {
         String kind = "user";
         String identifier = "nonexist";
 
