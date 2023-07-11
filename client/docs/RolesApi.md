@@ -88,7 +88,6 @@ null (empty response body)
 **204** | Member was added to role successfully |  -  |
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
-**403** | The authenticated user lacks the necessary privileges |  -  |
 **404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 **422** | A request parameter was either missing or invalid. |  -  |
 
@@ -171,7 +170,6 @@ null (empty response body)
 **204** | Member was deleted from role successfully |  -  |
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
-**403** | The authenticated user lacks the necessary privileges |  -  |
 **404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 **422** | A request parameter was either missing or invalid. |  -  |
 
@@ -267,7 +265,6 @@ Name | Type | Description  | Notes
 **200** | The response body contains the requested role(s)/member(s) |  -  |
 **400** | The server cannot process the request due to malformed request syntax |  -  |
 **401** | Authentication information is missing or invalid |  -  |
-**403** | The authenticated user lacks the necessary privileges |  -  |
 **404** | The requested resource does not exist, the authenticated user lacks the required privileges to enumerate this resource, or its value has not been set |  -  |
 **422** | A request parameter was either missing or invalid. |  -  |
 

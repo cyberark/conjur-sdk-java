@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [4.1.0] - 2022-04-01
+## [4.1.0] - 2023-07-11
 
 ### Changed
+- Update OpenAPI spec to version 5.3.1
+  [conjur-sdk-java#83](https://github.com/cyberark/conjur-sdk-java/pull/83)
 - Update config/java.yml to contain and set the license name and URL for the client (ONYX-16679)
 - Update okhttp3 to 4.9.2 to resolve 
   [SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044](https://app.snyk.io/vuln/SNYK-JAVA-COMSQUAREUPOKHTTP3-2958044)
