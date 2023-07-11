@@ -15,7 +15,7 @@ export TAG=${TAG_NAME//"v"}
 docker run --rm \
   -e OSSRH_USERNAME \
   -e OSSRH_PASSWORD \
-  -v "$PWD:/cyberark/conjur-sdk-java" \
+  -v "$PWD/client:/cyberark/conjur-sdk-java" \
   -v "$GPG_PASSWORD:/gpg_password" \
   -v "$GPG_PRIVATE_KEY:/gpg_key" \
   -w /cyberark/conjur-sdk-java maven:3-jdk-8 \
