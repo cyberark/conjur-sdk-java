@@ -24,26 +24,26 @@ fi
 
 dump_conjur_logs() {
   echo "Dumping Conjur logs..."
-  docker-compose logs conjur
+  docker compose logs conjur
 }
 
 cleanup() {
   echo "Cleaning up..."
-  docker-compose rm --stop --force -v
+  docker compose rm --stop --force -v
 }
 
 setup_keycloak(){
   announce "Setting up Keycloak"
 
-  docker-compose exec -T oidc-keycloak bash -c "/scripts/create_client"
-  docker-compose exec -T oidc-keycloak bash -c "/scripts/create_user bob bob bob@conjur.net"
-  docker-compose exec -T conjur bash -c "/policy/oidc/fetchCertificate"
+  docker compose exec -T oidc-keycloak bash -c "/scripts/create_client"
+  docker compose exec -T oidc-keycloak bash -c "/scripts/create_user bob bob bob@conjur.net"
+  docker compose exec -T conjur bash -c "/policy/oidc/fetchCertificate"
 }
 
 conjur_container_down(){
-  if [ -z `docker-compose ps -q conjur` ]; then
+  if [ -z `docker compose ps -q conjur` ]; then
     true
-  elif [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q conjur)` ]; then
+  elif [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q conjur)` ]; then
     true
   else
     false

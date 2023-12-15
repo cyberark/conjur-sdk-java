@@ -44,7 +44,7 @@ section when releasing the client after a refresh.
 * Only certain files will be updated, see `client/.openapi-generator-ignore` for ignored files.
 
 `bin/start_conjur`
-* Used to start a new local Conjur instance based on the project's `docker-compose` file.
+* Used to start a new local Conjur instance based on the project's `docker-compose.yml` file.
 
 `bin/lint`
 * Used to enforce [Google's Java Style](https://google.github.io/styleguide/javaguide.html) on
