@@ -20,6 +20,6 @@ function announce() {
 }
 
 function get_conjur_admin_api_key(){
-  admin_api_key="$(docker-compose exec -T conjur conjurctl role retrieve-key dev:user:admin | tr -d '\r')"
+  admin_api_key="$(docker compose exec -T conjur conjurctl role retrieve-key dev:user:admin | tr -d '\r')"
   echo $admin_api_key
 }
