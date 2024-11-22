@@ -45,7 +45,7 @@ public class AuthenticationApiTest extends ConfiguredTest {
         basicAuth = (HttpBasicAuth) client.getAuthentication("basicAuth");
         basicAuth.setUsername(login);
         basicAuth.setPassword(apiKey());
-
+        
         badAuthApi = new AuthenticationApi(nonAuthClient);
     }
 

@@ -2,3 +2,6 @@
 	path = conjur-project-config
 	url = https://github.com/cyberark/conjur-project-config.git
 	branch = main
+[submodule "conjur-intro"]
+	path = conjur-intro
+	url = https://github.com/conjurdemos/conjur-intro

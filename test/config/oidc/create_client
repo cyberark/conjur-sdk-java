@@ -1,19 +1,29 @@
 #!/bin/sh
 
+# Log message
 echo "Creating client $KEYCLOAK_CLIENT_ID with secret $KEYCLOAK_CLIENT_SECRET"
 
-keycloak/bin/kcreg.sh config credentials \
-  --server http://localhost:8080/auth \
+# Authenticate with Keycloak
+bin/kcadm.sh config credentials \
+  --server http://localhost:8080 \
   --realm master \
-  --user "$KEYCLOAK_USER" \
-  --password "$KEYCLOAK_PASSWORD"
+  --user "$KC_BOOTSTRAP_ADMIN_USERNAME" \
+  --password "$KC_BOOTSTRAP_ADMIN_PASSWORD"
 
-keycloak/bin/kcreg.sh create \
+# Create the client
+bin/kcadm.sh create clients \
+  -r master \
   -s clientId="$KEYCLOAK_CLIENT_ID" \
   -s "redirectUris=[\"$KEYCLOAK_REDIRECT_URI\"]" \
-  -s "secret=$KEYCLOAK_CLIENT_SECRET"
+  -s "secret=$KEYCLOAK_CLIENT_SECRET" \
+  -s publicClient=false \
+  -s enabled=true
 
-# Enable direct access to get an id token with username & password
-keycloak/bin/kcreg.sh update conjurClient -s directAccessGrantsEnabled=true
+# Enable direct access
+bin/kcadm.sh update clients/$(bin/kcadm.sh get clients -r master | jq -r ".[] | select(.clientId==\"$KEYCLOAK_CLIENT_ID\") | .id") \
+  -s directAccessGrantsEnabled=true \
+  -r master
 
-keycloak/bin/kcreg.sh get "$KEYCLOAK_CLIENT_ID" | jq '.secret'
+# Retrieve the secret of the client
+bin/kcadm.sh get clients/$(bin/kcadm.sh get clients -r master | jq -r ".[] | select(.clientId==\"$KEYCLOAK_CLIENT_ID\") | .id") \
+  -r master | jq '.secret'

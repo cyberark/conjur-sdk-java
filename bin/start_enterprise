@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -xe
+
+# Run from top-level dir
+cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
+
+cleanup() {
+  echo "Cleaning up..."
+  
+  if docker compose ps -q conjur > /dev/null; then
+    echo "Stopping and removing Conjur OSS container..."
+    docker compose rm --stop --force -v
+  fi
+
+  if docker compose -f docker-compose.enterprise.yml ps -q conjur-server > /dev/null; then
+    echo "Stopping and removing Conjur Enterprise container..."
+    docker compose -f docker-compose.enterprise.yml rm --stop --force -v
+    docker compose rm --stop --force -v keycloak ldap-server
+    rm -rf config/https/conjur-server.pem
+  fi
+  rm -rf keycloak.pem
+}
+
+make_network(){
+  if [ ! -z $(docker network inspect dap_net > /dev/null || echo $?) ]; then
+    docker network create dap_net
+  fi
+}
+
+if [ "$1" == "-d" ]; then
+  DEBUG="true"
+  shift
+fi
+
+
+trap 'echo "ERROR: Test script encountered an error!"; docker compose logs; cleanup' ERR
+cleanup
+
+make_network
+echo "Building services..."
+DOCKER_NETWORK=dap_net docker compose build keycloak ldap-server
+
+DOCKER_NETWORK=dap_net docker compose up -d keycloak ldap-server
+
+# Start Conjur Enterprise server
+echo "Starting Conjur Enterprise..."
+docker compose -f docker-compose.enterprise.yml up -d conjur-server conjur_cli
+docker compose -f docker-compose.enterprise.yml exec -T conjur-server bash -c "evoke configure  master --accept-eula -h conjur-server -p "MySecretP@ss1" demo"
+docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "echo y | conjur init -u https://conjur-server -a demo --self-signed --force"
+docker compose -f docker-compose.enterprise.yml cp conjur_cli:/root/conjur-server.pem ./config/https
+docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "conjur login -i admin -p MySecretP@ss1"
+docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "conjur policy load -b root -f /config/policy.yaml"

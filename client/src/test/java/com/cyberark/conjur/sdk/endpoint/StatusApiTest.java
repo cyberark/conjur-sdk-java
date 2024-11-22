@@ -76,6 +76,7 @@ public class StatusApiTest extends ConfiguredTest {
 
         for (int i = 0; i < enabled.length; i++) {
             Assert.assertTrue(response.getEnabled().contains(enabled[i]));
+
             Assert.assertTrue(response.getConfigured().contains(enabled[i]));
         }
     }
@@ -92,6 +93,7 @@ public class StatusApiTest extends ConfiguredTest {
     public void getServiceAuthenticatorStatusTest200() throws ApiException {
         String authenticator = "authn-oidc";
         String serviceId = "test";
+
         ApiResponse<AuthenticatorStatus> response = api.getServiceAuthenticatorStatusWithHttpInfo(
             authenticator,
             serviceId,

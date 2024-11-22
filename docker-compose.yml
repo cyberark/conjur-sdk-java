@@ -1,7 +1,7 @@
 version: '3'
 services:
   pg:
-    image: postgres:9.4
+    image: postgres:15
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
 
@@ -25,9 +25,7 @@ services:
     depends_on:
       - pg
       - ldap-server
-      - oidc-keycloak
-    links:
-      - oidc-keycloak:keycloak
+      - keycloak
 
   conjur-https:
     image: nginx:alpine
@@ -60,11 +58,13 @@ services:
       - ./test/config/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
       - ./test/config/ldap/certs:/container/service/slapd/assets/certs:ro
 
-  oidc-keycloak:
-    image: jboss/keycloak:4.3.0.Final
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
       - DB_VENDOR=H2
       - KEYCLOAK_CLIENT_ID=conjurClient
       - KEYCLOAK_REDIRECT_URI=http://locallhost.com/
@@ -73,9 +73,9 @@ services:
       - KEYCLOAK_LOGLEVEL=ALL
     volumes:
       - ./test/config/oidc:/scripts
-      - ./test/config/oidc/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - ./test/config/oidc/keycloak/standalone.xml:/opt/keycloak/standalone/configuration/standalone.xml
 
 networks:
   default:
     external: true
-    name: conjur-sdk-java
+    name: ${DOCKER_NETWORK:-conjur-sdk-java}  

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+declare DOCKER_COMPOSE_ARGS
+
 function get_banner(){
   for word in $@
   do
@@ -20,6 +22,30 @@ function announce() {
 }
 
 function get_conjur_admin_api_key(){
-  admin_api_key="$(docker compose exec -T conjur conjurctl role retrieve-key dev:user:admin | tr -d '\r')"
+  target=$1
+  if [[ "$target" == "oss" ]]; then
+    admin_api_key="$(docker compose exec -T conjur conjurctl role retrieve-key dev:user:admin | tr -d '\r')"
+  elif [[ "$target" == "enterprise" ]]; then
+    admin_api_key="$(docker compose -f $(git rev-parse --show-toplevel)/docker-compose.enterprise.yml exec -T conjur_cli bash -c "conjur user rotate-api-key|tail -n 1| tr -d '\r'")"
+  fi
   echo $admin_api_key
 }
+
+# shellcheck disable=SC2086
+# DOCKER_COMPOSE_ARGS needs to stay unquoted to work
+function dockerCompose() {
+  docker-compose $DOCKER_COMPOSE_ARGS "$@"
+}
+
+function conjurExec() {
+  if [[ "$TARGET" == "oss" ]]; then
+    dockerCompose exec -T conjur "$@"
+  else
+    dockerCompose exec -T conjur-server "$@"
+  fi
+}
+
+function clientExec() {
+  dockerCompose exec -T client "$@"
+}
+

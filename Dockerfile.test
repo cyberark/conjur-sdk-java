@@ -1,0 +1,26 @@
+ARG java_version
+FROM openjdk:${java_version}-slim
+
+RUN apt-get update -y && \
+    apt-get install -y \
+    curl \
+    unzip \
+    ca-certificates \
+    gnupg \
+    maven \
+    gpg \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY keycloak.pem /usr/local/share/ca-certificates/keycloak.crt
+
+# Update the system's CA certificates
+RUN update-ca-certificates
+
+# Import the certificate into Java's keystore
+RUN keytool -import -noprompt -trustcacerts -alias my-cert \
+    -file /usr/local/share/ca-certificates/keycloak.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit
+
+# Set the JVM to use the correct trust store
+ENV MAVEN_OPTS="-Djavax.net.ssl.trustStore=$JAVA_HOME/lib/security/cacerts -Djavax.net.ssl.trustStorePassword=changeit"
