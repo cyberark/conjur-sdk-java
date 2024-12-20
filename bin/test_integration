@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -xe
 
 # Run from top-level dir
 cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
@@ -9,10 +9,12 @@ source bin/util
 regen_client=false
 rebuild_conjur=true
 major_java_version=16
+target="oss"
 install=""
 test_case=""
 coverage=false
 unset_environment=false
+docker_network=""
 
 trap cleanup EXIT
 
@@ -24,34 +26,94 @@ fi
 
 dump_conjur_logs() {
   echo "Dumping Conjur logs..."
-  docker compose logs conjur
+  case "$target" in
+    "oss")
+      docker compose logs conjur
+      ;;
+    "enterprise")
+      docker compose -f docker-compose.enterprise.yml logs conjur-server
+      ;;
+    *)
+      echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+      exit 1
+      ;;
+  esac
 }
 
 cleanup() {
   echo "Cleaning up..."
-  docker compose rm --stop --force -v
+
+  case "$target" in
+    "oss")
+      docker compose rm --stop --force -v
+      ;;
+    "enterprise")
+      docker compose -f docker-compose.enterprise.yml rm --stop --force -v
+      ;;
+    *)
+      echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+      exit 1
+      ;;
+  esac
 }
 
 setup_keycloak(){
   announce "Setting up Keycloak"
 
-  docker compose exec -T oidc-keycloak bash -c "/scripts/create_client"
-  docker compose exec -T oidc-keycloak bash -c "/scripts/create_user bob bob bob@conjur.net"
-  docker compose exec -T conjur bash -c "/policy/oidc/fetchCertificate"
+  # Start Keycloak container
+  DOCKER_NETWORK=$docker_network docker compose up -d keycloak
+  sleep 20
+
+  # Create Keycloak client and user
+  docker compose exec -T keycloak bash -c "/scripts/create_client"
+  docker compose exec -T keycloak bash -c "/scripts/create_user bob bob bob@conjur.net"
+
+  # Fetch and copy the Keycloak certificate based on the target (oss or enterprise)
+  fetch_and_copy_keycloak_cert
 }
 
-conjur_container_down(){
-  if [ -z `docker compose ps -q conjur` ]; then
-    true
-  elif [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q conjur)` ]; then
-    true
+fetch_and_copy_keycloak_cert(){
+
+  local fetch_certificate_command="/policy/oidc/fetchCertificate"
+  local keycloak_cert_path="/etc/ssl/certs/keycloak.pem"
+
+  if [ "$target" = "oss" ]; then
+    docker compose exec -T conjur bash -c "$fetch_certificate_command"
+    docker compose cp conjur:$keycloak_cert_path .
+  elif [ "$target" = "enterprise" ]; then
+    docker compose -f docker-compose.enterprise.yml exec -T conjur-server bash -c "$fetch_certificate_command"
+    docker compose -f docker-compose.enterprise.yml cp conjur-server:$keycloak_cert_path .
   else
-    false
+    echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+    exit 1
   fi
 }
 
+conjur_container_down(){
+  case "$target" in
+    "oss")
+      if [ -z "$(docker compose ps -q conjur)" ] || [ -z "$(docker ps -q --no-trunc | grep $(docker compose ps -q conjur))" ]; then
+        return 0
+      else
+        return 1
+      fi
+      ;;
+    "enterprise")
+      if [ -z "$(docker compose -f docker-compose.enterprise.yml ps -q conjur-server)" ] || [ -z "$(docker ps -q --no-trunc | grep $(docker compose -f docker-compose.enterprise.yml ps -q conjur-server))" ]; then
+        return 0
+      else
+        return 1
+      fi
+      ;;
+    *)
+      echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+      exit 1
+      ;;
+  esac
+}
+
 print_help(){
-  echo -e "Usage: ./bin/test_integration [--no-rebuild-conjur] [--no-regen-client]"
+  echo -e "Usage: ./bin/test_integration [--no-rebuild-conjur] [--no-regen-client] [--target]"
   echo
   echo -e "\tRunning this script without parameters will run ALL integration tests"
   echo -e "\tIn order to specify a subset of tests you can use a client flag (e.g. --python)"
@@ -61,6 +123,8 @@ print_help(){
   echo -e "\t\tWarning: this may cause some tests to fail"
   echo
   echo -e "\tThe --regen-client flag will re-generating the client before tests run"
+  echo
+  echo -e "\tThe --target flag will execute the tests on the Conjur flavors (OSS/Enterprise)"
   echo
   echo -e "\tThe -d flag will turn on debug mode for the integration test runs"
   echo
@@ -83,18 +147,41 @@ run_java_tests(){
     maven_command+=" && mvn jacoco:report"
   fi
 
-  environment="-e CONJUR_HTTP_APPLIANCE_URL=http://conjur \
-  -e APPLIANCE_URL=https://conjur-https \
-  -e ACCOUNT=dev \
-  -e AUTHN_LOGIN=admin \
-  -e CERT_FILE=/https/ca.crt "
+  case "$target" in
+    "oss")
+      http_appliance_url="http://conjur"
+      https_appliance_url="https://conjur-https"
+      account="dev"
+      authn_login="admin"
+      cert_file="/https/ca.crt"
+      docker_network="conjur-sdk-java"
+      ;;
+    "enterprise")
+      http_appliance_url="https://conjur-server"
+      https_appliance_url="https://conjur-server"
+      account="demo"
+      authn_login="admin"
+      cert_file="/https/conjur-server.pem"
+      docker_network="dap_net"
+      ;;
+    *)
+      echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+      exit 1
+      ;;
+  esac
+
+  environment="-e CONJUR_HTTP_APPLIANCE_URL=$http_appliance_url \
+  -e APPLIANCE_URL=$https_appliance_url \
+  -e ACCOUNT=$account \
+  -e AUTHN_LOGIN=$authn_login \
+  -e CERT_FILE=$cert_file "
 
   if [ "$unset_environment" = false ]; then
     environment+="\
-    -e CONJUR_APPLIANCE_URL=https://conjur-https \
-    -e CONJUR_ACCOUNT=dev \
-    -e CONJUR_AUTHN_LOGIN=admin \
-    -e CONJUR_CERT_FILE=/https/ca.crt \
+    -e CONJUR_APPLIANCE_URL=$https_appliance_url \
+    -e CONJUR_ACCOUNT=$account \
+    -e CONJUR_AUTHN_LOGIN=$authn_login \
+    -e CONJUR_CERT_FILE=$cert_file \
     -e CONJUR_AUTO_UPDATE_TOKEN=true \
     -e ENV_VARIABLES_SET=true"
   else
@@ -102,15 +189,15 @@ run_java_tests(){
     -e CONJUR_AUTO_UPDATE_TOKEN=false \
     -e ENV_VARIABLES_SET=false"
   fi
-
-  docker run --rm --network conjur-sdk-java \
+  
+  docker run --rm --network $docker_network \
     -v ${PWD}/client:/client \
     -v ${PWD}/test/config:/config \
     -v ${PWD}/config/https:/https \
     $environment \
     --env-file .env \
     -w /client \
-    maven:3-openjdk-$major_java_version bash -c "$maven_command"
+    test bash -c "$maven_command"
 }
 
 while test $# -gt 0
@@ -118,52 +205,45 @@ do
   param=$1
   shift
   case "$param" in
-    -d)
-      DEBUG="true"
-      ;;
-    -h|--help)
-      print_help
-      exit 0
-      ;;
-    --no-rebuild-conjur)
-      rebuild_conjur=false
-      ;;
-    --regen-client)
-      regen_client=true
-      ;;
-    -j|--java-version)
-      major_java_version=$1
-      shift
-      ;;
-    --jar)
-      install="install"
-      ;;
-    -t|--test)
-      test_case="-Dtest=$1"
-      shift
-      ;;
-    -c|--coverage)
-      coverage=true
-      ;;
-    -e)
-      unset_environment=true
-      ;;
-    *)
-      break
-      ;;
+    -d) DEBUG="true" ;;
+    -h|--help) print_help; exit 0 ;;
+    --no-rebuild-conjur) rebuild_conjur=false ;;
+    --regen-client) regen_client=true ;;
+    -j|--java-version) major_java_version=$1; shift ;;
+    --jar) install="install" ;;
+    -t|--test) test_case="-Dtest=$1"; shift ;;
+    -c|--coverage) coverage=true ;;
+    -e) unset_environment=true ;;
+    --target) target=$1; shift ;;
+    *) break ;;
   esac
 done
 
 if [ "$rebuild_conjur" = true ] || conjur_container_down; then
-  announce "Starting Conjur Container"
-  bin/start_conjur
+  if [ "$target" = "oss" ]; then
+    announce "Starting Conjur OSS..."
+    bin/start_conjur
+    docker_network="conjur-sdk-java"
+  elif [ "$target" = "enterprise" ]; then
+    announce "Starting Conjur Enterprise..."
+    bin/start_enterprise
+    docker_network="dap_net"
+  else
+    echo "Error: Invalid target value. Must be 'oss' or 'enterprise'."
+    exit 1
+  fi
 fi
 
 announce "Configuring Test Environment"
-bin/get_conjur_admin_key
+bin/get_conjur_admin_key "$target"
 setup_keycloak
 config/https/generate_csr
 
+docker build \
+    --build-arg java_version=16 \
+    -t test \
+    -f Dockerfile.test \
+    .
 run_java_tests
 if [[ "$?" -ne 0 ]]; then
   dump_conjur_logs

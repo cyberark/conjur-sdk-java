@@ -91,6 +91,8 @@ public class ApiClient {
     private String certFile = System.getenv().getOrDefault("CONJUR_CERT_FILE", null);
     private String sslCert = System.getenv().getOrDefault("CONJUR_SSL_CERTIFICATE", null);
     private String apiKey = System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
+    private String authToken = System.getenv().getOrDefault("CONJUR_AUTHN_TOKEN", null);
+
     private boolean autoUpdateAccessToken = System.getenv().getOrDefault("CONJUR_AUTO_UPDATE_TOKEN", "false").toLowerCase().equals("true");
 
     public String getAccount() {
@@ -135,14 +137,14 @@ public class ApiClient {
 
         return null;
     }
-
+    
     /*
      * Basic constructor for ApiClient
      */
     public ApiClient() {
         init();
         initHttpClient();
-
+        
         // Setup authentications (key: authentication name, value: authentication).
         authentications.put("basicAuth", new HttpBasicAuth());
         authentications.put("conjurAuth", new ApiKeyAuth("header", "Authorization", new AccessToken()));
@@ -157,11 +159,19 @@ public class ApiClient {
         if (password != null) {
             ((HttpBasicAuth)this.getAuthentication("basicAuth")).setPassword(password);
         }
+        if (authToken != null) {
+            byte[] tokenBytes = authToken.getBytes(StandardCharsets.UTF_8);
+            AccessToken accessToken = new AccessToken(tokenBytes); // Using the new constructor to set the authtoken received from cloud
+            ((ApiKeyAuth)this.getAuthentication("conjurAuth")).setAccessToken(accessToken);
+            Arrays.fill(tokenBytes, (byte) 0); // Clearing the byte array after use
 
+        }
+        
         ((ApiKeyAuth)this.getAuthentication(conjurAuthenticator)).setApiKeyPrefix("Token");
         if (certFile != null)
             setSslCaCert(getCertInputStream());   
     }
+
 
     private boolean validBasePath() {
         return basePath.substring(0, 5).equals("https");
@@ -1252,6 +1262,10 @@ public class ApiClient {
             }
         }
     }
+    
+    public boolean canRefreshAccessToken() {
+       return apiKey != null && account != null && username != null && autoUpdateAccessToken;    
+    }
 
     /**
      * Update query and header parameters based on authentication settings.
@@ -1273,11 +1287,7 @@ public class ApiClient {
             auth.applyToParams(queryParams, headerParams, cookieParams);
         }
     }
-
-    public boolean canRefreshAccessToken() {
-        return apiKey != null && account != null && username != null && autoUpdateAccessToken;
-    }
-
+    
     public String getAuthenticationUrl() {
         String auth = System.getenv().getOrDefault("CONJUR_AUTHN_URL", "/authn");
         return auth;
@@ -1285,6 +1295,7 @@ public class ApiClient {
 
     public AccessToken getNewAccessToken() {
         //NOTE: We cannot use the AuthenticationApi class here because it would create a circular dependancy
+    	
         String encodedUsername;
         try {
             encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString());

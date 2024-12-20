@@ -1,0 +1,37 @@
+version: '3'
+services:
+  conjur_cli:
+    image: cyberark/conjur-cli:8
+    entrypoint: []
+    command: sleep infinity
+    environment:
+      CONJUR_APPLIANCE_URL:
+      CONJUR_ACCOUNT:
+      CONJUR_AUTHN_LOGIN:
+      CONJUR_AUTHN_API_KEY:
+      CONJUR_SSL_CERTIFICATE:
+    volumes:
+      - ./test/config:/config:ro
+    links:
+      - conjur-server
+  conjur-server:
+    image: registry.tld/conjur-appliance:5.0-stable
+    environment:
+      CONJUR_AUTHENTICATORS: authn-ldap/test,authn-oidc/test,authn
+      LDAP_URI: ldap://ldap-server:389
+      LDAP_BASE: dc=conjur,dc=net
+      LDAP_BINDDN: cn=admin,dc=conjur,dc=net
+      LDAP_BINDPW: ldapsecret
+      LDAP_FILTER: (uid=%s)
+    volumes:
+      - ./test/config:/policy:ro
+    security_opt:
+      - seccomp:unconfined # --security-opt seccomp=unconfined
+    hostname: conjur
+    ports:
+      - "443:443"
+
+networks:
+  default:
+    external: true
+    name: dap_net

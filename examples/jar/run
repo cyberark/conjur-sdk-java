@@ -1,26 +1,105 @@
 #!/bin/bash
 
+usage() {
+  echo "Usage: $0 --target <oss|enterprise>"
+  exit 1
+}
+
+make_network(){
+  if [ ! -z $(docker network inspect conjur-sdk-java > /dev/null || echo $?) ]; then
+    docker network create conjur-sdk-java
+  fi
+}
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --target)
+      target="$2"
+      shift 2
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+if [ -z "$target" ]; then
+  usage
+fi
+
 # Ensure we start in the root repo directory
 cd "$(dirname "$0")/../.." || return
-./bin/start_conjur
+
+# Start Conjur based on the target
+if [ "$target" == "oss" ]; then
+  echo "Starting Conjur OSS..."
+  ./bin/start_conjur
+  CONJUR_APPLIANCE_URL=https://conjur-https
+  CONJUR_ACCOUNT=dev
+  CONJUR_AUTHN_LOGIN=admin
+  CONJUR_AUTO_UPDATE_TOKEN=true
+  CONJUR_CERT_FILE=/https/ca.crt
+  DOCKER_NETWORK="conjur-sdk-java"
+elif [ "$target" == "enterprise" ]; then
+  echo "Starting Conjur Enterprise..."
+  ./bin/start_enterprise
+  CONJUR_APPLIANCE_URL=https://conjur-server
+  CONJUR_ACCOUNT=demo
+  CONJUR_AUTHN_LOGIN=admin
+  CONJUR_AUTO_UPDATE_TOKEN=true
+  CONJUR_CERT_FILE=/https/conjur-server.pem
+  DOCKER_NETWORK="dap_net"
+elif [ "$target" == "cloud" ]; then
+  echo "Starting Conjur Cloud..."
+  cp cloud/conjur-cloud.pem config/https
+  make_network
+  CONJUR_APPLIANCE_URL=${INFRAPOOL_CONJUR_APPLIANCE_URL}/api
+  CONJUR_ACCOUNT=conjur
+  CONJUR_AUTHN_LOGIN=${INFRAPOOL_CONJUR_AUTHN_LOGIN}
+  CONJUR_AUTHN_TOKEN=$(echo "$INFRAPOOL_CONJUR_AUTHN_TOKEN")
+  CONJUR_AUTO_UPDATE_TOKEN=false
+  CONJUR_CERT_FILE=/https/conjur-cloud.pem
+  DOCKER_NETWORK="conjur-sdk-java"
+else
+  echo "Error: Invalid target. Allowed values are 'oss' or 'enterprise' or 'cloud'."
+  exit 1
+fi
+
 ./bin/build
 source bin/util
 
+# Remove existing .jar files and copy the new jar file to the examples directory
 rm ./examples/jar/*.jar
 cp client/target/*jar-with-dependencies.jar examples/jar/
 
 cd examples/jar || return
 
+# Prepare the classpath with all jar files
 classpath="$(find conjur-sdk-java-*-jar-with-dependencies.jar | tr '\n' ':')"
 
-docker run --rm --network conjur-sdk-java \
-  -v "${PWD}:/client" \
-  -v "${PWD}/../../config/https/ca.crt:/ca.crt" \
-  -e CONJUR_APPLIANCE_URL=https://conjur-https \
-  -e CONJUR_ACCOUNT=dev \
-  -e CONJUR_AUTHN_LOGIN=admin \
-  -e CONJUR_AUTO_UPDATE_TOKEN=true \
-  -e CONJUR_CERT_FILE=/ca.crt \
-  -e CONJUR_AUTHN_API_KEY="$(get_conjur_admin_api_key)" \
-  -w /client \
-  openjdk:16 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
+# Run the docker container with the specified target image
+if [ "$target" == "cloud" ]; then
+  docker run --rm --network "$DOCKER_NETWORK" \
+    -v "${PWD}:/client" \
+    -v "${PWD}/../../config/https:/https" \
+    -e CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL" \
+    -e CONJUR_ACCOUNT="$CONJUR_ACCOUNT" \
+    -e CONJUR_AUTHN_LOGIN="$CONJUR_AUTHN_LOGIN" \
+    -e CONJUR_AUTO_UPDATE_TOKEN="$CONJUR_AUTO_UPDATE_TOKEN" \
+    -e CONJUR_CERT_FILE="$CONJUR_CERT_FILE" \
+    -e CONJUR_AUTHN_TOKEN="$CONJUR_AUTHN_TOKEN" \
+    -w /client \
+    openjdk:16 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
+else
+  docker run --rm --network "$DOCKER_NETWORK" \
+    -v "${PWD}:/client" \
+    -v "${PWD}/../../config/https:/https" \
+    -e CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL" \
+    -e CONJUR_ACCOUNT="$CONJUR_ACCOUNT" \
+    -e CONJUR_AUTHN_LOGIN="$CONJUR_AUTHN_LOGIN" \
+    -e CONJUR_AUTO_UPDATE_TOKEN="$CONJUR_AUTO_UPDATE_TOKEN" \
+    -e CONJUR_CERT_FILE="$CONJUR_CERT_FILE" \
+    -e CONJUR_AUTHN_API_KEY="$(get_conjur_admin_api_key $target)" \
+    -w /client \
+    openjdk:16 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
+fi

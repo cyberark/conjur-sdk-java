@@ -2,11 +2,16 @@
 package com.cyberark.conjur.sdk;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import java.nio.charset.StandardCharsets;
 
 public class AccessToken {
+	
+    private static final Logger LOGGER = Logger.getLogger(AccessToken.class.getName());
+
 
     @SerializedName("protected")
     private String protect = null;
@@ -32,6 +37,47 @@ public class AccessToken {
     }
 
     public AccessToken() {}
+    
+    // Constructor to initialize with a decoded token received from cloud
+    public AccessToken(byte[] rawTokenBytes) {
+        if (rawTokenBytes == null) {
+        throw new IllegalArgumentException("rawTokenBytes cannot be null");
+    }
+        this.encodedToken = new String(rawTokenBytes, StandardCharsets.UTF_8);
+        // If rawToken is Base64-encoded, decode it
+        if (rawTokenBytes != null && isBase64(rawTokenBytes)) {
+            // Decode the Base64 byte array
+            byte[] decodedBytes = decoder.decode(rawTokenBytes);
+            //the decoded byte array is being converted to a String and passed to Gson for parsing into a JSON object. 
+            AccessToken token = gson.fromJson(new String(decodedBytes, StandardCharsets.UTF_8), AccessToken.class);
+            this.protect = token.protect;
+            this.payload = token.payload;
+            this.signature = token.signature;
+            
+            // Clear the decoded byte array to ensure it is not lingering in memory
+            Arrays.fill(decodedBytes, (byte) 0);
+        } else {
+            // If the rawTokenBytes are already in JSON format, parse it directly
+            AccessToken token = gson.fromJson(new String(rawTokenBytes, StandardCharsets.UTF_8), AccessToken.class);
+            this.protect = token.protect;
+            this.payload = token.payload;
+            this.signature = token.signature;
+        }
+
+        // Clear the original raw token byte array after processing
+        Arrays.fill(rawTokenBytes, (byte) 0);
+    }
+    
+    // Utility method to check if a byte array is Base64-encoded
+    private static boolean isBase64(byte[] bytes) {
+        try {
+            //Trying to decode the byte array. If it's Base64
+            decoder.decode(bytes);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
     public static AccessToken fromEncodedToken(String encodedToken) {
         String decodedToken = new String(decoder.decode(encodedToken));
@@ -73,4 +119,3 @@ public class AccessToken {
         return this.signature;
     }
 }
-

@@ -1,0 +1,14 @@
+FROM registry.access.redhat.com/ubi9 AS ubi-micro-build
+RUN mkdir -p /mnt/rootfs
+RUN dnf install --installroot /mnt/rootfs jq --releasever 9 --setopt install_weak_deps=false --nodocs -y && \
+    dnf --installroot /mnt/rootfs clean all && \
+    rpm --root /mnt/rootfs -e --nodeps setup
+
+FROM quay.io/keycloak/keycloak
+COPY --from=ubi-micro-build /mnt/rootfs /
+ENV KC_HOSTNAME=keycloak
+WORKDIR /opt/keycloak
+RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=keycloak" -alias server -ext "SAN:c=DNS:keycloak" -keystore conf/server.keystore
+RUN /opt/keycloak/bin/kc.sh build
+EXPOSE 8080 8443
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--http-port=8080", "--https-port=8443", "--https-key-store-file=/opt/keycloak/conf/server.keystore", "--https-key-store-password=password", "--hostname=${KC_HOSTNAME}", "--http-enabled=true"]

@@ -107,7 +107,7 @@ public class ConfiguredTest {
                 "conjur/authn-oidc/test/provider-uri",
                 null,
                 null,
-                "https://keycloak:8443/auth/realms/master"
+                "https://keycloak:8443/realms/master"
             );
             secretsApi.createSecret(
                 account,
@@ -128,32 +128,39 @@ public class ConfiguredTest {
      * @return OIDC Access token
      * @throws IOException when the API call fails
      */
-    public String getOidcIdToken() throws IOException {
+    public String getOidcIdToken() throws ApiException, IOException {
         String grantType = "password";
         String username = "bob";
         String password = "bob";
-        String scope = "openId";
+        String scope = "openid";
         String clientUser = "conjurClient";
         String clientPw = "1234";
-        String authHeader = "Basic " 
-                + new String(Base64.getEncoder().encode((clientUser + ":" + clientPw).getBytes()));
-
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType,
-                "grant_type=" + grantType 
-                + "&username=" + username 
-                + "&password=" + password 
-                + "&scope=" + scope);
-        Request request = new Request.Builder()
-                .url("http://oidc-keycloak:8080/auth/realms/master/protocol/openid-connect/token")
-                .method("POST", body)
-                .addHeader("Authorization", authHeader)
-                .build();
-        Response response = client.newCall(request).execute();
-        JsonObject respJson = new Gson().fromJson(response.body().string(), JsonObject.class);
-        return respJson.get("access_token").getAsString();
+        JsonObject respJson = null;
+        
+        try {
+            RequestBody body = RequestBody.create(mediaType,
+                    "grant_type=" + grantType
+                    + "&client_id=" + clientUser
+                    + "&client_secret=" + clientPw
+                    + "&username=" + username
+                    + "&password=" + password
+                    + "&scope=" + scope);
+            
+            Request request = new Request.Builder()
+                    .url("https://keycloak:8443/realms/master/protocol/openid-connect/token")
+                    .method("POST", body)
+                    .build();
+            
+            Response response = client.newCall(request).execute();
+            respJson = new Gson().fromJson(response.body().string(), JsonObject.class);
+        } catch (IOException e) {
+            Assert.fail("Failed to get OIDC getOidcIdToken:: " + e.getMessage());
+            throw e;
+        }
 
+        return respJson.get("access_token").getAsString();
     }
 
     /**

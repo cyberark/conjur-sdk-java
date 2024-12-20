@@ -5,10 +5,13 @@ Find [more from CyberArk](https://github.com/cyberark).
 
 ## Certification level
 
-![](https://img.shields.io/badge/Certification%20Level-Trusted-28A745?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
+![](https://img.shields.io/badge/Certification%20Level-Certified-28A745?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
 
-This repo is a **Trusted** level project. It's a community contributed project that **has been reviewed and tested by CyberArk
-and is trusted to use with Conjur Open Source**. For more detailed information on our certification levels, see [our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#trusted).
+This repo is a **Certified** level project. It's a community contributed project that **has been reviewed and tested by CyberArk
+and is trusted to use with Conjur Open Source, Conjur Enterprise, and Conjur Cloud****. For more detailed information on our certification levels, see [our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#trusted).
+
+Disclaimer: Please note that OIDC and LDAP are not currently supported for Conjur Cloud. Please refer to the Conjur Cloud documentation for more information on supported authentication methods.
+https://docs.cyberark.com/conjur-cloud/latest/en/content/operations/authn/cjr-authn-support.htm?tocpath=Authenticate%20workloads%7C_____1
 
 ## Requirements
 

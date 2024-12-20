@@ -1,5 +1,6 @@
 package main;
 
+import java.util.logging.Logger;
 import com.cyberark.conjur.sdk.*;
 import com.cyberark.conjur.sdk.endpoint.*;
 import com.cyberark.conjur.sdk.model.*;
@@ -8,51 +9,87 @@ import com.cyberark.conjur.sdk.auth.*;
 import com.google.gson.internal.LinkedTreeMap;
 
 public class JavaSDKUsage {
-  public static String account = "dev";
-  public static String resourceType = "variable";
+    
+    private static final Logger LOGGER = Logger.getLogger(JavaSDKUsage.class.getName());
 
-  public static void main(String[] args) throws ApiException {
-    loadTestPolicy();
-    setAndRetrieveSecret();
-    retrieveResource();
-    retrieveRole();
-  }
+    public static String account = System.getenv().getOrDefault("CONJUR_ACCOUNT", null);
+    public static String username = System.getenv().getOrDefault("CONJUR_AUTHN_LOGIN", null);
+    public static String authToken = System.getenv().getOrDefault("CONJUR_AUTHN_TOKEN", null);
 
-  /**
-   * Load a policy into conjur for testing. Read more about Conjur policies
-   * here: https://docs.conjur.org/Latest/en/Content/Operations/Policy/policy-syntax.htm?tocpath=Fundamentals%7CPolicy%20Management%7C_____3
-   */
-  public static void loadTestPolicy() throws ApiException {
-    PoliciesApi policiesApi = new PoliciesApi();
-    String testPolicy = "- !variable testSecret\n";
+    public static String secretId = "testSecret";
+    public static String resourceType = "variable";
 
-    policiesApi.loadPolicy(account, "root", testPolicy);
-  }
+    public static void main(String[] args) throws ApiException {
+        loadTestPolicy();
+        setAndRetrieveSecret();
+        retrieveResource();
+        retrieveRole();
+    }
 
-  public static void setAndRetrieveSecret() throws ApiException {
-    String secretValue = "some secret data";
-    SecretsApi secretsApi = new SecretsApi();
-    String secretId = "testSecret";
+    /**
+     * Utility method to get the secret ID based on the authentication token
+     */
+    private static String getSecretId(String secretId) {
+        return (authToken != null) ? "data/" + secretId : secretId;
+    }
 
-    secretsApi.createSecret(account, resourceType, secretId, null, null, secretValue);
-    String retrievedValue = secretsApi.getSecret(account, resourceType, secretId);
-    System.out.println(String.format("Value retrieved for testSecret: \"%s\"", retrievedValue));
-  }
+    /**
+     * Load a policy into Conjur for testing.
+     */
+    public static void loadTestPolicy() throws ApiException {
+        try {
+            PoliciesApi policiesApi = new PoliciesApi();
+            String testPolicy = "- !variable testSecret\n";
 
-  public static void retrieveResource() throws ApiException {
-    ResourcesApi resourcesApi = new ResourcesApi();
-    String resourceId = "testSecret";
+            if (authToken != null) {
+                // When authToken is provided, load the policy under "data" for cloud
+                policiesApi.loadPolicy(account, "data", testPolicy);
+            } else {
+                // When no authToken is provided, load the policy under "root" for OSS/EP
+                policiesApi.loadPolicy(account, "root", testPolicy);
+            }
+        } catch (ApiException e) {
+            LOGGER.info("Error loading policy: " + e.getCode() + " - " + e.getMessage());
+        }
+    }
 
-    Resource resource = resourcesApi.showResource(account, resourceType, resourceId);
-    System.out.println(resource);
-  }
+    public static void setAndRetrieveSecret() throws ApiException {
+        try {
+            String secretValue = "some secret data";
+            SecretsApi secretsApi = new SecretsApi();
+            
+            // Get the secretId based on the authentication status
+            String secretIdToUse = getSecretId(secretId);
 
-  public static void retrieveRole() throws ApiException {
-    RolesApi rolesApi = new RolesApi();
-    String role = "user";
-    String login = "admin";
+                secretsApi.createSecret(account, resourceType, secretIdToUse, null, null, secretValue);
+                String retrievedValue = secretsApi.getSecret(account, resourceType, secretIdToUse);
+        } catch (ApiException e) {
+            LOGGER.info("Error setting and retrieving secret: " + e.getCode() + " - " + e.getMessage());
+        }
+    }
 
-    LinkedTreeMap createdRole = (LinkedTreeMap) rolesApi.showRole(account, role, login);
-    System.out.println(String.format("Data for admin role: %s", createdRole));
-  }
+    public static void retrieveResource() throws ApiException {
+        try {
+            ResourcesApi resourcesApi = new ResourcesApi();
+            
+            // Get the secretId based on the authentication status
+            String secretIdToUse = getSecretId(secretId);
+
+            Resource resource = resourcesApi.showResource(account, resourceType, secretIdToUse);
+        } catch (ApiException e) {
+            LOGGER.info("Error retrieving resource: " + e.getCode() + " - " + e.getMessage());
+        }
+    }
+
+    public static void retrieveRole() throws ApiException {
+        try {
+            RolesApi rolesApi = new RolesApi();
+            String role = "user";
+            String login = (authToken != null) ? username : "admin";
+
+            LinkedTreeMap createdRole = (LinkedTreeMap) rolesApi.showRole(account, role, login);
+        } catch (ApiException e) {
+            LOGGER.info("Error retrieving role: " + e.getCode() + " - " + e.getMessage());
+        }
+    }
 }

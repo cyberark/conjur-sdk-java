@@ -5,7 +5,19 @@ cd "$(dirname "$0")/.." || (echo "Could not cd to parent dir"; exit 1)
 
 cleanup() {
   echo "Cleaning up..."
-  docker compose rm --stop --force -v
+  
+  if docker compose ps -q conjur > /dev/null; then
+    echo "Stopping and removing Conjur OSS container..."
+    docker compose rm --stop --force -v
+  fi
+
+  if docker compose -f docker-compose.enterprise.yml ps -q conjur-server > /dev/null; then
+    echo "Stopping and removing Conjur Enterprise container..."
+    docker compose -f docker-compose.enterprise.yml rm --stop --force -v
+    docker compose rm --stop --force -v keycloak ldap-server
+    rm -rf config/https/conjur-server.pem
+  fi
+  rm -rf keycloak.pem
 }
 
 make_network(){

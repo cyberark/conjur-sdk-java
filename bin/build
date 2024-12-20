@@ -8,7 +8,7 @@ source bin/util
 docker run --rm \
   -v "${PWD}/client":/client \
   -w /client \
-  maven:3-openjdk-16 \
+  maven:3-openjdk-17 \
   mvn clean package -DskipTests=true
 
 announce "Output available in ./client/target"
