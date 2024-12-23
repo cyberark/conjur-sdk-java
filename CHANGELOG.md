@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.1.0] - 2023-07-11
 
 ### Changed
+- OpenAPI Specification -Java SDK - Added Automated testing
+  [conjur-sdk-java#1](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/1)
 - Update OpenAPI spec to version 5.3.1
   [conjur-sdk-java#83](https://github.com/cyberark/conjur-sdk-java/pull/83)
 - Update config/java.yml to contain and set the license name and URL for the client (ONYX-16679)
