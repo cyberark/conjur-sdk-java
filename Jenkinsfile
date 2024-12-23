@@ -34,7 +34,7 @@ if (params.MODE == 'PROMOTE') {
       cp client/target/conjur-sdk-java-*-SNAPSHOT.jar "${assetDirectory}"
     """
     }
-    
+
     // Copy Github Enterprise release to Github
     release.copyEnterpriseRelease(params.VERSION_TO_PROMOTE)
     return
@@ -204,9 +204,10 @@ pipeline {
             when {
                 branch 'main'
             }
-
             steps {
-                sh 'summon ./bin/deploy-snapshot'
+                script {
+                    infrapool.agentSh 'summon ./bin/deploy-snapshot'
+                }
             }
         }
 
