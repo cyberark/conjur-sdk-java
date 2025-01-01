@@ -48,6 +48,6 @@ echo "Starting Conjur Enterprise..."
 docker compose -f docker-compose.enterprise.yml up -d conjur-server conjur_cli
 docker compose -f docker-compose.enterprise.yml exec -T conjur-server bash -c "evoke configure  master --accept-eula -h conjur-server -p "MySecretP@ss1" demo"
 docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "echo y | conjur init -u https://conjur-server -a demo --self-signed --force"
-docker compose -f docker-compose.enterprise.yml cp conjur_cli:/root/conjur-server.pem ./config/https
+docker compose -f docker-compose.enterprise.yml cp conjur_cli:/home/cli/conjur-server.pem ./config/https
 docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "conjur login -i admin -p MySecretP@ss1"
 docker compose -f docker-compose.enterprise.yml exec -T conjur_cli bash -c "conjur policy load -b root -f /config/policy.yaml"
