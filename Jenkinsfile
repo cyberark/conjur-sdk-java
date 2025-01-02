@@ -31,7 +31,7 @@ if (params.MODE == 'PROMOTE') {
       ./bin/build_tools_image.sh
       ./bin/build_package.sh
       summon ./bin/publish.sh
-      cp client/target/conjur-sdk-java-*-SNAPSHOT.jar "${assetDirectory}"
+      cp client/target/*.jar "${assetDirectory}"
     """
     }
 
@@ -223,7 +223,7 @@ pipeline {
                     release(infrapool, { billOfMaterialsDirectory, assetDirectory ->
                         // Publish release artifacts to all the appropriate locations
                         // Copy any artifacts to assetDirectory to attach them to the Github release
-                        INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "cp client/target/conjur-sdk-java-*-SNAPSHOT.jar ${assetDirectory}"
+                        infrapool.agentSh "cp client/target/*.jar ${assetDirectory}"
                     })
                 }
             }
