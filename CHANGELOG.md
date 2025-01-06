@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [4.1.0] - 2023-07-11
+## [4.1.0] - 2025-01-06
 
 ### Changed
+- OpenAPI Specification -Java SDK - Updated deploy and release scripts
+  [conjur-sdk-java#5](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/5)
 - OpenAPI Specification -Java SDK - Added Automated testing
   [conjur-sdk-java#1](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/1)
 - Update OpenAPI spec to version 5.3.1
