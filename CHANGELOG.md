@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [4.2.0] - 2025-01-06
-
 ### Changed
 - OpenAPI Specification -Java SDK - Added Automated testing
   [conjur-sdk-java#1](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/1)
@@ -51,5 +50,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
 [Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.1.0...HEAD
+[4.2.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.2.0
 [4.1.0]: https://github.com/cyberark/conjur-sdk-java/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.0.0
