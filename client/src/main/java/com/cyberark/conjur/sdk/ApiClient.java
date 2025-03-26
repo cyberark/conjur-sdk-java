@@ -50,6 +50,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import com.cyberark.conjur.sdk.AccessToken;
 import com.cyberark.conjur.sdk.auth.Authentication;
@@ -92,8 +95,144 @@ public class ApiClient {
     private String sslCert = System.getenv().getOrDefault("CONJUR_SSL_CERTIFICATE", null);
     private String apiKey = System.getenv().getOrDefault("CONJUR_AUTHN_API_KEY", null);
     private String authToken = System.getenv().getOrDefault("CONJUR_AUTHN_TOKEN", null);
-
     private boolean autoUpdateAccessToken = System.getenv().getOrDefault("CONJUR_AUTO_UPDATE_TOKEN", "false").toLowerCase().equals("true");
+    
+    // Telemetry - Default values or values derived from environment variables
+    private String integrationName = System.getenv().getOrDefault("INTEGRATION_NAME", "SecretsManagerJava SDK");
+    private String integrationType = System.getenv().getOrDefault("INTEGRATION_TYPE", "cybr-secretsmanager-java-sdk");
+    private String integrationVersion = getSDKVersion();  // Fetch version from the changelog file
+    private String vendorName = System.getenv().getOrDefault("VENDOR_NAME", "CyberArk");
+    private String telemetryHeader = null;
+
+	/**
+	 * Returns the integration name used for telemetry.
+	 * 
+	 * @return the integration name.
+	 */
+    public String getIntegrationName() {
+        return integrationName;
+    }
+    
+    /**
+	 * Returns the integration type used for telemetry.
+	 * 
+	 * @return the integration type.
+	 */
+    public String getIntegrationType() {
+        return integrationType;
+    }
+
+	/**
+	 * Returns the integration version used for telemetry.
+	 * 
+	 * @return the integration version.
+	 */
+    public String getIntegrationVersion() {
+        return integrationVersion;
+    }
+	
+	/**
+	 * Returns the vendor name used for telemetry.
+	 * 
+	 * @return the vendor name.
+	 */
+    public String getVendorName() {
+        return vendorName;
+    }
+
+	/**
+	 * Sets the integration name for telemetry.
+	 * This method will invalidate the cached telemetry header if a value change occurs.
+	 * 
+	 * @param integrationName the integration name to set.
+	 */
+    public void setIntegrationName(String integrationName) {
+        this.integrationName = integrationName;
+        telemetryHeader = null;
+    }
+    
+    /**
+	 * Sets the integration type for telemetry.
+	 * This method will invalidate the cached telemetry header if a value change occurs.
+	 * 
+	 * @param integrationType the integration type to set.
+	 */
+    public void setIntegrationType(String integrationType) {
+        this.integrationType = integrationType;
+        telemetryHeader = null;
+    }
+
+	/**
+	 * Sets the integration version for telemetry.
+	 * This method will invalidate the cached telemetry header if a value change occurs.
+	 * 
+	 * @param integrationVersion the integration version to set.
+	 */
+    public void setIntegrationVersion(String integrationVersion) {
+        this.integrationVersion = integrationVersion;
+        telemetryHeader = null;
+    }
+	
+	/**
+	 * Sets the vendor name for telemetry.
+	 * This method will invalidate the cached telemetry header if a value change occurs.
+	 * 
+	 * @param vendorName the vendor name to set.
+	 */
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+        telemetryHeader = null;
+    }
+    
+	/**
+	 * Returns the telemetry header for the integration.
+	 * Caches the result for subsequent calls, regenerating it only if any telemetry data changes.
+	 * 
+	 * @return the Base64 encoded telemetry header.
+	 */
+    private String getTelemetryHeader() {
+        if (telemetryHeader == null) {
+            // Telemetry values may have changed, so regenerate the header
+            telemetryHeader = TelemetryHeaderGenerator.generateTelemetryHeader(
+                integrationName, integrationType, integrationVersion, vendorName
+            );
+        }
+        return telemetryHeader;
+    }
+    
+    /**
+	 * Fetches the SDK version from the CHANGELOG.md file.
+	 * This method reads the file, looks for the most recent version tag, and returns it.
+	 * If the file cannot be found or an error occurs, it returns a default version.
+	 * 
+	 * @return the SDK version.
+	 */
+	public static String getSDKVersion() {
+    String changelogFilePath = "/CHANGELOG.md";
+    Pattern versionPattern = Pattern.compile("## \\[([\\d]+(?:\\.[\\d]+)*)\\]");
+
+    InputStream inputStream = TelemetryHeaderGenerator.class.getResourceAsStream(changelogFilePath);
+    
+    if (inputStream == null) {
+        LOGGER.warning("CHANGELOG.md file not found.");
+        return "defaultVersion";
+    }
+
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            Matcher matcher = versionPattern.matcher(line);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        }
+    } catch (IOException e) {
+        LOGGER.log(java.util.logging.Level.SEVERE, "Error reading CHANGELOG.md from the JAR.", e);
+    }
+
+    return "defaultVersion";
+	}
+
 
     public String getAccount() {
         return account;
@@ -129,7 +268,6 @@ public class ApiClient {
         if (certStream != null)
             return certStream;
 
-
         if (sslCert != null)
             bais = new ByteArrayInputStream(sslCert.getBytes());
         if (bais != null)
@@ -137,14 +275,14 @@ public class ApiClient {
 
         return null;
     }
-    
+
     /*
      * Basic constructor for ApiClient
      */
     public ApiClient() {
         init();
         initHttpClient();
-        
+
         // Setup authentications (key: authentication name, value: authentication).
         authentications.put("basicAuth", new HttpBasicAuth());
         authentications.put("conjurAuth", new ApiKeyAuth("header", "Authorization", new AccessToken()));
@@ -155,7 +293,6 @@ public class ApiClient {
         if (username != null) {
             ((HttpBasicAuth)this.getAuthentication("basicAuth")).setUsername(username);
         }
-
         if (password != null) {
             ((HttpBasicAuth)this.getAuthentication("basicAuth")).setPassword(password);
         }
@@ -164,14 +301,12 @@ public class ApiClient {
             AccessToken accessToken = new AccessToken(tokenBytes); // Using the new constructor to set the authtoken received from cloud
             ((ApiKeyAuth)this.getAuthentication("conjurAuth")).setAccessToken(accessToken);
             Arrays.fill(tokenBytes, (byte) 0); // Clearing the byte array after use
-
         }
-        
+
         ((ApiKeyAuth)this.getAuthentication(conjurAuthenticator)).setApiKeyPrefix("Token");
         if (certFile != null)
             setSslCaCert(getCertInputStream());   
     }
-
 
     private boolean validBasePath() {
         return basePath.substring(0, 5).equals("https");
@@ -187,8 +322,66 @@ public class ApiClient {
         for (Interceptor interceptor: interceptors) {
             builder.addInterceptor(interceptor);
         }
+        
+        // Added the telemetry header interceptor
+    	builder.addInterceptor(new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            try {
+            	
+				// Get the telemetry header, which will be cached if not already generated
+                String telemetryHeader = getTelemetryHeader();
+				
+                // Add the x-cybr-telemetry header to the request
+                Request request = chain.request().newBuilder()
+                        .addHeader("x-cybr-telemetry", telemetryHeader)
+                        .build();
+				
+                return chain.proceed(request);
+            } catch (Exception e) {
+                LOGGER.warning("Failed to generate telemetry header: " + e.getMessage());
+                return chain.proceed(chain.request());  // Proceed without the telemetry header if it fails
+            }
+        }
+    	});						
 
         httpClient = builder.build();
+    }
+
+	/**
+	 * A utility class responsible for generating the telemetry header used in HTTP requests.
+	 * <p>
+	 * The telemetry header is constructed using the integration name, type, version, and vendor name. 
+	 * These values are URL-encoded and Base64-encoded to ensure safe transmission over HTTP.
+	 * </p>
+	 */  
+    public static class TelemetryHeaderGenerator {
+		
+		/**
+	     * Generates the telemetry header used for monitoring integration data.
+	     * <p>
+	     * The generated header is a Base64 URL-encoded string containing the integration name, type,
+	     * version, and vendor name. These values are formatted as key-value pairs: 
+	     * "in={integrationName}&it={integrationType}&iv={integrationVersion}&vn={vendorName}".
+	     * </p>
+	     *
+	     * @param integrationName the name of the integration (e.g., "SecretsManagerJava SDK").
+	     * @param integrationType the type of integration (e.g., "cybr-secretsmanager-java-sdk").
+	     * @param integrationVersion the version of the integration (e.g., "4.2.0").
+	     * @param vendorName the vendor name (e.g., "CyberArk").
+	     * @return a Base64 URL-encoded telemetry header string.
+	     */
+        public static String generateTelemetryHeader(String integrationName, String integrationType, String integrationVersion, String vendorName) {
+            StringBuilder headerBuilder = new StringBuilder();
+            headerBuilder.append("in=").append(integrationName)
+                    .append("&it=").append(integrationType)
+                    .append("&iv=").append(integrationVersion)
+                    .append("&vn=").append(vendorName);
+
+            String headerValue = headerBuilder.toString();
+
+            return Base64.getUrlEncoder().encodeToString(headerValue.getBytes());
+        }
     }
 
     private void init() {
@@ -1262,10 +1455,6 @@ public class ApiClient {
             }
         }
     }
-    
-    public boolean canRefreshAccessToken() {
-       return apiKey != null && account != null && username != null && autoUpdateAccessToken;    
-    }
 
     /**
      * Update query and header parameters based on authentication settings.
@@ -1287,7 +1476,11 @@ public class ApiClient {
             auth.applyToParams(queryParams, headerParams, cookieParams);
         }
     }
-    
+
+    public boolean canRefreshAccessToken() {
+        return apiKey != null && account != null && username != null && autoUpdateAccessToken;
+    }
+
     public String getAuthenticationUrl() {
         String auth = System.getenv().getOrDefault("CONJUR_AUTHN_URL", "/authn");
         return auth;
@@ -1295,7 +1488,6 @@ public class ApiClient {
 
     public AccessToken getNewAccessToken() {
         //NOTE: We cannot use the AuthenticationApi class here because it would create a circular dependancy
-    	
         String encodedUsername;
         try {
             encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString());

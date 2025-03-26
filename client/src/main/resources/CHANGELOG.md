@@ -6,11 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [4.2.1] - 2025-03-25
-### Added
-- Added Telemetry Headers
-- [conjur-sdk-java#8](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/8)
-
 ## [4.2.0] - 2025-01-06
 ### Changed
 - OpenAPI Specification -Java SDK - Added Automated testing

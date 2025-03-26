@@ -24,6 +24,11 @@ pushd conjur-openapi-spec
 popd
 
 announce "Generating Java client..."
+
+rm -rf  client/src/main/resources
+mkdir -p client/src/main/resources
+cp -f CHANGELOG.md client/src/main/resources
+
 docker run --rm -v ${PWD}:/local -v ${PWD}/client:/out "$GENERATOR_IMAGE" generate \
     -i "/local/conjur-openapi-spec/out/oss/spec/openapi.yml" \
     -g "java" \
