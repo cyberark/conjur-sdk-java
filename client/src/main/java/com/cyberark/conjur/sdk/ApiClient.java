@@ -361,8 +361,7 @@ public class ApiClient {
 	     * Generates the telemetry header used for monitoring integration data.
 	     * <p>
 	     * The generated header is a Base64 URL-encoded string containing the integration name, type,
-	     * version, and vendor name. These values are formatted as key-value pairs: 
-	     * "in={integrationName}&it={integrationType}&iv={integrationVersion}&vn={vendorName}".
+	     * version, and vendor name.
 	     * </p>
 	     *
 	     * @param integrationName the name of the integration (e.g., "SecretsManagerJava SDK").
