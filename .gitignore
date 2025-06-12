@@ -24,3 +24,5 @@ client/build
 # csr and key for certificate authority tests
 config/https/test-java.csr
 config/https/test-java.key
+
+/.idea
