@@ -40,5 +40,5 @@ docker compose build pg conjur conjur-https
 
 # Start Conjur server
 echo "Starting Conjur..."
-docker compose up -d conjur conjur-https
+docker compose up -d keycloak conjur conjur-https
 docker compose exec -T conjur conjurctl wait
