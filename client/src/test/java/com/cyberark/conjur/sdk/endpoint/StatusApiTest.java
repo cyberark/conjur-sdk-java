@@ -152,7 +152,7 @@ public class StatusApiTest extends ConfiguredTest {
         String authenticator = "authn-oidc";
         String serviceId = "okta";
         try {
-            api.getServiceAuthenticatorStatus(authenticator, serviceId, account);
+            api.getServiceAuthenticatorStatus(authenticator, serviceId, "nonexist");
         } catch (ApiException e) {
             Assert.assertEquals(e.getCode(), 500);
         }
