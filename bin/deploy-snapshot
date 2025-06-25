@@ -8,7 +8,7 @@ set -exo pipefail
 # Note: Snapshot releases do not need to meet Maven central requirements,
 # but it is best to do so whenever possible
 docker run --rm \
-  -e CENTRAL_PORTAL_TOKEN \
+  -e CENTRAL_PORTAL_USERNAME \
   -e CENTRAL_PORTAL_TOKEN \
   -v "$PWD/client:/cyberark/conjur-sdk-java" \
   -v "$GPG_PASSWORD:/gpg_password" \
