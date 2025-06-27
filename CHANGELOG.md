@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [4.2.2] - 2025-07-08
+### Updated
+- Updated Telemetry Headers
+- [conjur-sdk-java#13](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/13)
 
 ## [4.2.1] - 2025-03-25
 ### Added
