@@ -8,8 +8,7 @@ set -euo pipefail
 # shellcheck source=/dev/null
 . "$(dirname "${0}")/util"
 
-# shellcheck disable=SC2012
-target_package="$(find ./client/target -type f -name 'conjur-sdk-java-*-SNAPSHOT.jar')"
+target_package="$(find ./client/target -type f -name 'conjur-sdk-java-*.jar')"
 
 # Copy built jar to ASSET_DIR so it will be attached to the Github Release
 
