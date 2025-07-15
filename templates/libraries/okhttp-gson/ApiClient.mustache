@@ -449,16 +449,21 @@ public class ApiClient {
 	     * @return a Base64 URL-encoded telemetry header string.
 	     */
         public static String generateTelemetryHeader(String integrationName, String integrationType, String integrationVersion, String vendorName) {
-            StringBuilder headerBuilder = new StringBuilder();
-            headerBuilder.append("in=").append(integrationName)
-                    .append("&it=").append(integrationType)
-                    .append("&iv=").append(integrationVersion)
-                    .append("&vn=").append(vendorName);
-
-            String headerValue = headerBuilder.toString();
-
-            return Base64.getUrlEncoder().encodeToString(headerValue.getBytes());
+            	String headerValue = String.format(
+		        "in=%s&it=%s&iv=%s&vn=%s",
+		        integrationName,
+		        integrationType,
+		        integrationVersion,
+		        vendorName
+			);
+			
+		String encodedHeader = Base64.getUrlEncoder()
+		        .withoutPadding()
+		        .encodeToString(headerValue.getBytes(StandardCharsets.UTF_8));
+                
+		return encodedHeader;
         }
+
     }
 
     private void init() {
