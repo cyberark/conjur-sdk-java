@@ -5,20 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [4.2.2] - 2025-07-08
+## [4.2.2] - 2025-07-16
 ### Updated
 - Updated Telemetry Headers
-- [conjur-sdk-java#13](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/13)
 
 ## [4.2.1] - 2025-03-25
 ### Added
 - Added Telemetry Headers
-- [conjur-sdk-java#8](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/8)
 
 ## [4.2.0] - 2025-01-06
 ### Changed
 - OpenAPI Specification -Java SDK - Added Automated testing
-  [conjur-sdk-java#1](https://github.cyberng.com/Conjur-Enterprise/conjur-sdk-java/pull/1)
 
 ## [4.1.0] - 2023-07-11
 
@@ -59,6 +56,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
 [Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.1.0...HEAD
-[4.2.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.2.0
 [4.1.0]: https://github.com/cyberark/conjur-sdk-java/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.0.0
