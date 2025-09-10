@@ -30,8 +30,8 @@ section when releasing the client after a refresh.
 ### Utility Scripts
 
 `bin/test_integration`
-* Used to run the suite of integration tests against a Conjur instance.
-* Stands up a new instance of Conjur in a Docker environment, compiles the
+* Used to run the suite of integration tests against a Conjur OSS instance.
+* Stands up a new instance of Conjur OSS in a Docker environment, compiles the
   client, and runs the tests with Maven.
 
 `bin/build`
@@ -44,7 +44,7 @@ section when releasing the client after a refresh.
 * Only certain files will be updated, see `client/.openapi-generator-ignore` for ignored files.
 
 `bin/start_conjur`
-* Used to start a new local Conjur instance based on the project's `docker-compose.yml` file.
+* Used to start a new local Conjur OSS instance based on the project's `docker-compose.yml` file.
 
 `bin/lint`
 * Used to enforce [Google's Java Style](https://google.github.io/styleguide/javaguide.html) on
@@ -53,7 +53,7 @@ section when releasing the client after a refresh.
 ## Testing
 
 To run the integration tests use the `bin/test_integration` script. This will bring up an
-instance of Conjur, compile the client and run the tests via Maven.
+instance of Conjur OSS, compile the client and run the tests via Maven.
 
 ## Releases
 
