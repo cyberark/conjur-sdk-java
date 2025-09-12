@@ -8,7 +8,7 @@ source bin/util
 
 regen_client=false
 rebuild_conjur=true
-major_java_version=16
+major_java_version=17
 target="oss"
 install=""
 test_case=""
@@ -240,7 +240,7 @@ setup_keycloak
 config/https/generate_csr
 
 docker build \
-    --build-arg java_version=16 \
+    --build-arg java_version=17 \
     -t test \
     -f Dockerfile.test \
     .

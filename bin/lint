@@ -6,7 +6,7 @@ announce "Linting Test Files with Checkstyle..."
 
 docker run --rm \
   -v ${PWD}:/code \
-  openjdk:16-jdk-oraclelinux7 \
+  openjdk:17-jdk-oraclelinux7 \
   /bin/bash -c "
     yum -y update && \\
     yum -y install curl wget jq && \\

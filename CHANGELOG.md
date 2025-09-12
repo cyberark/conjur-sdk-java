@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.2.3] - 2025-09-10
+### Updated
+- Updated documentation to align with Conjur Enterprise name change to Secrets Manager. (CNJR-10971)
+
 ## [4.2.2] - 2025-07-16
 ### Updated
 - Updated Telemetry Headers
@@ -55,6 +60,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [Google's Java Style](https://google.github.io/styleguide/javaguide.html).
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
-[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.3...HEAD
+[4.2.3]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.2...v4.2.3
+[4.2.2]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.1...v4.2.2
+[4.2.1]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.0...v4.2.1
+[4.2.0]: https://github.com/cyberark/conjur-sdk-java/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/cyberark/conjur-sdk-java/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/cyberark/conjur-sdk-java/releases/tag/v4.0.0
