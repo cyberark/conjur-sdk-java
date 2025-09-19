@@ -120,7 +120,20 @@ pipeline {
         stage('Run Integration Tests Against OSS') {
             steps {
                 script {
-                    infrapool.agentSh './bin/test_integration --target oss'
+                    infrapool.agentSh './bin/test_integration --target oss --coverage'
+                }
+            }
+            post {
+                always {
+                    script {
+                        infrapool.agentStash name: 'jacoco', includes: 'client/target/site/jacoco/jacoco.xml'
+                        unstash 'jacoco'
+                        codacy action: 'reportCoverage', filePath: "client/target/site/jacoco/jacoco.xml"
+
+                        infrapool.agentStash name: 'test-results', includes: 'target/surefire-reports/*.xml'
+                        unstash 'test-results'
+                    }
+                    junit 'client/target/surefire-reports/*.xml'
                 }
             }
         }
@@ -234,7 +247,10 @@ pipeline {
             script {
                 deleteConjurCloudTenant("${TENANT.id}")
             }
-            releaseInfraPoolAgent()
+            releaseInfraPoolAgent(".infrapool/release_agents")
+            // Resolve ownership issue before running infra post hook
+            sh 'git config --global --add safe.directory ${PWD}'
+            infraPostHook()
         }
     }
 }
