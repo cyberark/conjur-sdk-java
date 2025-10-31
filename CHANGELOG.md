@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.5] - 2025-10-31
+
+### Security
+- Update org.apache.commons to resolve CVE-2025-48924
+
 ## [4.2.4] - 2025-10-16
 ### Added
 - Added `close-stale.yml` GitHub workflow
@@ -64,7 +69,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [Google's Java Style](https://google.github.io/styleguide/javaguide.html).
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
-[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.4...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.5...HEAD
+[4.2.5]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.1...v4.2.2
