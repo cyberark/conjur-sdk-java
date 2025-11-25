@@ -1,7 +1,7 @@
-ARG java_version
+ARG java_version=17
 
-# Use an OpenJDK image as the base
-FROM openjdk:${java_version}-slim
+# Use an Eclipse Temurin image as the base (replacement for deprecated OpenJDK images)
+FROM eclipse-temurin:${java_version}-jdk-jammy
 
 ARG maven_version
 

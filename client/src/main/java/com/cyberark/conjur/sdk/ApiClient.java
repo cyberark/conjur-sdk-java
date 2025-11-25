@@ -1386,8 +1386,14 @@ public class ApiClient {
      * @return The full URL
      */
     public String buildUrl(String path, List<Pair> queryParams, List<Pair> collectionQueryParams) {
-        final StringBuilder url = new StringBuilder();
-        url.append(basePath).append(path);
+        final StringBuilder url = new StringBuilder(basePath);
+
+        if (basePath.endsWith("/") && path.startsWith("/")) {
+            url.deleteCharAt(url.length() - 1);
+        } else if (!basePath.endsWith("/") && !path.startsWith("/")) {
+            url.append("/");
+        }
+        url.append(path);
 
         if (queryParams != null && !queryParams.isEmpty()) {
             // support (constant) query string in `path`, e.g. "/posts?draft=1"

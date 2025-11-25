@@ -89,7 +89,7 @@ if [ "$target" == "cloud" ]; then
     -e CONJUR_CERT_FILE="$CONJUR_CERT_FILE" \
     -e CONJUR_AUTHN_TOKEN="$CONJUR_AUTHN_TOKEN" \
     -w /client \
-    openjdk:17 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
+    eclipse-temurin:17-jdk-jammy bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
 else
   docker run --rm --network "$DOCKER_NETWORK" \
     -v "${PWD}:/client" \
@@ -101,5 +101,5 @@ else
     -e CONJUR_CERT_FILE="$CONJUR_CERT_FILE" \
     -e CONJUR_AUTHN_API_KEY="$(get_conjur_admin_api_key $target)" \
     -w /client \
-    openjdk:17 bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
+    eclipse-temurin:17-jdk-jammy bash -c "javac -cp $classpath main/JavaSDKUsage.java && java -cp $classpath main.JavaSDKUsage"
 fi
