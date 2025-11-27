@@ -6,10 +6,10 @@ announce "Linting Test Files with Checkstyle..."
 
 docker run --rm \
   -v ${PWD}:/code \
-  openjdk:17-jdk-oraclelinux7 \
+  eclipse-temurin:17-jdk-jammy \
   /bin/bash -c "
-    yum -y update && \\
-    yum -y install curl wget jq && \\
+    apt-get update && \\
+    apt-get install -y curl wget jq && \\
     export RES=\"\$(curl https://api.github.com/repos/checkstyle/checkstyle/releases/latest)\" && \\
     export JAR=\"\$(echo \$RES | jq -r '.assets[0].name')\" && \\
     export URL=\"\$(echo \$RES | jq -r '.assets[0].browser_download_url')\" && \\
