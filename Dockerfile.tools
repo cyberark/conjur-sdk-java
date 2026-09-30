@@ -1,27 +1,26 @@
 ARG java_version=17
 
-# Use an Eclipse Temurin image as the base (replacement for deprecated OpenJDK images)
-FROM eclipse-temurin:${java_version}-jdk-jammy
+FROM eclipse-temurin:${java_version}-jdk-ubi9-minimal
 
 ARG maven_version
+ARG YQ_VERSION=v4.53.6
 
 # Install required packages
-RUN apt-get update -y && \
-    apt-get install -y curl unzip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN microdnf install -y \
+        unzip \
+        gnupg2 \
+    && microdnf clean all
 
 # Download and extract Maven
-RUN curl -o /tmp/maven.tar.gz https://archive.apache.org/dist/maven/maven-3/${maven_version}/binaries/apache-maven-${maven_version}-bin.tar.gz && \
-    mkdir -p /opt/maven && \
-    tar -xzf /tmp/maven.tar.gz -C /opt/maven --strip-components=1 && \
-    rm /tmp/maven.tar.gz
+RUN mkdir -p /opt/maven \
+    && curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${maven_version}/binaries/apache-maven-${maven_version}-bin.tar.gz" \
+       | tar -xzf - -C /opt/maven --strip-components=1
 
 # Set Maven environment variables
 ENV MAVEN_HOME=/opt/maven
 ENV PATH="$MAVEN_HOME/bin:$PATH"
 
-RUN curl -L  https://github.com/mikefarah/yq/releases/download/v4.18.1/yq_linux_amd64 -o /usr/bin/yq &&\
-    chmod +x /usr/bin/yq
-
-RUN apt-get update && apt-get install -y gpg
+# Install yq
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
+        -o /usr/local/bin/yq \
+    && chmod +x /usr/local/bin/yq

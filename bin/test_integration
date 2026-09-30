@@ -144,7 +144,9 @@ run_java_tests(){
   maven_command="mvn verify $install"
 
   if [ "$coverage" = "true" ]; then
-    maven_command+=" && mvn jacoco:report"
+    # Use semicolon to always run jacoco:report even when tests fail,
+    # and preserve the original mvn verify exit code for the build result
+    maven_command="$maven_command; MAVEN_EXIT=\$?; mvn jacoco:report; exit \$MAVEN_EXIT"
   fi
 
   case "$target" in

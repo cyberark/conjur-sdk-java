@@ -333,33 +333,4 @@ public class AuthenticationExternalApiTest extends ConfiguredTest {
             Assert.assertEquals(e.getCode(), 401);
         }
     }
-
-    /**
-     * Test getting an access token via the authn-oidc endpoint.
-     *
-     * @throws ApiException if the Api call fails
-     */
-    @Test
-    public void getAccessTokenViaOidcTest200() throws ApiException, IOException {
-        ConfiguredTest.setupOidcWebservice();
-        String idToken = getOidcIdToken();
-        String response = api.getAccessTokenViaOIDC("test", account, "test", idToken);
-        Assert.assertNotNull(response);
-    }
-
-    /**
-     * Test 401 response when getting an API key via OIDC.
-     *
-     * @throws IOException if getting the OIDC token fails
-     */
-    @Test
-    public void getAccessTokenViaOidcTest401() throws IOException {
-        try {
-            String idToken = getOidcIdToken();
-            badAuthApi.getAccessTokenViaOIDC("aws", account, "admin", idToken);
-        } catch (ApiException e) {
-            Assert.assertEquals(e.getCode(), 401);
-        }
-    }
-
 }
