@@ -1,25 +1,26 @@
 ARG java_version=17
-FROM eclipse-temurin:${java_version}-jdk-jammy
+FROM eclipse-temurin:${java_version}-jdk-ubi9-minimal
 
-RUN apt-get update -y && \
-    apt-get install -y \
-    curl \
-    unzip \
-    ca-certificates \
-    gnupg \
-    maven \
-    gpg \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+ARG MAVEN_VERSION=3.9.9
+ENV MAVEN_HOME=/opt/apache-maven-${MAVEN_VERSION}
+ENV PATH="${MAVEN_HOME}/bin:${PATH}"
 
-COPY keycloak.pem /usr/local/share/ca-certificates/keycloak.crt
+RUN microdnf install -y \
+        unzip \
+        ca-certificates \
+        gnupg2 \
+    && microdnf clean all \
+    && curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
+       | tar -xzf - -C /opt/
+
+COPY keycloak.pem /etc/pki/ca-trust/source/anchors/keycloak.crt
 
 # Update the system's CA certificates
-RUN update-ca-certificates
+RUN update-ca-trust extract
 
 # Import the certificate into Java's keystore
 RUN keytool -import -noprompt -trustcacerts -alias my-cert \
-    -file /usr/local/share/ca-certificates/keycloak.crt \
+    -file /etc/pki/ca-trust/source/anchors/keycloak.crt \
     -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit
 
 # Set the JVM to use the correct trust store

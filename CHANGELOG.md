@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.6] - 2026-09-30
+
+### Security
+- Migrate `Dockerfile.test` and `Dockerfile.tools` base image (Red Hat UBI 9 minimal) to eliminate known CVEs.
+- Fix improper certificate validation (CWE-295) in `ApiClient`.
+- Fix `bin/lint` Checkstyle failure: upgrade linting image to match class file version required by latest Checkstyle (Java 21).
+
+### Changed
+- Remove 3 integration tests broken by Conjur server breaking changes:
+- `GET /public_keys` removed in Conjur v1.27.0 / CNJR-11339, 
+- OIDC v1 workload endpoint disabled by default in Conjur v1.26.1 / CNJR-13784
+
 ## [4.2.5] - 2025-10-31
 
 ### Security
@@ -69,7 +81,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [Google's Java Style](https://google.github.io/styleguide/javaguide.html).
   [cyberark/conjur-sdk-java#3](https://github.com/cyberark/conjur-sdk-java/issues/3)
 
-[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.5...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.6...HEAD
+[4.2.6]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.5...v4.2.6
 [4.2.5]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/cyberark/conjur-sdk-java/compare/v4.2.2...v4.2.3

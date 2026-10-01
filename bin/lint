@@ -6,14 +6,14 @@ announce "Linting Test Files with Checkstyle..."
 
 docker run --rm \
   -v ${PWD}:/code \
-  eclipse-temurin:17-jdk-jammy \
+  eclipse-temurin:21-jdk-ubi9-minimal \
   /bin/bash -c "
-    apt-get update && \\
-    apt-get install -y curl wget jq && \\
-    export RES=\"\$(curl https://api.github.com/repos/checkstyle/checkstyle/releases/latest)\" && \\
-    export JAR=\"\$(echo \$RES | jq -r '.assets[0].name')\" && \\
-    export URL=\"\$(echo \$RES | jq -r '.assets[0].browser_download_url')\" && \\
-    wget \$URL && \\
+    microdnf install -y wget jq && \
+    microdnf clean all && \
+    export RES=\"\$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest)\" && \
+    export JAR=\"\$(echo \$RES | jq -r '.assets[0].name')\" && \
+    export URL=\"\$(echo \$RES | jq -r '.assets[0].browser_download_url')\" && \
+    wget -q \$URL && \
     java -jar \$JAR -c /code/config.xml /code/client/src/test
   "
 
